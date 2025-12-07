@@ -1,0 +1,2 @@
+[RESET_RESPSIGNAL][25 ns]: All resp signals are not properly reset!!!
+[RESET_REQSIGNAL][25 ns]: All req signals are not properly reset!!!

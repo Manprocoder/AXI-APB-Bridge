@@ -1,0 +1,34 @@
+var g_data = {
+f10:{
+scopes:[{link:'z.htm?f=0&s=10',val:'work.axi_transaction_controller'}]
+,FSMs:[{dummy:0}
+,{anchor:'cvg1016',items:[{c:'R',p:'45.83',lnk:'__HDL_srcfile_4.htm#231',z:'axi_cs'}
+,{cr:'c',s:'1',z:'A_IDLE',h:'3',c:'g'}
+,{cr:'c',z:'A_IDLE -&gt; AXI_GO',h:'1',c:'g'}
+,{cr:'c',s:'1',z:'AXI_GO',h:'2',c:'g'}
+,{cr:'m',z:'AXI_GO -&gt; AXI_DONE',h:'0',c:'r'}
+,{cr:'m',z:'AXI_GO -&gt; A_IDLE',h:'0',c:'r'}
+,{cr:'m',s:'1',z:'AXI_DONE',h:'0',c:'r'}
+,{cr:'m',z:'AXI_DONE -&gt; A_IDLE',h:'0',c:'r'}
+]}
+
+],
+},
+f971:{
+scopes:[{s:'21',b:'1',val:'tb'},{s:'477',b:'1',val:'dut_top'},{link:'z.htm?f=0&s=971',val:'axi_slv_inst'}]
+,FSMs:[{dummy:0}
+,{anchor:'cvg1016',items:[{c:'R',p:'45.83',lnk:'__HDL_srcfile_4.htm#231',z:'axi_cs'}
+,{cr:'c',s:'1',z:'A_IDLE',h:'3',c:'g'}
+,{cr:'c',z:'A_IDLE -&gt; AXI_GO',h:'1',c:'g'}
+,{cr:'c',s:'1',z:'AXI_GO',h:'2',c:'g'}
+,{cr:'m',z:'AXI_GO -&gt; AXI_DONE',h:'0',c:'r'}
+,{cr:'m',z:'AXI_GO -&gt; A_IDLE',h:'0',c:'r'}
+,{cr:'m',s:'1',z:'AXI_DONE',h:'0',c:'r'}
+,{cr:'m',z:'AXI_DONE -&gt; A_IDLE',h:'0',c:'r'}
+]}
+
+],
+},
+dummyEnd:0
+};
+processFsmData(g_data);

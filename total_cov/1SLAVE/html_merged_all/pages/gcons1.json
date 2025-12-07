@@ -1,0 +1,13 @@
+var g_db_data = [
+{dummy:0},
+{name:'axi_wreq_cg',f:1,type:6,id:3036,tb:'85',h:'24',m:'61',hp:'28.23%',cov:['86.19%','Y'],g:'100.00%',gp:['86.19%','Y'],lnk:'__HDL_srcfile_13.htm#40',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'},
+{name:'axi_wdata_cg',f:1,type:6,id:3054,tb:'10',h:'8',m:'2',hp:'80.00%',cov:['87.50%','Y'],g:'100.00%',gp:['87.50%','Y'],lnk:'__HDL_srcfile_13.htm#94',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'},
+{name:'axi_bresp_cg',f:1,type:6,id:3064,tb:'71',h:'2',m:'69',hp:'2.81%',cov:['25.00%','R'],g:'100.00%',gp:['25.00%','R'],lnk:'__HDL_srcfile_13.htm#118',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'},
+{name:'axi_rreq_cg',f:1,type:6,id:3074,tb:'85',h:'22',m:'63',hp:'25.88%',cov:['77.86%','Y'],g:'100.00%',gp:['77.86%','Y'],lnk:'__HDL_srcfile_13.htm#144',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'},
+{name:'axi_rdata_cg',f:1,type:6,id:3092,tb:'73',h:'7',m:'66',hp:'9.58%',cov:['56.97%','Y'],g:'100.00%',gp:['56.97%','Y'],lnk:'__HDL_srcfile_13.htm#197',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'},
+{name:'axi_wreq_cg',f:1,type:6,id:3036,tb:'85',h:'24',m:'61',hp:'28.23%',cov:['86.19%','Y'],g:'100.00%',gp:['86.19%','Y'],lnk:'__HDL_srcfile_13.htm#40',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'},
+{name:'axi_wdata_cg',f:1,type:6,id:3054,tb:'10',h:'8',m:'2',hp:'80.00%',cov:['87.50%','Y'],g:'100.00%',gp:['87.50%','Y'],lnk:'__HDL_srcfile_13.htm#94',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'},
+{name:'axi_bresp_cg',f:1,type:6,id:3064,tb:'71',h:'2',m:'69',hp:'2.81%',cov:['25.00%','R'],g:'100.00%',gp:['25.00%','R'],lnk:'__HDL_srcfile_13.htm#118',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'},
+{name:'axi_rreq_cg',f:1,type:6,id:3074,tb:'85',h:'22',m:'63',hp:'25.88%',cov:['77.86%','Y'],g:'100.00%',gp:['77.86%','Y'],lnk:'__HDL_srcfile_13.htm#144',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'},
+{name:'axi_rdata_cg',f:1,type:6,id:3092,tb:'73',h:'7',m:'66',hp:'9.58%',cov:['56.97%','Y'],g:'100.00%',gp:['56.97%','Y'],lnk:'__HDL_srcfile_13.htm#197',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'2810'}];
+processConsCovergroupsData(g_db_data);

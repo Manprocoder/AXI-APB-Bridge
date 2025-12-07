@@ -1,0 +1,270 @@
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>Questa Coverage Report</title>
+  <link rel="StyleSheet" media="screen" href="../css/hdl2html.css"/>
+</head>
+<body id="hdl2html">
+  <tt>
+<pre>
+<a name="1"><q-n>     1  </q-n></a><q-w>module</q-w> axi_cov();
+<a name="2"><q-n>     2  </q-n></a>    <q-w>logic</q-w> aclk;
+<a name="3"><q-n>     3  </q-n></a>    <q-w>logic</q-w> aresetn;
+<a name="4"><q-n>     4  </q-n></a>    <q-w>logic</q-w> awvalid;
+<a name="5"><q-n>     5  </q-n></a>    <q-w>logic</q-w> awready;
+<a name="6"><q-n>     6  </q-n></a>    <q-w>logic</q-w> [7:0] awid;
+<a name="7"><q-n>     7  </q-n></a>    <q-w>logic</q-w> [31:0] awaddr;
+<a name="8"><q-n>     8  </q-n></a>    <q-w>logic</q-w> [7:0] awlen;
+<a name="9"><q-n>     9  </q-n></a>    <q-w>logic</q-w> [2:0] awsize;
+<a name="10"><q-n>     10  </q-n></a>    <q-w>logic</q-w> [1:0] awburst;
+<a name="11"><q-n>     11  </q-n></a>    <q-w>logic</q-w> wvalid;
+<a name="12"><q-n>     12  </q-n></a>    <q-w>logic</q-w> wready;
+<a name="13"><q-n>     13  </q-n></a>    <q-w>logic</q-w> [31:0] wdata;
+<a name="14"><q-n>     14  </q-n></a>    <q-w>logic</q-w> [3:0] wstrb;
+<a name="15"><q-n>     15  </q-n></a>    <q-w>logic</q-w> wlast;
+<a name="16"><q-n>     16  </q-n></a>    <q-w>logic</q-w> bvalid;
+<a name="17"><q-n>     17  </q-n></a>    <q-w>logic</q-w> [1:0] bresp;
+<a name="18"><q-n>     18  </q-n></a>    <q-w>logic</q-w> [7:0] bid;
+<a name="19"><q-n>     19  </q-n></a>    <q-w>logic</q-w> bready;
+<a name="20"><q-n>     20  </q-n></a>    <q-m>//</q-m>
+<a name="21"><q-n>     21  </q-n></a>    <q-w>logic</q-w> arvalid;
+<a name="22"><q-n>     22  </q-n></a>    <q-w>logic</q-w> arready;
+<a name="23"><q-n>     23  </q-n></a>    <q-w>logic</q-w> [7:0] arid;
+<a name="24"><q-n>     24  </q-n></a>    <q-w>logic</q-w> [31:0] araddr;
+<a name="25"><q-n>     25  </q-n></a>    <q-w>logic</q-w> [7:0] arlen;
+<a name="26"><q-n>     26  </q-n></a>    <q-w>logic</q-w> [2:0] arsize;
+<a name="27"><q-n>     27  </q-n></a>    <q-w>logic</q-w> [1:0] arburst;
+<a name="28"><q-n>     28  </q-n></a>    <q-w>logic</q-w> rvalid;
+<a name="29"><q-n>     29  </q-n></a>    <q-w>logic</q-w> rready;
+<a name="30"><q-n>     30  </q-n></a>    <q-w>logic</q-w> [31:0] rdata;
+<a name="31"><q-n>     31  </q-n></a>    <q-w>logic</q-w> rlast;
+<a name="32"><q-n>     32  </q-n></a>    <q-w>logic</q-w> [1:0] rresp;
+<a name="33"><q-n>     33  </q-n></a>    <q-w>logic</q-w> [7:0] rid;
+<a name="34"><q-n>     34  </q-n></a>    <q-m>// parameter INST_NAME0   = "AXI_FUNCTIONAL_COVERAGE_PART";</q-m>
+<a name="35"><q-n>     35  </q-n></a>    <q-m>// parameter INST_NAME1   = "AXI_FUNCTIONAL_COVERAGE_TOTAL";</q-m>
+<a name="36"><q-n>     36  </q-n></a>    <q-m>//</q-m>
+<a name="37"><q-n>     37  </q-n></a>    <q-m>//main covergroup</q-m>
+<a name="38"><q-n>     38  </q-n></a>    <q-m>//</q-m>
+<a name="39"><q-n>     39  </q-n></a>    <q-m>//--1: aw channel cg</q-m>
+<a name="40"><q-n>     40  </q-n></a>    <q-w>covergroup</q-w> axi_wreq_cg @(<q-a>posedge</q-w> aclk <q-w>iff</q-w> aresetn);
+<a name="41"><q-n>     41  </q-n></a>        option.per_instance = 1;
+<a name="42"><q-n>     42  </q-n></a>        <q-m>//</q-m>
+<a name="43"><q-n>     43  </q-n></a>        awvalid_cp: <q-w>coverpoint</q-w> awvalid {
+<a name="44"><q-n>     44  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="45"><q-n>     45  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="46"><q-n>     46  </q-n></a>        }
+<a name="47"><q-n>     47  </q-n></a>        awready_cp: <q-w>coverpoint</q-w> awready {
+<a name="48"><q-n>     48  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="49"><q-n>     49  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="50"><q-n>     50  </q-n></a>        }
+<a name="51"><q-n>     51  </q-n></a>        awid_cp: <q-w>coverpoint</q-w> awid <q-w>iff</q-w> awvalid &amp;&amp; awready;<q-m>//{</q-m>
+<a name="52"><q-n>     52  </q-n></a>            <q-m>//bins very_low = {[0:15]};</q-m>
+<a name="53"><q-n>     53  </q-n></a>            <q-m>//bins mid0_low = {[16:31]};</q-m>
+<a name="54"><q-n>     54  </q-n></a>            <q-m>//bins mid1_low = {[32:45]};</q-m>
+<a name="55"><q-n>     55  </q-n></a>            <q-m>//bins low  = {[46:63]};</q-m>
+<a name="56"><q-n>     56  </q-n></a>            <q-m>//bins mid  = {[64:127]};</q-m>
+<a name="57"><q-n>     57  </q-n></a>            <q-m>//bins high = {[128:191]};</q-m>
+<a name="58"><q-n>     58  </q-n></a>            <q-m>//bins top  = {[192:255]};</q-m>
+<a name="59"><q-n>     59  </q-n></a>        <q-m>//}</q-m>
+<a name="60"><q-n>     60  </q-n></a>        awaddr_cp: <q-w>coverpoint</q-w> awaddr <q-w>iff</q-w> awvalid &amp;&amp; awready{
+<a name="61"><q-n>     61  </q-n></a>            <q-w>wildcard</q-w> <q-w>bins</q-w> aligned_addr = {32'b00000000_0000000?_????????_??????00};
+<a name="62"><q-n>     62  </q-n></a>            <q-w>wildcard</q-w> <q-w>bins</q-w> unaligned_addr0 = {32'b00000000_0000000?_????????_???????1};
+<a name="63"><q-n>     63  </q-n></a>            <q-w>wildcard</q-w> <q-w>bins</q-w> unaligned_addr1 = {32'b00000000_0000000?_????????_??????10};
+<a name="64"><q-n>     64  </q-n></a>            <q-m>//</q-m>
+<a name="65"><q-n>     65  </q-n></a>        }
+<a name="66"><q-n>     66  </q-n></a>        len_cp : <q-w>coverpoint</q-w> awlen <q-w>iff</q-w> awvalid &amp;&amp; awready{
+<a name="67"><q-n>     67  </q-n></a>            <q-w>bins</q-w> wrap   = {1,3,7,15}; <q-m>// spec-defined</q-m>
+<a name="68"><q-n>     68  </q-n></a>            <q-w>bins</q-w> rest   = {[0:255]};
+<a name="69"><q-n>     69  </q-n></a>        }
+<a name="70"><q-n>     70  </q-n></a>
+<a name="71"><q-n>     71  </q-n></a>        awburst_cp : <q-w>coverpoint</q-w> awburst <q-w>iff</q-w> awvalid &amp;&amp; awready{
+<a name="72"><q-n>     72  </q-n></a>            <q-w>bins</q-w> fixed = {2'b00};
+<a name="73"><q-n>     73  </q-n></a>            <q-w>bins</q-w> incr  = {2'b01};
+<a name="74"><q-n>     74  </q-n></a>            <q-w>bins</q-w> wrap  = {2'b10};
+<a name="75"><q-n>     75  </q-n></a>            <q-w>ignore_bins</q-w> reserved = {2'b11};
+<a name="76"><q-n>     76  </q-n></a>        }
+<a name="77"><q-n>     77  </q-n></a>        <q-m>//</q-m>
+<a name="78"><q-n>     78  </q-n></a>        <q-m>//cross coverage</q-m>
+<a name="79"><q-n>     79  </q-n></a>        <q-m>//</q-m>
+<a name="80"><q-n>     80  </q-n></a>        burst_x_len: <q-w>cross</q-w> awburst_cp, len_cp {
+<a name="81"><q-n>     81  </q-n></a>            <q-w>bins</q-w> xy1 = <q-w>binsof</q-w>(awburst_cp.wrap) &amp;&amp; <q-w>binsof</q-w>(len_cp.wrap);
+<a name="82"><q-n>     82  </q-n></a>            <q-w>bins</q-w> xy2 = <q-w>binsof</q-w>(awburst_cp.fixed) &amp;&amp; <q-w>binsof</q-w>(len_cp.rest);
+<a name="83"><q-n>     83  </q-n></a>            <q-w>bins</q-w> xy3 = <q-w>binsof</q-w>(awburst_cp.incr) &amp;&amp; <q-w>binsof</q-w>(len_cp.rest);
+<a name="84"><q-n>     84  </q-n></a>        }
+<a name="85"><q-n>     85  </q-n></a>        <q-m>//</q-m>
+<a name="86"><q-n>     86  </q-n></a>        burst_x_addr: <q-w>cross</q-w> awburst_cp, awaddr_cp {
+<a name="87"><q-n>     87  </q-n></a>            <q-w>bins</q-w> xy1 = <q-w>binsof</q-w>(awburst_cp.incr);
+<a name="88"><q-n>     88  </q-n></a>            <q-w>bins</q-w> xy2 = <q-w>binsof</q-w>(awburst_cp.fixed) &amp;&amp; <q-w>binsof</q-w>(awaddr_cp.aligned_addr);
+<a name="89"><q-n>     89  </q-n></a>            <q-w>bins</q-w> xy3 = <q-w>binsof</q-w>(awburst_cp.wrap) &amp;&amp; <q-w>binsof</q-w>(awaddr_cp.aligned_addr);
+<a name="90"><q-n>     90  </q-n></a>            <q-w>ignore_bins</q-w> others = (<q-w>binsof</q-w>(awburst_cp.fixed) || <q-w>binsof</q-w>(awburst_cp.wrap)) &amp;&amp; !<q-w>binsof</q-w>(awaddr_cp.aligned_addr);
+<a name="91"><q-n>     91  </q-n></a>        }
+<a name="92"><q-n>     92  </q-n></a>    <q-w>endgroup</q-w>
+<a name="93"><q-n>     93  </q-n></a>    <q-m>//--2: wdata channel cg</q-m>
+<a name="94"><q-n>     94  </q-n></a>    <q-w>covergroup</q-w> axi_wdata_cg @(<q-a>posedge</q-w> aclk <q-w>iff</q-w> aresetn);
+<a name="95"><q-n>     95  </q-n></a>        option.per_instance = 1;
+<a name="96"><q-n>     96  </q-n></a>        <q-m>//</q-m>
+<a name="97"><q-n>     97  </q-n></a>        wvalid_cp: <q-w>coverpoint</q-w> wvalid {
+<a name="98"><q-n>     98  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="99"><q-n>     99  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="100"><q-n>     100  </q-n></a>        }
+<a name="101"><q-n>     101  </q-n></a>        wready_cp: <q-w>coverpoint</q-w> wready {
+<a name="102"><q-n>     102  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="103"><q-n>     103  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="104"><q-n>     104  </q-n></a>        }
+<a name="105"><q-n>     105  </q-n></a>        wstrb_cp: <q-w>coverpoint</q-w> wstrb <q-w>iff</q-w> wvalid &amp;&amp; wready{
+<a name="106"><q-n>     106  </q-n></a>            <q-w>bins</q-w> single = {4'h1, 4'h2, 4'h4, 4'h8};
+<a name="107"><q-n>     107  </q-n></a>            <q-w>bins</q-w> half = {4'h3, 4'hC};
+<a name="108"><q-n>     108  </q-n></a>            <q-w>bins</q-w> third = {4'h7, 4'hE};
+<a name="109"><q-n>     109  </q-n></a>            <q-w>bins</q-w> full = {4'hf};
+<a name="110"><q-n>     110  </q-n></a>            <q-w>ignore_bins</q-w> empty = {4'h0};
+<a name="111"><q-n>     111  </q-n></a>        }
+<a name="112"><q-n>     112  </q-n></a>        wlast_cp: <q-w>coverpoint</q-w> wlast <q-w>iff</q-w> wvalid &amp;&amp; wready{
+<a name="113"><q-n>     113  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="114"><q-n>     114  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="115"><q-n>     115  </q-n></a>        }
+<a name="116"><q-n>     116  </q-n></a>    <q-w>endgroup</q-w>
+<a name="117"><q-n>     117  </q-n></a>    <q-m>//--3: bresp channel cg</q-m>
+<a name="118"><q-n>     118  </q-n></a>    <q-w>covergroup</q-w> axi_bresp_cg @(<q-a>posedge</q-w> aclk <q-w>iff</q-w> aresetn);
+<a name="119"><q-n>     119  </q-n></a>        option.per_instance = 1;
+<a name="120"><q-n>     120  </q-n></a>        <q-m>//</q-m>
+<a name="121"><q-n>     121  </q-n></a>        bvalid_cp: <q-w>coverpoint</q-w> bvalid {
+<a name="122"><q-n>     122  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="123"><q-n>     123  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="124"><q-n>     124  </q-n></a>        }
+<a name="125"><q-n>     125  </q-n></a>        bready_cp: <q-w>coverpoint</q-w> bready {
+<a name="126"><q-n>     126  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="127"><q-n>     127  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="128"><q-n>     128  </q-n></a>        }
+<a name="129"><q-n>     129  </q-n></a>        bid_cp: <q-w>coverpoint</q-w> bid <q-w>iff</q-w> bvalid &amp;&amp; bready; <q-m>//{</q-m>
+<a name="130"><q-n>     130  </q-n></a>            <q-m>//bins low  = {[0:63]};</q-m>
+<a name="131"><q-n>     131  </q-n></a>            <q-m>//bins mid  = {[64:127]};</q-m>
+<a name="132"><q-n>     132  </q-n></a>            <q-m>//bins high = {[128:191]};</q-m>
+<a name="133"><q-n>     133  </q-n></a>            <q-m>//bins top  = {[192:255]};</q-m>
+<a name="134"><q-n>     134  </q-n></a>        <q-m>//}</q-m>
+<a name="135"><q-n>     135  </q-n></a>        bresp_cp: <q-w>coverpoint</q-w> bresp <q-w>iff</q-w> bvalid &amp;&amp; bready{
+<a name="136"><q-n>     136  </q-n></a>            <q-w>bins</q-w> okay = {2'b00};  <q-m>// OKAY response</q-m>
+<a name="137"><q-n>     137  </q-n></a>            <q-w>ignore_bins</q-w> exokay = {2'b01}; <q-m>// EXOKAY response</q-m>
+<a name="138"><q-n>     138  </q-n></a>            <q-w>bins</q-w> slverr = {2'b10}; <q-m>// SLVERR response</q-m>
+<a name="139"><q-n>     139  </q-n></a>            <q-w>bins</q-w> decerr = {2'b11}; <q-m>// DECERR response</q-m>
+<a name="140"><q-n>     140  </q-n></a>        }
+<a name="141"><q-n>     141  </q-n></a>    <q-w>endgroup</q-w>
+<a name="142"><q-n>     142  </q-n></a>
+<a name="143"><q-n>     143  </q-n></a>    <q-m>//--4: ar channel cg</q-m>
+<a name="144"><q-n>     144  </q-n></a>    <q-w>covergroup</q-w> axi_rreq_cg @(<q-a>posedge</q-w> aclk <q-w>iff</q-w> aresetn);
+<a name="145"><q-n>     145  </q-n></a>        option.per_instance = 1;
+<a name="146"><q-n>     146  </q-n></a>        <q-m>//</q-m>
+<a name="147"><q-n>     147  </q-n></a>        arvalid_cp: <q-w>coverpoint</q-w> arvalid {
+<a name="148"><q-n>     148  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="149"><q-n>     149  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="150"><q-n>     150  </q-n></a>        }
+<a name="151"><q-n>     151  </q-n></a>        arready_cp: <q-w>coverpoint</q-w> arready {
+<a name="152"><q-n>     152  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="153"><q-n>     153  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="154"><q-n>     154  </q-n></a>        }
+<a name="155"><q-n>     155  </q-n></a>        arid_cp: <q-w>coverpoint</q-w> arid <q-w>iff</q-w> arvalid &amp;&amp; arready;<q-m>//{</q-m>
+<a name="156"><q-n>     156  </q-n></a>            <q-m>//bins low  = {[0:63]};</q-m>
+<a name="157"><q-n>     157  </q-n></a>            <q-m>//bins mid  = {[64:127]};</q-m>
+<a name="158"><q-n>     158  </q-n></a>            <q-m>//bins high = {[128:191]};</q-m>
+<a name="159"><q-n>     159  </q-n></a>            <q-m>//bins top  = {[192:255]};</q-m>
+<a name="160"><q-n>     160  </q-n></a>        <q-m>//}</q-m>
+<a name="161"><q-n>     161  </q-n></a>        araddr_cp: <q-w>coverpoint</q-w> araddr <q-w>iff</q-w> arvalid &amp;&amp; arready{
+<a name="162"><q-n>     162  </q-n></a>            <q-w>wildcard</q-w> <q-w>bins</q-w> aligned_addr = {32'b00000000_0000000?_????????_??????00};
+<a name="163"><q-n>     163  </q-n></a>            <q-w>wildcard</q-w> <q-w>bins</q-w> unaligned_addr0 = {32'b00000000_0000000?_????????_???????1};
+<a name="164"><q-n>     164  </q-n></a>            <q-w>wildcard</q-w> <q-w>bins</q-w> unaligned_addr1 = {32'b00000000_0000000?_????????_??????10};
+<a name="165"><q-n>     165  </q-n></a>        }
+<a name="166"><q-n>     166  </q-n></a>        len_cp : <q-w>coverpoint</q-w> arlen <q-w>iff</q-w> arvalid &amp;&amp; arready{
+<a name="167"><q-n>     167  </q-n></a>            <q-w>bins</q-w> wrap   = {1,3,7,15}; <q-m>// spec-defined</q-m>
+<a name="168"><q-n>     168  </q-n></a>            <q-w>bins</q-w> rest   = {[0:255]};
+<a name="169"><q-n>     169  </q-n></a>        }
+<a name="170"><q-n>     170  </q-n></a>
+<a name="171"><q-n>     171  </q-n></a>        arburst_cp : <q-w>coverpoint</q-w> arburst <q-w>iff</q-w> arvalid &amp;&amp; arready{
+<a name="172"><q-n>     172  </q-n></a>            <q-w>bins</q-w> fixed = {2'b00};
+<a name="173"><q-n>     173  </q-n></a>            <q-w>bins</q-w> incr  = {2'b01};
+<a name="174"><q-n>     174  </q-n></a>            <q-w>bins</q-w> wrap  = {2'b10};
+<a name="175"><q-n>     175  </q-n></a>            <q-w>ignore_bins</q-w> reserved = {2'b11};
+<a name="176"><q-n>     176  </q-n></a>        }
+<a name="177"><q-n>     177  </q-n></a>        <q-m>//</q-m>
+<a name="178"><q-n>     178  </q-n></a>        <q-m>//cross coverage</q-m>
+<a name="179"><q-n>     179  </q-n></a>        <q-m>//</q-m>
+<a name="180"><q-n>     180  </q-n></a>	<q-m>//--to adopt binsof to define expected coverage and use ignore_bins to</q-m>
+<a name="181"><q-n>     181  </q-n></a>	<q-m>//remove unnecessary or unwanted coverage </q-m>
+<a name="182"><q-n>     182  </q-n></a>        burst_x_len: <q-w>cross</q-w> arburst_cp, len_cp {
+<a name="183"><q-n>     183  </q-n></a>            <q-w>bins</q-w> xy1 = <q-w>binsof</q-w>(arburst_cp.wrap) &amp;&amp; <q-w>binsof</q-w>(len_cp.wrap);
+<a name="184"><q-n>     184  </q-n></a>            <q-w>bins</q-w> xy2 = <q-w>binsof</q-w>(arburst_cp.fixed) &amp;&amp; <q-w>binsof</q-w>(len_cp.rest);
+<a name="185"><q-n>     185  </q-n></a>            <q-w>bins</q-w> xy3 = <q-w>binsof</q-w>(arburst_cp.incr) &amp;&amp; <q-w>binsof</q-w>(len_cp.rest);
+<a name="186"><q-n>     186  </q-n></a>        }
+<a name="187"><q-n>     187  </q-n></a>        <q-m>//</q-m>
+<a name="188"><q-n>     188  </q-n></a>        burst_x_addr: <q-w>cross</q-w> arburst_cp, araddr_cp {
+<a name="189"><q-n>     189  </q-n></a>            <q-w>bins</q-w> xy1 = <q-w>binsof</q-w>(arburst_cp.incr);
+<a name="190"><q-n>     190  </q-n></a>            <q-w>bins</q-w> xy2 = <q-w>binsof</q-w>(arburst_cp.fixed) &amp;&amp; <q-w>binsof</q-w>(araddr_cp.aligned_addr);
+<a name="191"><q-n>     191  </q-n></a>            <q-w>bins</q-w> xy3 = <q-w>binsof</q-w>(arburst_cp.wrap) &amp;&amp; <q-w>binsof</q-w>(araddr_cp.aligned_addr);
+<a name="192"><q-n>     192  </q-n></a>            <q-w>ignore_bins</q-w> others = (<q-w>binsof</q-w>(arburst_cp.fixed) || <q-w>binsof</q-w>(arburst_cp.wrap)) &amp;&amp; !<q-w>binsof</q-w>(araddr_cp.aligned_addr);
+<a name="193"><q-n>     193  </q-n></a>        }
+<a name="194"><q-n>     194  </q-n></a>    <q-w>endgroup</q-w>
+<a name="195"><q-n>     195  </q-n></a>    
+<a name="196"><q-n>     196  </q-n></a>    <q-m>//--5: rdata channel cg</q-m>
+<a name="197"><q-n>     197  </q-n></a>    <q-w>covergroup</q-w> axi_rdata_cg @(<q-a>posedge</q-w> aclk <q-w>iff</q-w> aresetn);
+<a name="198"><q-n>     198  </q-n></a>        option.per_instance = 1;
+<a name="199"><q-n>     199  </q-n></a>        <q-m>//</q-m>
+<a name="200"><q-n>     200  </q-n></a>        rvalid_cp: <q-w>coverpoint</q-w> rvalid {
+<a name="201"><q-n>     201  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="202"><q-n>     202  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="203"><q-n>     203  </q-n></a>        }
+<a name="204"><q-n>     204  </q-n></a>        rready_cp: <q-w>coverpoint</q-w> rready {
+<a name="205"><q-n>     205  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="206"><q-n>     206  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="207"><q-n>     207  </q-n></a>        }
+<a name="208"><q-n>     208  </q-n></a>        rlast_cp: <q-w>coverpoint</q-w> rlast <q-w>iff</q-w>(rvalid &amp;&amp; rready){
+<a name="209"><q-n>     209  </q-n></a>            <q-w>bins</q-w> value_0 = {1'b0};
+<a name="210"><q-n>     210  </q-n></a>            <q-w>bins</q-w> value_1 = {1'b1};
+<a name="211"><q-n>     211  </q-n></a>        }
+<a name="212"><q-n>     212  </q-n></a>        rresp_cp: <q-w>coverpoint</q-w> rresp <q-w>iff</q-w>(rvalid &amp;&amp; rready){
+<a name="213"><q-n>     213  </q-n></a>            <q-w>bins</q-w> okay = {2'b00};  <q-m>// OKAY response</q-m>
+<a name="214"><q-n>     214  </q-n></a>            <q-w>ignore_bins</q-w> exokay = {2'b01}; <q-m>// EXOKAY response</q-m>
+<a name="215"><q-n>     215  </q-n></a>            <q-w>bins</q-w> slverr = {2'b10}; <q-m>// SLVERR response</q-m>
+<a name="216"><q-n>     216  </q-n></a>            <q-w>bins</q-w> decerr = {2'b11}; <q-m>// DECERR response</q-m>
+<a name="217"><q-n>     217  </q-n></a>        }
+<a name="218"><q-n>     218  </q-n></a>        rid_cp: <q-w>coverpoint</q-w> rid <q-w>iff</q-w>(rvalid &amp;&amp; rready);<q-m>//{</q-m>
+<a name="219"><q-n>     219  </q-n></a>            <q-m>//bins low  = {[0:63]};</q-m>
+<a name="220"><q-n>     220  </q-n></a>            <q-m>//bins mid  = {[64:127]};</q-m>
+<a name="221"><q-n>     221  </q-n></a>            <q-m>//bins high = {[128:191]};</q-m>
+<a name="222"><q-n>     222  </q-n></a>            <q-m>//bins top  = {[192:255]};</q-m>
+<a name="223"><q-n>     223  </q-n></a>        <q-m>//}</q-m>
+<a name="224"><q-n>     224  </q-n></a>    <q-w>endgroup</q-w>
+<a name="225"><q-n>     225  </q-n></a>    <q-m>// ------------------------------------------------------</q-m>
+<a name="226"><q-n>     226  </q-n></a>    <q-m>// Instances</q-m>
+<a name="227"><q-n>     227  </q-n></a>    <q-m>// ------------------------------------------------------</q-m>
+<a name="228"><q-n>     228  </q-n></a>    axi_wreq_cg   wreq_cov  = <q-w>new</q-w>();
+<a name="229"><q-n>     229  </q-n></a>    axi_wdata_cg  wdata_cov = <q-w>new</q-w>();
+<a name="230"><q-n>     230  </q-n></a>    axi_bresp_cg  bresp_cov = <q-w>new</q-w>();
+<a name="231"><q-n>     231  </q-n></a>    axi_rreq_cg   rreq_cov  = <q-w>new</q-w>();
+<a name="232"><q-n>     232  </q-n></a>    axi_rdata_cg  rdata_cov = <q-w>new</q-w>();
+<a name="233"><q-n>     233  </q-n></a>
+<a name="234"><q-n>     234  </q-n></a>    <q-m>//initial begin</q-m>
+<a name="235"><q-n>     235  </q-n></a>        <q-m>//$display("[%s][%0t ns]", INST_NAME0, $time);</q-m>
+<a name="236"><q-n>     236  </q-n></a>        <q-m>//$display("wreq_cov   = %0.2f",  wreq_cov.get_coverage());</q-m>
+<a name="237"><q-n>     237  </q-n></a>        <q-m>//$display("wdata_cov  = %0.2f",  wdata_cov.get_coverage());</q-m>
+<a name="238"><q-n>     238  </q-n></a>        <q-m>//$display("bresp_cov  = %0.2f",  bresp_cov.get_coverage());</q-m>
+<a name="239"><q-n>     239  </q-n></a>        <q-m>//$display("rreq_cov   = %0.2f",  rreq_cov.get_coverage());</q-m>
+<a name="240"><q-n>     240  </q-n></a>        <q-m>//$display("rdata_cov  = %0.2f",  rdata_cov.get_coverage());</q-m>
+<a name="241"><q-n>     241  </q-n></a>    <q-m>//end</q-m>
+<a name="242"><q-n>     242  </q-n></a>    <q-m>//// ------------------------------------------------------</q-m>
+<a name="243"><q-n>     243  </q-n></a>    <q-m>//// Coverage printing (simulation end)</q-m>
+<a name="244"><q-n>     244  </q-n></a>    <q-m>//// ------------------------------------------------------</q-m>
+<a name="245"><q-n>     245  </q-n></a>    <q-m>//final begin</q-m>
+<a name="246"><q-n>     246  </q-n></a>        <q-m>//$display("[%s][%0t ns]", INST_NAME1, $time);</q-m>
+<a name="247"><q-n>     247  </q-n></a>        <q-m>//$display("wreq_cov   = %0.2f",  wreq_cov.get_coverage());</q-m>
+<a name="248"><q-n>     248  </q-n></a>        <q-m>//$display("wdata_cov  = %0.2f",  wdata_cov.get_coverage());</q-m>
+<a name="249"><q-n>     249  </q-n></a>        <q-m>//$display("bresp_cov  = %0.2f",  bresp_cov.get_coverage());</q-m>
+<a name="250"><q-n>     250  </q-n></a>        <q-m>//$display("rreq_cov   = %0.2f",  rreq_cov.get_coverage());</q-m>
+<a name="251"><q-n>     251  </q-n></a>        <q-m>//$display("rdata_cov  = %0.2f",  rdata_cov.get_coverage());</q-m>
+<a name="252"><q-n>     252  </q-n></a>    <q-m>//end</q-m>
+<a name="253"><q-n>     253  </q-n></a><q-w>endmodule</q-w>
+<a name="254"><q-n>     254  </q-n></a>    
+</pre>
+</tt>
+
+  
+</body>
+</html>

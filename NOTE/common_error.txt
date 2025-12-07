@@ -1,0 +1,37 @@
+NUMBER 1:
+    forget to include UVM library in tb.sv file or list.sv file: 
+        `include "uvm_pkg.sv"
+        `include "uvm_macros.svh"
+NUMBER 2: 
+    mismatches among variables' names
+NUMBER 3:
+    mistakenly type wrong detailed path of virtual interface in uvm_config_db command
+      uvm_config_db#(virtual interface axi_intf #(DW, AW1))::set(null, "uvm_test_top.m_env0.axi_agent_master*", "m_vif", AXI);
+      uvm_config_db#(virtual interface apb_intf #(DW, AW2))::set(null, "uvm_test_top.m_env0.apb_agent_slave*", "s_vif", APB);
+    SPECIFICALLY: MUST PAY ATTENTION TO "uvm_test_top.m_env0.axi_agent_master" and "...apb_agent_slave" 
+NUMBER 4: 
+    forget to initialize handles => BAD or NULL HANDLES
+    for instance:
+        (1)
+        + only do apb_seq_item ApbPacket
+        + do not initialize: ApbPacket = apb_seq_item::type_id::create("...");
+        (2)
+        + fastidiously check the status of queue before reading it
+NUMBER 5: 
+    carefully hande while(1) loop
+        + should use full block if-else, avoid to use only if without else => wait infinite loop
+NUMBER 6:
+    in Monitor class, when using LOOP to capture valid data, sequence_item MUST BE MADE after each transfer 
+    to avoid DATA LOSS (override mechanism). As usual, sequence_item only created in build_phase() task ONCE
+NUMBER 7:
+    driver and monitor synchorization
+    (1) DRIVER: @(posedge clk)
+            a = value; //proper form is: a <= value
+    (2) MONITOR: @(posedge clk)
+            if(b && a) begin
+            end
+    from (1) and (2) monitor never captures valid value of a
+NUMBER 8: 
+    we must not use new() method to initialize config object
+NUMBER 9:
+    BE CAREFUL to use uvm_object_utils and uvm_object_param_utils in UVM factory registration 

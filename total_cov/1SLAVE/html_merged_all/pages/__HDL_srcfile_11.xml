@@ -1,0 +1,351 @@
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>Questa Coverage Report</title>
+  <link rel="StyleSheet" media="screen" href="../css/hdl2html.css"/>
+</head>
+<body id="hdl2html">
+  <tt>
+<pre>
+<a name="1"><q-n>     1  </q-n></a><q-m>//</q-m>
+<a name="2"><q-n>     2  </q-n></a><q-m>//</q-m>
+<a name="3"><q-n>     3  </q-n></a><q-m>//</q-m>
+<a name="4"><q-n>     4  </q-n></a><q-w>module</q-w> apb_master(
+<a name="5"><q-n>     5  </q-n></a>	pclk,
+<a name="6"><q-n>     6  </q-n></a>	preset_n,
+<a name="7"><q-n>     7  </q-n></a>	<q-m>//</q-m>
+<a name="8"><q-n>     8  </q-n></a>	<q-m>//control signal</q-m>
+<a name="9"><q-n>     9  </q-n></a>	<q-m>//</q-m>
+<a name="10"><q-n>     10  </q-n></a>	trans_go_i,
+<a name="11"><q-n>     11  </q-n></a>	next_transfer_rdy_i,
+<a name="12"><q-n>     12  </q-n></a>	end_of_burst_i,
+<a name="13"><q-n>     13  </q-n></a>	grant_to_write_i,
+<a name="14"><q-n>     14  </q-n></a>	wstrb_to_apb_i,	
+<a name="15"><q-n>     15  </q-n></a>	wdata_to_apb_i,	
+<a name="16"><q-n>     16  </q-n></a>	start_addr_i,
+<a name="17"><q-n>     17  </q-n></a>	len_of_burst_i,
+<a name="18"><q-n>     18  </q-n></a>	size_of_transfer_i,
+<a name="19"><q-n>     19  </q-n></a>	used_burst_i,
+<a name="20"><q-n>     20  </q-n></a>	used_prot_i,
+<a name="21"><q-n>     21  </q-n></a>	<q-m>//APB interface</q-m>
+<a name="22"><q-n>     22  </q-n></a>	paddr,
+<a name="23"><q-n>     23  </q-n></a>	pprot,
+<a name="24"><q-n>     24  </q-n></a>	psel,
+<a name="25"><q-n>     25  </q-n></a>	penable,
+<a name="26"><q-n>     26  </q-n></a>	pwrite,
+<a name="27"><q-n>     27  </q-n></a>	pwdata,
+<a name="28"><q-n>     28  </q-n></a>	pstrb,
+<a name="29"><q-n>     29  </q-n></a>	pready,
+<a name="30"><q-n>     30  </q-n></a>	prdata,
+<a name="31"><q-n>     31  </q-n></a>	pslverr,
+<a name="32"><q-n>     32  </q-n></a><q-m>//send to AXI transaction controller</q-m>
+<a name="33"><q-n>     33  </q-n></a>	prdataX_o,
+<a name="34"><q-n>     34  </q-n></a>	pslverrX_o,
+<a name="35"><q-n>     35  </q-n></a>	<q-m>//control outputs</q-m>
+<a name="36"><q-n>     36  </q-n></a>	write_to_rd_sfifo_o,
+<a name="37"><q-n>     37  </q-n></a>	read_from_wd_sfifo_o,
+<a name="38"><q-n>     38  </q-n></a>	set_up_phase_o,
+<a name="39"><q-n>     39  </q-n></a>	beat_cnt_incr_o,
+<a name="40"><q-n>     40  </q-n></a>	dec_error_o,
+<a name="41"><q-n>     41  </q-n></a>	latch_resp_o
+<a name="42"><q-n>     42  </q-n></a>	<q-m>//</q-m>
+<a name="43"><q-n>     43  </q-n></a>	<q-m>//</q-m>
+<a name="44"><q-n>     44  </q-n></a>	<q-m>//</q-m>
+<a name="45"><q-n>     45  </q-n></a>);
+<a name="46"><q-n>     46  </q-n></a><q-m>//*********************************************************</q-m>
+<a name="47"><q-n>     47  </q-n></a><q-m>//PORTS</q-m>
+<a name="48"><q-n>     48  </q-n></a><q-m>//*********************************************************</q-m>
+<a name="49"><q-n>     49  </q-n></a><q-w>input</q-w> <q-w>logic</q-w>                    pclk;
+<a name="50"><q-n>     50  </q-n></a><q-w>input</q-w> <q-w>logic</q-w>                    preset_n;
+<a name="51"><q-n>     51  </q-n></a><q-m>//</q-m>
+<a name="52"><q-n>     52  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> trans_go_i;
+<a name="53"><q-n>     53  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> next_transfer_rdy_i;
+<a name="54"><q-n>     54  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> end_of_burst_i;
+<a name="55"><q-n>     55  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> grant_to_write_i;
+<a name="56"><q-n>     56  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> [3:0]	wstrb_to_apb_i;
+<a name="57"><q-n>     57  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> [31:0]	wdata_to_apb_i;	
+<a name="58"><q-n>     58  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> [31:0]	start_addr_i;
+<a name="59"><q-n>     59  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> [7:0]	len_of_burst_i;
+<a name="60"><q-n>     60  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> [2:0] 	size_of_transfer_i;
+<a name="61"><q-n>     61  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> [1:0]	used_burst_i;
+<a name="62"><q-n>     62  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> [2:0]	used_prot_i;
+<a name="63"><q-n>     63  </q-n></a><q-m>//</q-m>
+<a name="64"><q-n>     64  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [31:0]             paddr;
+<a name="65"><q-n>     65  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [2:0]              pprot;
+<a name="66"><q-n>     66  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [`SLAVE_CNT-1:0]   psel;
+<a name="67"><q-n>     67  </q-n></a><q-w>output</q-w> <q-w>logic</q-w>                    penable;
+<a name="68"><q-n>     68  </q-n></a><q-w>output</q-w> <q-w>logic</q-w>                    pwrite;
+<a name="69"><q-n>     69  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [31:0]             pwdata;
+<a name="70"><q-n>     70  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [3:0]              pstrb;
+<a name="71"><q-n>     71  </q-n></a><q-w>input</q-w>  <q-w>logic</q-w> [`SLAVE_CNT-1:0][31:0] prdata;
+<a name="72"><q-n>     72  </q-n></a><q-w>input</q-w>  <q-w>logic</q-w> [`SLAVE_CNT-1:0]   pready;
+<a name="73"><q-n>     73  </q-n></a><q-w>input</q-w>  <q-w>logic</q-w> [`SLAVE_CNT-1:0]   pslverr;
+<a name="74"><q-n>     74  </q-n></a><q-m>//send to AXI transaction controller</q-m>
+<a name="75"><q-n>     75  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [31:0] prdataX_o;
+<a name="76"><q-n>     76  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> pslverrX_o;
+<a name="77"><q-n>     77  </q-n></a><q-m>//control outputs</q-m>
+<a name="78"><q-n>     78  </q-n></a><q-w>output</q-w> <q-w>logic</q-w>	write_to_rd_sfifo_o;
+<a name="79"><q-n>     79  </q-n></a><q-w>output</q-w> <q-w>logic</q-w>	read_from_wd_sfifo_o;
+<a name="80"><q-n>     80  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> 	set_up_phase_o;
+<a name="81"><q-n>     81  </q-n></a><q-w>output</q-w> <q-w>logic</q-w>	beat_cnt_incr_o;
+<a name="82"><q-n>     82  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> 	dec_error_o;
+<a name="83"><q-n>     83  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> 	latch_resp_o;
+<a name="84"><q-n>     84  </q-n></a><q-m>//*********************************************************</q-m>
+<a name="85"><q-n>     85  </q-n></a><q-m>//INTERNAL VARIABLES</q-m>
+<a name="86"><q-n>     86  </q-n></a><q-m>//*********************************************************</q-m>
+<a name="87"><q-n>     87  </q-n></a><q-m>//psel register</q-m>
+<a name="88"><q-n>     88  </q-n></a> <q-w>logic</q-w> false_psel_reg, true_psel_reg;
+<a name="89"><q-n>     89  </q-n></a><q-m>//apb transfer address</q-m>
+<a name="90"><q-n>     90  </q-n></a>  <q-w>logic</q-w> [31:0]                    next_addr_for_incr;
+<a name="91"><q-n>     91  </q-n></a>  <q-w>logic</q-w> [31:0]                    next_addr_for_wrap;
+<a name="92"><q-n>     92  </q-n></a>  <q-w>logic</q-w> [2:0]                     bit_num;
+<a name="93"><q-n>     93  </q-n></a>  <q-w>logic</q-w> [2:0]                     bit3Addr;
+<a name="94"><q-n>     94  </q-n></a>  <q-w>logic</q-w> [3:0]                     bit4Addr;
+<a name="95"><q-n>     95  </q-n></a>  <q-w>logic</q-w> [4:0]                     bit5Addr;
+<a name="96"><q-n>     96  </q-n></a>  <q-w>logic</q-w> [5:0]                     bit6Addr;
+<a name="97"><q-n>     97  </q-n></a>  <q-m>//abp address control</q-m>
+<a name="98"><q-n>     98  </q-n></a>  <q-w>logic</q-w> addr_incr_en;
+<a name="99"><q-n>     99  </q-n></a>  <q-w>logic</q-w> begin_transfer;
+<a name="100"><q-n>     100  </q-n></a>  <q-m>//DECODER signals</q-m>
+<a name="101"><q-n>     101  </q-n></a>  <q-w>logic</q-w> [`SLAVE_CNT-1:0] true_psel;
+<a name="102"><q-n>     102  </q-n></a>  <q-w>logic</q-w> false_psel;
+<a name="103"><q-n>     103  </q-n></a>  <q-w>logic</q-w> preadyX;
+<a name="104"><q-n>     104  </q-n></a>  <q-w>logic</q-w> error_of_decoder;
+<a name="105"><q-n>     105  </q-n></a>  <q-m>//APB FMS output</q-m>
+<a name="106"><q-n>     106  </q-n></a>  <q-w>logic</q-w> invalid_psel;
+<a name="107"><q-n>     107  </q-n></a>  <q-m>//APB state</q-m>
+<a name="108"><q-n>     108  </q-n></a><q-m>//APB state machine</q-m>
+<a name="109"><q-n>     109  </q-n></a><q-w>typedef</q-w> <q-w>enum</q-w> <q-w>logic</q-w> [1:0] {P_IDLE, SETUP, ACCESS} apb_st;
+<a name="110"><q-n>     110  </q-n></a>  apb_st apb_cs, apb_ns;
+<a name="111"><q-n>     111  </q-n></a>  <q-m>//</q-m>
+<a name="112"><q-n>     112  </q-n></a>  <q-m>//APB state regs</q-m>
+<a name="113"><q-n>     113  </q-n></a>  <q-m>//</q-m>
+<a name="114"><q-n>     114  </q-n></a>  <q-w>always_ff</q-w> @(<q-a>posedge</q-w> pclk, <q-a>negedge</q-w> preset_n) <q-w>begin</q-w>
+<a name="115"><q-n>     115  </q-n></a>    <q-w>if</q-w>(~preset_n)
+<a name="116"><q-n>     116  </q-n></a>	  apb_cs[1:0] &lt;= P_IDLE;
+<a name="117"><q-n>     117  </q-n></a>	<q-w>else</q-w>
+<a name="118"><q-n>     118  </q-n></a>	  apb_cs[1:0] &lt;= apb_ns[1:0];
+<a name="119"><q-n>     119  </q-n></a>  <q-w>end</q-w>
+<a name="120"><q-n>     120  </q-n></a><q-m>//</q-m>
+<a name="121"><q-n>     121  </q-n></a><q-m>//</q-m>
+<a name="122"><q-n>     122  </q-n></a><q-m>//</q-m>
+<a name="123"><q-n>     123  </q-n></a>  <q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="124"><q-n>     124  </q-n></a>	apb_ns = apb_cs;
+<a name="125"><q-n>     125  </q-n></a>	pprot = 0;
+<a name="126"><q-n>     126  </q-n></a>	psel = 0;
+<a name="127"><q-n>     127  </q-n></a>	invalid_psel = 0;
+<a name="128"><q-n>     128  </q-n></a>	penable = 0;
+<a name="129"><q-n>     129  </q-n></a>	pwrite = 0;
+<a name="130"><q-n>     130  </q-n></a>	pwdata = 0;
+<a name="131"><q-n>     131  </q-n></a>	pstrb = 0;
+<a name="132"><q-n>     132  </q-n></a>	set_up_phase_o = 1'b0;
+<a name="133"><q-n>     133  </q-n></a>	write_to_rd_sfifo_o = 1'b0;
+<a name="134"><q-n>     134  </q-n></a>	latch_resp_o = 1'b0;
+<a name="135"><q-n>     135  </q-n></a>	beat_cnt_incr_o = 1'b0;
+<a name="136"><q-n>     136  </q-n></a>	read_from_wd_sfifo_o = 1'b0;
+<a name="137"><q-n>     137  </q-n></a>	addr_incr_en = 1'b0;
+<a name="138"><q-n>     138  </q-n></a>	<q-m>//</q-m>
+<a name="139"><q-n>     139  </q-n></a>    <q-w>case</q-w>(apb_cs[1:0])
+<a name="140"><q-n>     140  </q-n></a>		P_IDLE: <q-w>begin</q-w>
+<a name="141"><q-n>     141  </q-n></a>			<q-w>if</q-w>(next_transfer_rdy_i) <q-w>begin</q-w>
+<a name="142"><q-n>     142  </q-n></a>				apb_ns[1:0] = SETUP;
+<a name="143"><q-n>     143  </q-n></a>			<q-w>end</q-w>
+<a name="144"><q-n>     144  </q-n></a>			<q-w>else</q-w>
+<a name="145"><q-n>     145  </q-n></a>			apb_ns[1:0] = P_IDLE;
+<a name="146"><q-n>     146  </q-n></a>		<q-w>end</q-w>
+<a name="147"><q-n>     147  </q-n></a>		SETUP: <q-w>begin</q-w>
+<a name="148"><q-n>     148  </q-n></a>			apb_ns[1:0] = ACCESS;
+<a name="149"><q-n>     149  </q-n></a>			psel = true_psel_reg;
+<a name="150"><q-n>     150  </q-n></a>			invalid_psel = false_psel_reg;
+<a name="151"><q-n>     151  </q-n></a>			penable = 1'b0;
+<a name="152"><q-n>     152  </q-n></a>			pwrite = (grant_to_write_i) ? 1'b1: 1'b0;
+<a name="153"><q-n>     153  </q-n></a>			pwdata = (grant_to_write_i) ? wdata_to_apb_i[31:0] : 32'd0;
+<a name="154"><q-n>     154  </q-n></a>		    pstrb[3:0] = (grant_to_write_i) ? wstrb_to_apb_i[3:0] : 4'h0;
+<a name="155"><q-n>     155  </q-n></a>		    	set_up_phase_o = 1'b1;
+<a name="156"><q-n>     156  </q-n></a>		<q-w>end</q-w>
+<a name="157"><q-n>     157  </q-n></a>		ACCESS: <q-w>begin</q-w>
+<a name="158"><q-n>     158  </q-n></a>			pprot[2:0] = used_prot_i;
+<a name="159"><q-n>     159  </q-n></a>			psel = true_psel_reg;
+<a name="160"><q-n>     160  </q-n></a>			invalid_psel = false_psel_reg;
+<a name="161"><q-n>     161  </q-n></a>			penable = 1'b1;
+<a name="162"><q-n>     162  </q-n></a>			pwrite = (grant_to_write_i) ? 1'b1: 1'b0;
+<a name="163"><q-n>     163  </q-n></a>			pwdata = (grant_to_write_i) ? wdata_to_apb_i[31:0] : 32'd0;
+<a name="164"><q-n>     164  </q-n></a>		    pstrb[3:0] = (grant_to_write_i) ? wstrb_to_apb_i[3:0] : 4'h0;
+<a name="165"><q-n>     165  </q-n></a>			<q-m>//</q-m>
+<a name="166"><q-n>     166  </q-n></a>			<q-w>if</q-w>(preadyX) <q-w>begin</q-w>
+<a name="167"><q-n>     167  </q-n></a>				write_to_rd_sfifo_o = 1'b1;
+<a name="168"><q-n>     168  </q-n></a>				latch_resp_o = (grant_to_write_i) ? 1'b1 : 1'b0;
+<a name="169"><q-n>     169  </q-n></a>				beat_cnt_incr_o = 1'b1;
+<a name="170"><q-n>     170  </q-n></a>				read_from_wd_sfifo_o = 1'b1;
+<a name="171"><q-n>     171  </q-n></a>				<q-m>//</q-m>
+<a name="172"><q-n>     172  </q-n></a>				<q-w>if</q-w>(next_transfer_rdy_i) <q-w>begin</q-w>
+<a name="173"><q-n>     173  </q-n></a>					apb_ns[1:0] = SETUP;
+<a name="174"><q-n>     174  </q-n></a>					addr_incr_en = 1'b1;
+<a name="175"><q-n>     175  </q-n></a>				<q-w>end</q-w>
+<a name="176"><q-n>     176  </q-n></a>				<q-w>else</q-w> <q-w>begin</q-w>
+<a name="177"><q-n>     177  </q-n></a>					apb_ns[1:0] = P_IDLE;
+<a name="178"><q-n>     178  </q-n></a>					addr_incr_en = end_of_burst_i ? 1'b0 : 1'b1;
+<a name="179"><q-n>     179  </q-n></a>				<q-w>end</q-w>
+<a name="180"><q-n>     180  </q-n></a>			<q-w>end</q-w> <q-m>//end of preadyX</q-m>
+<a name="181"><q-n>     181  </q-n></a>			<q-w>else</q-w> <q-w>begin</q-w>
+<a name="182"><q-n>     182  </q-n></a>				apb_ns[1:0] = ACCESS;
+<a name="183"><q-n>     183  </q-n></a>			<q-w>end</q-w>
+<a name="184"><q-n>     184  </q-n></a>		<q-w>end</q-w>
+<a name="185"><q-n>     185  </q-n></a>		<q-w>default</q-w>: <q-w>begin</q-w>
+<a name="186"><q-n>     186  </q-n></a>			apb_ns[1:0] = P_IDLE;
+<a name="187"><q-n>     187  </q-n></a>			pprot = 0;
+<a name="188"><q-n>     188  </q-n></a>			psel = 0;
+<a name="189"><q-n>     189  </q-n></a>			invalid_psel = 0;
+<a name="190"><q-n>     190  </q-n></a>			penable = 0;
+<a name="191"><q-n>     191  </q-n></a>			pwrite = 0;
+<a name="192"><q-n>     192  </q-n></a>			pwdata = 0;
+<a name="193"><q-n>     193  </q-n></a>			pstrb = 0;
+<a name="194"><q-n>     194  </q-n></a>			set_up_phase_o = 1'b0;
+<a name="195"><q-n>     195  </q-n></a>			write_to_rd_sfifo_o = 1'b0;
+<a name="196"><q-n>     196  </q-n></a>			latch_resp_o = 1'b0;
+<a name="197"><q-n>     197  </q-n></a>			beat_cnt_incr_o = 1'b0;
+<a name="198"><q-n>     198  </q-n></a>			read_from_wd_sfifo_o = 1'b0;
+<a name="199"><q-n>     199  </q-n></a>			addr_incr_en = 1'b0;
+<a name="200"><q-n>     200  </q-n></a>		<q-w>end</q-w>
+<a name="201"><q-n>     201  </q-n></a>	<q-w>endcase</q-w>
+<a name="202"><q-n>     202  </q-n></a>  <q-w>end</q-w>
+<a name="203"><q-n>     203  </q-n></a><q-m>//</q-m>
+<a name="204"><q-n>     204  </q-n></a><q-m>//psel register</q-m>
+<a name="205"><q-n>     205  </q-n></a><q-m>//</q-m>
+<a name="206"><q-n>     206  </q-n></a><q-w>always</q-w>@(<q-a>posedge</q-w> pclk, <q-a>negedge</q-w> preset_n) <q-w>begin</q-w>
+<a name="207"><q-n>     207  </q-n></a> <q-w>if</q-w>(~preset_n) <q-w>begin</q-w>
+<a name="208"><q-n>     208  </q-n></a>	 true_psel_reg &lt;= {`SLAVE_CNT{1'b0}};
+<a name="209"><q-n>     209  </q-n></a>	 false_psel_reg &lt;= 1'b0;
+<a name="210"><q-n>     210  </q-n></a> <q-w>end</q-w>
+<a name="211"><q-n>     211  </q-n></a> <q-w>else</q-w> <q-w>begin</q-w>
+<a name="212"><q-n>     212  </q-n></a>	 true_psel_reg &lt;= true_psel;
+<a name="213"><q-n>     213  </q-n></a>	 false_psel_reg &lt;= false_psel;
+<a name="214"><q-n>     214  </q-n></a> <q-w>end</q-w>
+<a name="215"><q-n>     215  </q-n></a><q-w>end</q-w>
+<a name="216"><q-n>     216  </q-n></a><q-m>//</q-m>
+<a name="217"><q-n>     217  </q-n></a><q-m>//paddr</q-m>
+<a name="218"><q-n>     218  </q-n></a><q-m>//</q-m>
+<a name="219"><q-n>     219  </q-n></a><q-w>always_ff</q-w> @(<q-a>posedge</q-w> pclk, <q-a>negedge</q-w> preset_n) <q-w>begin</q-w>
+<a name="220"><q-n>     220  </q-n></a><q-w>if</q-w>(~preset_n) <q-w>begin</q-w>
+<a name="221"><q-n>     221  </q-n></a>  paddr[31:0] &lt;= 32'd0;
+<a name="222"><q-n>     222  </q-n></a><q-w>end</q-w>
+<a name="223"><q-n>     223  </q-n></a><q-w>else</q-w> <q-w>begin</q-w>
+<a name="224"><q-n>     224  </q-n></a>	<q-w>if</q-w>(true_psel) <q-w>begin</q-w> <q-m>//valid_transfer</q-m>
+<a name="225"><q-n>     225  </q-n></a>		<q-w>if</q-w>(begin_transfer) paddr[31:0] &lt;= {start_addr_i[31:2], 2'b00};
+<a name="226"><q-n>     226  </q-n></a>		<q-w>else</q-w> <q-w>begin</q-w>
+<a name="227"><q-n>     227  </q-n></a>			<q-w>if</q-w>(addr_incr_en) <q-w>begin</q-w>
+<a name="228"><q-n>     228  </q-n></a>				<q-w>case</q-w>(used_burst_i[1:0])
+<a name="229"><q-n>     229  </q-n></a>				2'b00:  paddr[31:0] &lt;= paddr[31:0]; <q-m>//FIXED </q-m>
+<a name="230"><q-n>     230  </q-n></a>				2'b01:  <q-w>begin</q-w> <q-m>//INCR</q-m>
+<a name="231"><q-n>     231  </q-n></a>					paddr[31:0] &lt;= next_addr_for_incr[31:0];
+<a name="232"><q-n>     232  </q-n></a>				<q-w>end</q-w>
+<a name="233"><q-n>     233  </q-n></a>				2'b10:  <q-w>begin</q-w> <q-m>//WRAP</q-m>
+<a name="234"><q-n>     234  </q-n></a>					paddr[31:0] &lt;= next_addr_for_wrap[31:0];
+<a name="235"><q-n>     235  </q-n></a>				<q-w>end</q-w>
+<a name="236"><q-n>     236  </q-n></a>				<q-w>default</q-w>: paddr[31:0] &lt;= 32'd0;
+<a name="237"><q-n>     237  </q-n></a>				<q-w>endcase</q-w>
+<a name="238"><q-n>     238  </q-n></a>			<q-w>end</q-w> <q-m>//end of if addr_incr_en</q-m>
+<a name="239"><q-n>     239  </q-n></a>			<q-w>else</q-w> <q-w>begin</q-w>
+<a name="240"><q-n>     240  </q-n></a>				paddr[31:0] &lt;= paddr[31:0];
+<a name="241"><q-n>     241  </q-n></a>			<q-w>end</q-w>
+<a name="242"><q-n>     242  </q-n></a>		<q-w>end</q-w>
+<a name="243"><q-n>     243  </q-n></a>	<q-w>end</q-w><q-m>//end of valid_transfer</q-m>
+<a name="244"><q-n>     244  </q-n></a>	<q-w>else</q-w> <q-w>begin</q-w>
+<a name="245"><q-n>     245  </q-n></a>		paddr[31:0] &lt;= 32'd0;
+<a name="246"><q-n>     246  </q-n></a>	<q-w>end</q-w>
+<a name="247"><q-n>     247  </q-n></a><q-w>end</q-w><q-m>//end of else presetn</q-m>
+<a name="248"><q-n>     248  </q-n></a><q-w>end</q-w>
+<a name="249"><q-n>     249  </q-n></a><q-m>//</q-m>
+<a name="250"><q-n>     250  </q-n></a><q-w>assign</q-w> next_addr_for_incr[31:0] = paddr[31:0] + 3'd4;
+<a name="251"><q-n>     251  </q-n></a>    <q-m>//</q-m>
+<a name="252"><q-n>     252  </q-n></a>  <q-m>//bit_num</q-m>
+<a name="253"><q-n>     253  </q-n></a>  <q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="254"><q-n>     254  </q-n></a>    <q-w>case</q-w>(len_of_burst_i[7:0])
+<a name="255"><q-n>     255  </q-n></a>	  8'd1:  bit_num[2:0] = 3'b011;
+<a name="256"><q-n>     256  </q-n></a>	  8'd3:  bit_num[2:0] = 3'b100;
+<a name="257"><q-n>     257  </q-n></a>	  8'd7:  bit_num[2:0] = 3'b101;
+<a name="258"><q-n>     258  </q-n></a>	  8'd15: bit_num[2:0] = 3'b110;
+<a name="259"><q-n>     259  </q-n></a>	  <q-w>default</q-w>: bit_num[2:0] = 3'bx;
+<a name="260"><q-n>     260  </q-n></a>	<q-w>endcase</q-w>
+<a name="261"><q-n>     261  </q-n></a>  <q-w>end</q-w>
+<a name="262"><q-n>     262  </q-n></a>  <q-m>//bit3Addr, bit4Addr, bit5Addr, bit6Addr</q-m>
+<a name="263"><q-n>     263  </q-n></a>  <q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="264"><q-n>     264  </q-n></a>    <q-w>if</q-w>(bit_num[2:0] == 3'b011)
+<a name="265"><q-n>     265  </q-n></a>	  bit3Addr[2:0] = paddr[2:0] + 3'd4;
+<a name="266"><q-n>     266  </q-n></a>	<q-w>else</q-w>
+<a name="267"><q-n>     267  </q-n></a>	  bit3Addr[2:0] = 3'd0;
+<a name="268"><q-n>     268  </q-n></a>  <q-w>end</q-w>
+<a name="269"><q-n>     269  </q-n></a>  <q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="270"><q-n>     270  </q-n></a>    <q-w>if</q-w>(bit_num[2:0] == 3'b100)
+<a name="271"><q-n>     271  </q-n></a>	  bit4Addr[3:0] = paddr[3:0] + 3'd4;
+<a name="272"><q-n>     272  </q-n></a>	<q-w>else</q-w>
+<a name="273"><q-n>     273  </q-n></a>	  bit4Addr[3:0] = 4'd0;
+<a name="274"><q-n>     274  </q-n></a>  <q-w>end</q-w>
+<a name="275"><q-n>     275  </q-n></a>  <q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="276"><q-n>     276  </q-n></a>    <q-w>if</q-w>(bit_num[2:0] == 3'b101)
+<a name="277"><q-n>     277  </q-n></a>	  bit5Addr[4:0] = paddr[4:0] + 3'd4;
+<a name="278"><q-n>     278  </q-n></a>	<q-w>else</q-w>
+<a name="279"><q-n>     279  </q-n></a>	  bit5Addr[4:0] = 5'd0;
+<a name="280"><q-n>     280  </q-n></a>  <q-w>end</q-w>
+<a name="281"><q-n>     281  </q-n></a>  <q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="282"><q-n>     282  </q-n></a>    <q-w>if</q-w>(bit_num[2:0] == 3'b110)
+<a name="283"><q-n>     283  </q-n></a>	  bit6Addr[5:0] = paddr[5:0] + 3'd4;
+<a name="284"><q-n>     284  </q-n></a>	<q-w>else</q-w>
+<a name="285"><q-n>     285  </q-n></a>	  bit6Addr[5:0] = 6'd0;
+<a name="286"><q-n>     286  </q-n></a>  <q-w>end</q-w>
+<a name="287"><q-n>     287  </q-n></a>  <q-m>//next_addr_for_wrap</q-m>
+<a name="288"><q-n>     288  </q-n></a>  <q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="289"><q-n>     289  </q-n></a>    <q-w>case</q-w>(bit_num[2:0])
+<a name="290"><q-n>     290  </q-n></a>	  3'b011: next_addr_for_wrap[31:0] = {paddr[31:3], bit3Addr[2:0]};
+<a name="291"><q-n>     291  </q-n></a>	  3'b100: next_addr_for_wrap[31:0] = {paddr[31:4], bit4Addr[3:0]};
+<a name="292"><q-n>     292  </q-n></a>	  3'b101: next_addr_for_wrap[31:0] = {paddr[31:5], bit5Addr[4:0]};
+<a name="293"><q-n>     293  </q-n></a>	  3'b110: next_addr_for_wrap[31:0] = {paddr[31:6], bit6Addr[5:0]};
+<a name="294"><q-n>     294  </q-n></a>	  <q-w>default</q-w>: next_addr_for_wrap[31:0] = 32'bx;
+<a name="295"><q-n>     295  </q-n></a>	<q-w>endcase</q-w>
+<a name="296"><q-n>     296  </q-n></a>  <q-w>end</q-w>
+<a name="297"><q-n>     297  </q-n></a>  <q-m>//dec error register</q-m>
+<a name="298"><q-n>     298  </q-n></a>  <q-w>always_ff</q-w>@(<q-a>posedge</q-w> pclk, <q-a>negedge</q-w> preset_n) <q-w>begin</q-w>
+<a name="299"><q-n>     299  </q-n></a>	  <q-w>if</q-w>(~preset_n) dec_error_o &lt;= 1'b0;
+<a name="300"><q-n>     300  </q-n></a>	  <q-w>else</q-w> <q-w>if</q-w>(begin_transfer) dec_error_o &lt;= error_of_decoder;
+<a name="301"><q-n>     301  </q-n></a>  <q-w>end</q-w>
+<a name="302"><q-n>     302  </q-n></a>  <q-m>//</q-m>
+<a name="303"><q-n>     303  </q-n></a>RiSiEdgeDetector RiSiEdgeDetector_trans_go(
+<a name="304"><q-n>     304  </q-n></a>  .clk_i(pclk),
+<a name="305"><q-n>     305  </q-n></a>  .rstn_i(preset_n),
+<a name="306"><q-n>     306  </q-n></a>  .sign_i(trans_go_i),
+<a name="307"><q-n>     307  </q-n></a>  .red_o(begin_transfer)  
+<a name="308"><q-n>     308  </q-n></a>  <q-m>//</q-m>
+<a name="309"><q-n>     309  </q-n></a>);
+<a name="310"><q-n>     310  </q-n></a><q-m>//</q-m>
+<a name="311"><q-n>     311  </q-n></a><q-m>//DECODER </q-m>
+<a name="312"><q-n>     312  </q-n></a><q-m>//</q-m>
+<a name="313"><q-n>     313  </q-n></a>decoder decoder_inst(
+<a name="314"><q-n>     314  </q-n></a>	.start_addr_i(start_addr_i),
+<a name="315"><q-n>     315  </q-n></a>	.size_of_transfer_i(size_of_transfer_i),
+<a name="316"><q-n>     316  </q-n></a>	.used_burst_i(used_burst_i),
+<a name="317"><q-n>     317  </q-n></a>	<q-m>//</q-m>
+<a name="318"><q-n>     318  </q-n></a>	.invalid_psel_i(invalid_psel),
+<a name="319"><q-n>     319  </q-n></a>	.psel(psel),
+<a name="320"><q-n>     320  </q-n></a>	.pready(pready),
+<a name="321"><q-n>     321  </q-n></a>	.pslverr(pslverr),
+<a name="322"><q-n>     322  </q-n></a>	.prdata(prdata),
+<a name="323"><q-n>     323  </q-n></a>	<q-m>//</q-m>
+<a name="324"><q-n>     324  </q-n></a>	.preadyX_o(preadyX),
+<a name="325"><q-n>     325  </q-n></a>	.pslverrX_o(pslverrX_o),
+<a name="326"><q-n>     326  </q-n></a>	.prdataX_o(prdataX_o),
+<a name="327"><q-n>     327  </q-n></a> 	.dec_error_o(error_of_decoder),
+<a name="328"><q-n>     328  </q-n></a>	.true_psel_o(true_psel),
+<a name="329"><q-n>     329  </q-n></a>	.false_psel_o(false_psel)
+<a name="330"><q-n>     330  </q-n></a>	<q-m>//</q-m>
+<a name="331"><q-n>     331  </q-n></a>	<q-m>//</q-m>
+<a name="332"><q-n>     332  </q-n></a>	<q-m>//</q-m>
+<a name="333"><q-n>     333  </q-n></a>);
+<a name="334"><q-n>     334  </q-n></a>
+<a name="335"><q-n>     335  </q-n></a><q-w>endmodule</q-w>
+</pre>
+</tt>
+
+  
+</body>
+</html>

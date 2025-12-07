@@ -1,0 +1,89 @@
+//------------------------------------------------------
+//-- file: apb_seq.sv
+//-- class: apb_seq
+//------------------------------------------------------
+class apb_seq#(DW = 32, AW2 = 32) extends uvm_sequence;
+`uvm_object_param_utils(apb_seq#(DW, AW2))
+//
+//
+ //parameter DEPTH = 4096; //using localparam causes error 
+ //logic [31:0] mem [`SLAVE_CNT-1:0][DEPTH]; // Memory declaration
+ //logic [31:0] current_value, new_value;
+  
+
+  // Constructor
+  function new(string name="apb_seq");
+    super.new(name);
+    //
+    //
+    //for(int i =0; i < `SLAVE_CNT; i++) begin
+    //for(int k =0; k < DEPTH; k++) begin
+	    //mem[i][k] = 0;
+    //end
+    //end
+  endfunction
+    
+  // Main task body
+  virtual task body();
+    // Declare request and response items
+    apb_seq_item #(DW, AW2) rsp;
+    `uvm_info(get_type_name(), "APB SLAVE SEQUENCE body() enters!!!", UVM_LOW);
+    //
+    forever begin
+      // Create request item
+      rsp = apb_seq_item#(DW, AW2)::type_id::create("APB SLAVE RSP");
+      if (rsp == null) begin
+        `uvm_error(get_type_name(), $sformatf("Failed to create RSP item!!!"));
+      end
+      else begin //rsp_not_null
+        // Send slave request
+        start_item(rsp);
+	assert(rsp.randomize());
+        finish_item(rsp);
+	//req.print();
+	//foreach(req.psel[i]) begin
+//
+	//if(req.psel[i] && req.pwrite == 1'b1) begin
+		//current_value = 0;
+		//new_value = 0;
+		////
+		//current_value = mem[i][req.paddr[11:0]];
+		//new_value[31:24] = req.pstrb[3] ? req.pwdata[31:24] : current_value[31:24];
+		//new_value[23:16] = req.pstrb[2] ? req.pwdata[23:16] : current_value[23:16];
+		//new_value[15:08] = req.pstrb[1] ? req.pwdata[15:08] : current_value[15:08];
+		//new_value[07:00] = req.pstrb[0] ? req.pwdata[07:00] : current_value[07:00];
+		//mem[i][req.paddr[11:0]] = new_value;
+		//`uvm_info(get_type_name(), $sformatf("[REQ]: new_value = 0x%08h", new_value), UVM_LOW);
+//
+	//end
+//end //end of foreach
+//end //end of req_not_null
+	////
+	//// Create response item
+	////
+      //rsp = apb_seq_item#(DW, AW2)::type_id::create("APB SLAVE RSP");
+      //if (rsp == null) begin
+        //`uvm_error(get_type_name(), $sformatf("Failed to create RSP item!!!"));
+      //end
+      //else begin //rsp_not_null
+        //// Send slave response
+		//start_item(rsp);
+	      //rsp.copy(req);
+	////foreach(rsp.psel[i]) begin
+	////	if(rsp.psel[i]) begin
+		//`uvm_info(get_type_name(), $sformatf("[RSP RANDOMIZATION]"), UVM_LOW);
+		//assert(rsp.randomize());
+		////rsp.prdata[i] = 0; //avoid failure of X or Z randomization
+////		assert(rsp.randomize()with{
+////			if(~rsp.pwrite) rsp.prdata[i] == mem[i][rsp.paddr[11:0]];
+////			else rsp.prdata[i] == 0;
+		//}); //random value of pready and pslverr
+	////end//end of rsp.psel[i]
+	////end//end of foreach
+		//finish_item(rsp);
+	end //end of rsp_not_null
+    end //end of forever
+  endtask:body	
+      
+  endclass
+  

@@ -1,0 +1,30 @@
+QuestaSim-64 vlog 10.7c Compiler 2018.08 Aug 18 2018
+Start time: 15:42:37 on Nov 29,2025
+vlog -reportprogress 300 -work work "+define+UVM_CMDLINE_NO_DPI" "+define+UVM_REGEX_NO_DPI" "+define+UVM_NO_DPI" "+define+PRINT_TO_SUM_FILE" "+define+PRINT_TO_VIF_SVA_FILE" "+define+PRINT_TO_SVA1_FILE" "+define+CLK_CYCLE=10" "+define+SLAVE_CNT=1" "+incdir+C:/questasim64_10.7c/uvm-1.2/src" -f listfile.f -timescale 1ns/1ns -l ../SIM_RESULT/1SLAVE/vlog.log "+cover" 
+-- Compiling package parameter_pkg
+-- Compiling module RiSiEdgeDetector
+-- Compiling module sfiforeq
+-- Compiling module sfifordata
+-- Compiling module sfifowdata
+-- Compiling module axi_transaction_controller
+-- Importing package parameter_pkg
+-- Compiling module arbiter
+-- Compiling module counter
+-- Compiling module decoder
+-- Compiling module apb_master
+-- Compiling module x2p_top
+-- Compiling package tb_sv_unit
+-- Importing package uvm_pkg
+-- Importing package type_package
+-- Compiling package uvm_pkg
+-- Compiling interface axi_intf
+-- Compiling interface apb_intf
+-- Compiling package type_package
+-- Compiling module axi_cov
+-- Compiling module axi_cov_top
+-- Compiling module tb
+
+Top level modules:
+	tb
+End time: 15:42:38 on Nov 29,2025, Elapsed time: 0:00:01
+Errors: 0, Warnings: 0

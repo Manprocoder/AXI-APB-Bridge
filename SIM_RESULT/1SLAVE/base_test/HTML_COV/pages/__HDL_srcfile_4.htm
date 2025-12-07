@@ -1,0 +1,418 @@
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>Questa Coverage Report</title>
+  <link rel="StyleSheet" media="screen" href="../css/hdl2html.css"/>
+</head>
+<body id="hdl2html">
+  <tt>
+<pre>
+<a name="1"><q-n>     1  </q-n></a><q-m>//===================================================================================</q-m>
+<a name="2"><q-n>     2  </q-n></a><q-m>// File name: x2p_core.sv</q-m>
+<a name="3"><q-n>     3  </q-n></a><q-m>// Project  : X2P</q-m>
+<a name="4"><q-n>     4  </q-n></a><q-m>// Function : IP core design of AXI to APB bridge</q-m>
+<a name="5"><q-n>     5  </q-n></a><q-m>//===================================================================================</q-m>
+<a name="6"><q-n>     6  </q-n></a><q-w>module</q-w> axi_transaction_controller (<q-m>// AXI protocol</q-m>
+<a name="7"><q-n>     7  </q-n></a>    aclk,
+<a name="8"><q-n>     8  </q-n></a>    aresetn,
+<a name="9"><q-n>     9  </q-n></a>	<q-m>// Address write channel</q-m>
+<a name="10"><q-n>     10  </q-n></a>	awvalid,
+<a name="11"><q-n>     11  </q-n></a>	awready,
+<a name="12"><q-n>     12  </q-n></a>	awaddr,
+<a name="13"><q-n>     13  </q-n></a>	awsize,
+<a name="14"><q-n>     14  </q-n></a>	awlen,
+<a name="15"><q-n>     15  </q-n></a>	awburst,
+<a name="16"><q-n>     16  </q-n></a>	awid,
+<a name="17"><q-n>     17  </q-n></a>	awprot,
+<a name="18"><q-n>     18  </q-n></a>	<q-m>// Address read channel</q-m>
+<a name="19"><q-n>     19  </q-n></a>	arvalid,
+<a name="20"><q-n>     20  </q-n></a>	arready,
+<a name="21"><q-n>     21  </q-n></a>	araddr,
+<a name="22"><q-n>     22  </q-n></a>	arsize,
+<a name="23"><q-n>     23  </q-n></a>	arlen,
+<a name="24"><q-n>     24  </q-n></a>	arburst,
+<a name="25"><q-n>     25  </q-n></a>	arid,
+<a name="26"><q-n>     26  </q-n></a>	arprot,
+<a name="27"><q-n>     27  </q-n></a>	<q-m>// Write data channel</q-m>
+<a name="28"><q-n>     28  </q-n></a>	wvalid,
+<a name="29"><q-n>     29  </q-n></a>	wready,
+<a name="30"><q-n>     30  </q-n></a>	wdata,
+<a name="31"><q-n>     31  </q-n></a>	wstrb,
+<a name="32"><q-n>     32  </q-n></a>	wlast,
+<a name="33"><q-n>     33  </q-n></a>	<q-m>// Read data channel</q-m>
+<a name="34"><q-n>     34  </q-n></a>	rvalid,
+<a name="35"><q-n>     35  </q-n></a>	rready,
+<a name="36"><q-n>     36  </q-n></a>	rlast,
+<a name="37"><q-n>     37  </q-n></a>	rresp,
+<a name="38"><q-n>     38  </q-n></a>	rid,
+<a name="39"><q-n>     39  </q-n></a>	rdata,
+<a name="40"><q-n>     40  </q-n></a>	<q-m>// Write respond channel</q-m>
+<a name="41"><q-n>     41  </q-n></a>	bvalid,
+<a name="42"><q-n>     42  </q-n></a>	bready,
+<a name="43"><q-n>     43  </q-n></a>	bresp,
+<a name="44"><q-n>     44  </q-n></a>	bid,
+<a name="45"><q-n>     45  </q-n></a>	<q-m>//counter input</q-m>
+<a name="46"><q-n>     46  </q-n></a>	burst_almost_done_i,
+<a name="47"><q-n>     47  </q-n></a>	burst_done_i,
+<a name="48"><q-n>     48  </q-n></a>	<q-m>//arbiter input </q-m>
+<a name="49"><q-n>     49  </q-n></a>	grant_i,
+<a name="50"><q-n>     50  </q-n></a>	<q-m>//apb master input</q-m>
+<a name="51"><q-n>     51  </q-n></a>	prdata_i,
+<a name="52"><q-n>     52  </q-n></a>	pslverr_i,
+<a name="53"><q-n>     53  </q-n></a>	write_to_rd_sfifo_i,
+<a name="54"><q-n>     54  </q-n></a>	read_from_wd_sfifo_i,
+<a name="55"><q-n>     55  </q-n></a>	dec_error_i,
+<a name="56"><q-n>     56  </q-n></a>	latch_resp_i,
+<a name="57"><q-n>     57  </q-n></a>	<q-m>//	</q-m>
+<a name="58"><q-n>     58  </q-n></a>  selected_addr_o,
+<a name="59"><q-n>     59  </q-n></a>  selected_len_o,
+<a name="60"><q-n>     60  </q-n></a>  selected_size_o,
+<a name="61"><q-n>     61  </q-n></a>  selected_burst_o,
+<a name="62"><q-n>     62  </q-n></a>  selected_prot_o,
+<a name="63"><q-n>     63  </q-n></a>  	<q-m>//</q-m>
+<a name="64"><q-n>     64  </q-n></a>  wdata_to_apb_o,
+<a name="65"><q-n>     65  </q-n></a>  wstrb_to_apb_o,
+<a name="66"><q-n>     66  </q-n></a>  next_transfer_rdy_o,
+<a name="67"><q-n>     67  </q-n></a>  trans_go_o
+<a name="68"><q-n>     68  </q-n></a>	  <q-m>//</q-m>
+<a name="69"><q-n>     69  </q-n></a>);
+<a name="70"><q-n>     70  </q-n></a>  <q-m>//iclude parameter file</q-m>
+<a name="71"><q-n>     71  </q-n></a>  <q-w>import</q-w> parameter_pkg::*; 
+<a name="72"><q-n>     72  </q-n></a>  <q-m>//ports declaration</q-m>
+<a name="73"><q-n>     73  </q-n></a>  <q-m>//AXI protocol</q-m>
+<a name="74"><q-n>     74  </q-n></a>  <q-w>input</q-w> <q-w>logic</q-w>                     aclk;
+<a name="75"><q-n>     75  </q-n></a>  <q-w>input</q-w> <q-w>logic</q-w>                     aresetn;
+<a name="76"><q-n>     76  </q-n></a>  <q-m>// Address write channel</q-m>
+<a name="77"><q-n>     77  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w>                    awvalid;
+<a name="78"><q-n>     78  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [31:0]             awaddr;
+<a name="79"><q-n>     79  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [2:0]              awsize;
+<a name="80"><q-n>     80  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [7:0]              awlen;
+<a name="81"><q-n>     81  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [1:0]              awburst;
+<a name="82"><q-n>     82  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [7:0]              awid;
+<a name="83"><q-n>     83  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [2:0]              awprot;
+<a name="84"><q-n>     84  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w>                    awready;
+<a name="85"><q-n>     85  </q-n></a>  <q-m>// address read channel</q-m>
+<a name="86"><q-n>     86  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w>                    arvalid;
+<a name="87"><q-n>     87  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [31:0]             araddr;
+<a name="88"><q-n>     88  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [2:0]              arsize;
+<a name="89"><q-n>     89  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [7:0]              arlen;
+<a name="90"><q-n>     90  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [1:0]              arburst;
+<a name="91"><q-n>     91  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [7:0]              arid;
+<a name="92"><q-n>     92  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [2:0]              arprot;
+<a name="93"><q-n>     93  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w>                    arready;
+<a name="94"><q-n>     94  </q-n></a>  <q-m>//write data channel</q-m>
+<a name="95"><q-n>     95  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w>                    wvalid;
+<a name="96"><q-n>     96  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [31:0]             wdata;
+<a name="97"><q-n>     97  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w> [3:0]              wstrb;
+<a name="98"><q-n>     98  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w>                    wlast;
+<a name="99"><q-n>     99  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w>                    wready;
+<a name="100"><q-n>     100  </q-n></a>  <q-m>//read data channel</q-m>
+<a name="101"><q-n>     101  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w>                    rready;
+<a name="102"><q-n>     102  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w>                    rvalid;
+<a name="103"><q-n>     103  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w> [1:0]              rresp;
+<a name="104"><q-n>     104  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w>                    rlast;
+<a name="105"><q-n>     105  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w> [7:0]              rid;
+<a name="106"><q-n>     106  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w> [31:0]             rdata;
+<a name="107"><q-n>     107  </q-n></a>  <q-m>//write respond channel</q-m>
+<a name="108"><q-n>     108  </q-n></a>  <q-w>input</q-w>  <q-w>logic</q-w>                    bready;
+<a name="109"><q-n>     109  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w>                    bvalid;
+<a name="110"><q-n>     110  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w> [1:0]              bresp;
+<a name="111"><q-n>     111  </q-n></a>  <q-w>output</q-w> <q-w>logic</q-w> [7:0]              bid;
+<a name="112"><q-n>     112  </q-n></a><q-m>//counter input</q-m>
+<a name="113"><q-n>     113  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> burst_almost_done_i;
+<a name="114"><q-n>     114  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> burst_done_i;
+<a name="115"><q-n>     115  </q-n></a><q-m>//arbiter input </q-m>
+<a name="116"><q-n>     116  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> [1:0] grant_i;
+<a name="117"><q-n>     117  </q-n></a><q-m>//apb master input</q-m>
+<a name="118"><q-n>     118  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> [31:0] prdata_i;
+<a name="119"><q-n>     119  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> pslverr_i;
+<a name="120"><q-n>     120  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> write_to_rd_sfifo_i;
+<a name="121"><q-n>     121  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> read_from_wd_sfifo_i;
+<a name="122"><q-n>     122  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> dec_error_i;
+<a name="123"><q-n>     123  </q-n></a><q-w>input</q-w> <q-w>logic</q-w> latch_resp_i;
+<a name="124"><q-n>     124  </q-n></a><q-m>//	</q-m>
+<a name="125"><q-n>     125  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [31:0]  selected_addr_o;
+<a name="126"><q-n>     126  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [7:0]  selected_len_o;
+<a name="127"><q-n>     127  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [2:0]  selected_size_o;
+<a name="128"><q-n>     128  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [1:0]  selected_burst_o;
+<a name="129"><q-n>     129  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [2:0]  selected_prot_o;
+<a name="130"><q-n>     130  </q-n></a><q-m>//</q-m>
+<a name="131"><q-n>     131  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [31:0] wdata_to_apb_o;
+<a name="132"><q-n>     132  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> [3:0] wstrb_to_apb_o;
+<a name="133"><q-n>     133  </q-n></a><q-m>//</q-m>
+<a name="134"><q-n>     134  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> next_transfer_rdy_o;
+<a name="135"><q-n>     135  </q-n></a><q-w>output</q-w> <q-w>logic</q-w> trans_go_o;
+<a name="136"><q-n>     136  </q-n></a>  <q-m>//</q-m>
+<a name="137"><q-n>     137  </q-n></a>  <q-m>//internal signals</q-m>
+<a name="138"><q-n>     138  </q-n></a>  <q-m>//</q-m>
+<a name="139"><q-n>     139  </q-n></a>  <q-m>//SFIFO_AW</q-m>
+<a name="140"><q-n>     140  </q-n></a>  <q-w>logic</q-w>                           sfifo_aw_full;
+<a name="141"><q-n>     141  </q-n></a>  <q-w>logic</q-w>                           sfifo_aw_empty;
+<a name="142"><q-n>     142  </q-n></a>  <q-w>logic</q-w>                           sfifo_aw_avail;
+<a name="143"><q-n>     143  </q-n></a>  <q-w>logic</q-w>                           sfifo_aw_we;
+<a name="144"><q-n>     144  </q-n></a>  <q-w>logic</q-w>                           sfifo_aw_re;
+<a name="145"><q-n>     145  </q-n></a>  <q-w>logic</q-w> [31:0]                    sfifo_aw_addr;
+<a name="146"><q-n>     146  </q-n></a>  <q-w>logic</q-w> [7:0]                     sfifo_aw_id;
+<a name="147"><q-n>     147  </q-n></a>  <q-w>logic</q-w> [7:0]                     sfifo_aw_len;
+<a name="148"><q-n>     148  </q-n></a>  <q-w>logic</q-w> [2:0]                     sfifo_aw_size;
+<a name="149"><q-n>     149  </q-n></a>  <q-w>logic</q-w> [1:0]                     sfifo_aw_burst;
+<a name="150"><q-n>     150  </q-n></a>  <q-w>logic</q-w> [2:0]                     sfifo_aw_prot;
+<a name="151"><q-n>     151  </q-n></a>  <q-m>//SFIFO_AR</q-m>
+<a name="152"><q-n>     152  </q-n></a>  <q-w>logic</q-w>                           sfifo_ar_full;
+<a name="153"><q-n>     153  </q-n></a>  <q-w>logic</q-w>                           sfifo_ar_empty;
+<a name="154"><q-n>     154  </q-n></a>  <q-w>logic</q-w>                           sfifo_ar_avail;
+<a name="155"><q-n>     155  </q-n></a>  <q-w>logic</q-w>                           sfifo_ar_we;
+<a name="156"><q-n>     156  </q-n></a>  <q-w>logic</q-w>                           sfifo_ar_re;
+<a name="157"><q-n>     157  </q-n></a>  <q-w>logic</q-w> [31:0]                    sfifo_ar_addr;
+<a name="158"><q-n>     158  </q-n></a>  <q-w>logic</q-w> [7:0]                     sfifo_ar_id;
+<a name="159"><q-n>     159  </q-n></a>  <q-w>logic</q-w> [7:0]                     sfifo_ar_len;
+<a name="160"><q-n>     160  </q-n></a>  <q-w>logic</q-w> [2:0]                     sfifo_ar_size;
+<a name="161"><q-n>     161  </q-n></a>  <q-w>logic</q-w> [1:0]                     sfifo_ar_burst;
+<a name="162"><q-n>     162  </q-n></a>  <q-w>logic</q-w> [2:0]                     sfifo_ar_prot;
+<a name="163"><q-n>     163  </q-n></a>  <q-m>//SFIFO_WD</q-m>
+<a name="164"><q-n>     164  </q-n></a>  <q-w>logic</q-w>                           sfifo_wd_full;
+<a name="165"><q-n>     165  </q-n></a>  <q-w>logic</q-w>                           sfifo_wd_empty;
+<a name="166"><q-n>     166  </q-n></a>  <q-w>logic</q-w>                           sfifo_wd_almost_empty;
+<a name="167"><q-n>     167  </q-n></a>  <q-w>logic</q-w>                           sfifo_wd_we;
+<a name="168"><q-n>     168  </q-n></a>  <q-w>logic</q-w>                           sfifo_wd_re;
+<a name="169"><q-n>     169  </q-n></a>  <q-w>logic</q-w> [31:0]                    sfifo_wd_wdata;
+<a name="170"><q-n>     170  </q-n></a>  <q-w>logic</q-w> [3:0]                     sfifo_wd_wstrb;
+<a name="171"><q-n>     171  </q-n></a>  <q-w>logic</q-w> 			  sfifo_wd_last;
+<a name="172"><q-n>     172  </q-n></a>  <q-w>logic</q-w>	 			  wlast_flag;
+<a name="173"><q-n>     173  </q-n></a>  <q-m>//SFIFO_RD</q-m>
+<a name="174"><q-n>     174  </q-n></a>  <q-w>logic</q-w>                           sfifo_rd_almost_full;
+<a name="175"><q-n>     175  </q-n></a>  <q-w>logic</q-w>                           sfifo_rd_empty;
+<a name="176"><q-n>     176  </q-n></a>  <q-w>logic</q-w>                           sfifo_rd_we;
+<a name="177"><q-n>     177  </q-n></a>  <q-w>logic</q-w>                           sfifo_rd_re;
+<a name="178"><q-n>     178  </q-n></a>  <q-m>//RD_CH</q-m>
+<a name="179"><q-n>     179  </q-n></a>  <q-w>logic</q-w>[1:0]                      resp_of_rdata;
+<a name="180"><q-n>     180  </q-n></a>  <q-w>logic</q-w> 			  rdata_last;
+<a name="181"><q-n>     181  </q-n></a>  <q-m>//AXI FSM INPUT</q-m>
+<a name="182"><q-n>     182  </q-n></a>  <q-w>logic</q-w>                           burst_en;
+<a name="183"><q-n>     183  </q-n></a>  <q-w>logic</q-w> 			  new_req_rdy;
+<a name="184"><q-n>     184  </q-n></a>  <q-m>//AXI FSM OUTPUT</q-m>
+<a name="185"><q-n>     185  </q-n></a>  <q-w>logic</q-w> [3:0]			  control;
+<a name="186"><q-n>     186  </q-n></a>  <q-m>//WRITE RESPONSE</q-m>
+<a name="187"><q-n>     187  </q-n></a>  <q-w>logic</q-w> bresp_register;
+<a name="188"><q-n>     188  </q-n></a>  <q-m>//</q-m>
+<a name="189"><q-n>     189  </q-n></a>  <q-w>parameter</q-w> <q-w>logic</q-w> [POINTER_WIDTH:0] ALMOST_FULL_VALUE = 2**POINTER_WIDTH - 1'b1;
+<a name="190"><q-n>     190  </q-n></a>  <q-w>parameter</q-w> <q-w>logic</q-w> [POINTER_WIDTH:0] ALMOST_EMPTY_VALUE = 2**POINTER_WIDTH - 4'd14;
+<a name="191"><q-n>     191  </q-n></a>  <q-m>//axi state variables</q-m>
+<a name="192"><q-n>     192  </q-n></a>  axi_st axi_cs, axi_ns;
+<a name="193"><q-n>     193  </q-n></a>  <q-m>//***********************************************************************************</q-m>
+<a name="194"><q-n>     194  </q-n></a>  <q-m>//-----------------------OUTPUT ASSIGNMENT</q-m>
+<a name="195"><q-n>     195  </q-n></a>  <q-m>//***********************************************************************************</q-m>
+<a name="196"><q-n>     196  </q-n></a>  <q-w>assign</q-w> selected_addr_o = grant_i[0] ? sfifo_ar_addr : sfifo_aw_addr;
+<a name="197"><q-n>     197  </q-n></a>  <q-w>assign</q-w> selected_len_o = grant_i[0] ? sfifo_ar_len : sfifo_aw_len;
+<a name="198"><q-n>     198  </q-n></a>  <q-w>assign</q-w> selected_size_o = grant_i[0] ? sfifo_ar_size : sfifo_aw_size;
+<a name="199"><q-n>     199  </q-n></a>  <q-w>assign</q-w> selected_burst_o = grant_i[0] ? sfifo_ar_burst : sfifo_aw_burst;
+<a name="200"><q-n>     200  </q-n></a>  <q-w>assign</q-w> selected_prot_o = grant_i[0] ? sfifo_ar_prot : sfifo_aw_prot;
+<a name="201"><q-n>     201  </q-n></a><q-m>//transaction control signal</q-m>
+<a name="202"><q-n>     202  </q-n></a><q-w>assign</q-w> next_transfer_rdy_o = trans_go_o ? (grant_i[0] ? ~sfifo_rd_almost_full : ~sfifo_wd_almost_empty) : 1'b0;
+<a name="203"><q-n>     203  </q-n></a><q-m>//state reg</q-m>
+<a name="204"><q-n>     204  </q-n></a><q-w>always_ff</q-w>@(<q-a>posedge</q-w> aclk, <q-a>negedge</q-w> aresetn) <q-w>begin</q-w>
+<a name="205"><q-n>     205  </q-n></a>	<q-w>if</q-w>(~aresetn) axi_cs &lt;= A_IDLE;
+<a name="206"><q-n>     206  </q-n></a>	<q-w>else</q-w> axi_cs &lt;= axi_ns;
+<a name="207"><q-n>     207  </q-n></a><q-w>end</q-w>
+<a name="208"><q-n>     208  </q-n></a><q-m>//AXI state comb circuit</q-m>
+<a name="209"><q-n>     209  </q-n></a><q-w>assign</q-w> burst_en = new_req_rdy ? (grant_i[0] ? sfifo_ar_avail : sfifo_aw_avail) : 1'b0;
+<a name="210"><q-n>     210  </q-n></a><q-m>//</q-m>
+<a name="211"><q-n>     211  </q-n></a><q-m>//ready to run new request</q-m>
+<a name="212"><q-n>     212  </q-n></a><q-m>//</q-m>
+<a name="213"><q-n>     213  </q-n></a>  <q-w>always_ff</q-w>@(<q-a>posedge</q-w> aclk, <q-a>negedge</q-w> aresetn) <q-w>begin</q-w>
+<a name="214"><q-n>     214  </q-n></a>    <q-w>if</q-w>(~aresetn) new_req_rdy &lt;= 1'b1;
+<a name="215"><q-n>     215  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w>(control[0]) <q-w>begin</q-w>
+<a name="216"><q-n>     216  </q-n></a>      new_req_rdy &lt;= 1'b0;
+<a name="217"><q-n>     217  </q-n></a>    <q-w>end</q-w>
+<a name="218"><q-n>     218  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w>(control[1]) <q-w>begin</q-w>
+<a name="219"><q-n>     219  </q-n></a>      new_req_rdy &lt;= 1'b1;
+<a name="220"><q-n>     220  </q-n></a>    <q-w>end</q-w> 
+<a name="221"><q-n>     221  </q-n></a>  <q-w>end</q-w>
+<a name="222"><q-n>     222  </q-n></a><q-m>//</q-m>
+<a name="223"><q-n>     223  </q-n></a><q-m>//</q-m>
+<a name="224"><q-n>     224  </q-n></a><q-m>//</q-m>
+<a name="225"><q-n>     225  </q-n></a><q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="226"><q-n>     226  </q-n></a>  axi_ns = axi_cs;
+<a name="227"><q-n>     227  </q-n></a>  trans_go_o = 1'b0;
+<a name="228"><q-n>     228  </q-n></a>  control = 4'h0;
+<a name="229"><q-n>     229  </q-n></a>  <q-m>//</q-m>
+<a name="230"><q-n>     230  </q-n></a>  <q-w>case</q-w>(axi_cs)
+<a name="231"><q-n>     231  </q-n></a>  A_IDLE: <q-w>begin</q-w>
+<a name="232"><q-n>     232  </q-n></a>	  <q-w>if</q-w>(burst_en) <q-w>begin</q-w>
+<a name="233"><q-n>     233  </q-n></a>		  axi_ns = AXI_GO;
+<a name="234"><q-n>     234  </q-n></a>		  control = 4'h1;
+<a name="235"><q-n>     235  </q-n></a>	  <q-w>end</q-w>
+<a name="236"><q-n>     236  </q-n></a>	  <q-w>else</q-w> <q-w>begin</q-w>
+<a name="237"><q-n>     237  </q-n></a>		  axi_ns = A_IDLE;
+<a name="238"><q-n>     238  </q-n></a>		  control = 4'h0;
+<a name="239"><q-n>     239  </q-n></a>	  <q-w>end</q-w>
+<a name="240"><q-n>     240  </q-n></a>  <q-w>end</q-w>
+<a name="241"><q-n>     241  </q-n></a>  AXI_GO: <q-w>begin</q-w>
+<a name="242"><q-n>     242  </q-n></a>	<q-w>if</q-w>(burst_almost_done_i) axi_ns = AXI_DONE;
+<a name="243"><q-n>     243  </q-n></a>	<q-w>else</q-w> axi_ns = AXI_GO;
+<a name="244"><q-n>     244  </q-n></a>	<q-m>//</q-m>
+<a name="245"><q-n>     245  </q-n></a>	trans_go_o = 1'b1;
+<a name="246"><q-n>     246  </q-n></a>  <q-w>end</q-w>
+<a name="247"><q-n>     247  </q-n></a>  AXI_DONE: <q-w>begin</q-w>
+<a name="248"><q-n>     248  </q-n></a>	  <q-w>if</q-w>(burst_done_i) <q-w>begin</q-w>
+<a name="249"><q-n>     249  </q-n></a>		  axi_ns = A_IDLE;
+<a name="250"><q-n>     250  </q-n></a>		  control = 4'hE;
+<a name="251"><q-n>     251  </q-n></a>	  <q-w>end</q-w>
+<a name="252"><q-n>     252  </q-n></a>	  <q-w>else</q-w> axi_ns = AXI_DONE;
+<a name="253"><q-n>     253  </q-n></a>  <q-w>end</q-w>
+<a name="254"><q-n>     254  </q-n></a>  <q-w>default</q-w>: <q-w>begin</q-w>
+<a name="255"><q-n>     255  </q-n></a>	  axi_ns = axi_cs;
+<a name="256"><q-n>     256  </q-n></a>	  trans_go_o = 1'b0;
+<a name="257"><q-n>     257  </q-n></a>	  control = 4'h0;
+<a name="258"><q-n>     258  </q-n></a>  <q-w>end</q-w>
+<a name="259"><q-n>     259  </q-n></a>  <q-w>endcase</q-w>
+<a name="260"><q-n>     260  </q-n></a><q-w>end</q-w>
+<a name="261"><q-n>     261  </q-n></a><q-m>//*******************************************************************</q-m>
+<a name="262"><q-n>     262  </q-n></a><q-m>//X2P_SFIFO_AR</q-m>
+<a name="263"><q-n>     263  </q-n></a><q-m>//*******************************************************************</q-m>
+<a name="264"><q-n>     264  </q-n></a>  sfiforeq #(
+<a name="265"><q-n>     265  </q-n></a>	.DATA_WIDTH(X2P_SFIFO_AR_DATA_WIDTH),
+<a name="266"><q-n>     266  </q-n></a>       	.POINTER_WIDTH(POINTER_WIDTH)
+<a name="267"><q-n>     267  </q-n></a>  ) ar_sfifo (
+<a name="268"><q-n>     268  </q-n></a>  .clk(aclk),
+<a name="269"><q-n>     269  </q-n></a>  .rst_n(aresetn),
+<a name="270"><q-n>     270  </q-n></a>  .wr(sfifo_ar_we),
+<a name="271"><q-n>     271  </q-n></a>  .rd(sfifo_ar_re),
+<a name="272"><q-n>     272  </q-n></a>  .data_in({araddr[31:0], arid[7:0], arlen[7:0], arsize[2:0], arburst[1:0], arprot[2:0]}),
+<a name="273"><q-n>     273  </q-n></a>  .sfifo_empty(sfifo_ar_empty),
+<a name="274"><q-n>     274  </q-n></a>  .sfifo_full(sfifo_ar_full),
+<a name="275"><q-n>     275  </q-n></a>  .data_out({sfifo_ar_addr[31:0], sfifo_ar_id[7:0], sfifo_ar_len[7:0], 
+<a name="276"><q-n>     276  </q-n></a>	  sfifo_ar_size[2:0], sfifo_ar_burst[1:0], sfifo_ar_prot[2:0]})
+<a name="277"><q-n>     277  </q-n></a>  <q-m>//</q-m>
+<a name="278"><q-n>     278  </q-n></a>  <q-m>//</q-m>
+<a name="279"><q-n>     279  </q-n></a>  );
+<a name="280"><q-n>     280  </q-n></a>  <q-m>//Logic</q-m>
+<a name="281"><q-n>     281  </q-n></a>  <q-w>assign</q-w> sfifo_ar_avail = ~sfifo_ar_empty;
+<a name="282"><q-n>     282  </q-n></a>  <q-w>assign</q-w> arready  	= ~sfifo_ar_full;
+<a name="283"><q-n>     283  </q-n></a>  <q-w>assign</q-w> sfifo_ar_we 	= arready &amp; arvalid;
+<a name="284"><q-n>     284  </q-n></a>  <q-w>assign</q-w> sfifo_ar_re 	= control[2] &amp; grant_i[0];
+<a name="285"><q-n>     285  </q-n></a>  <q-m>//*******************************************************************</q-m>
+<a name="286"><q-n>     286  </q-n></a>  <q-m>//X2P_SFIFO_RD</q-m>
+<a name="287"><q-n>     287  </q-n></a>  <q-m>//*******************************************************************</q-m>
+<a name="288"><q-n>     288  </q-n></a>  sfifordata #(
+<a name="289"><q-n>     289  </q-n></a>	.DATA_WIDTH(X2P_SFIFO_RD_DATA_WIDTH), .POINTER_WIDTH(POINTER_WIDTH),
+<a name="290"><q-n>     290  </q-n></a>	.ALMOST_FULL_VALUE(ALMOST_FULL_VALUE), .ALMOST_EMPTY_VALUE(ALMOST_EMPTY_VALUE)
+<a name="291"><q-n>     291  </q-n></a>) rd_sfifo(
+<a name="292"><q-n>     292  </q-n></a>  .clk(aclk),
+<a name="293"><q-n>     293  </q-n></a>  .rst_n(aresetn),
+<a name="294"><q-n>     294  </q-n></a>  .wr(sfifo_rd_we),
+<a name="295"><q-n>     295  </q-n></a>  .rd(sfifo_rd_re),
+<a name="296"><q-n>     296  </q-n></a>  .data_in({control[2], prdata_i[31:0], resp_of_rdata[1:0], sfifo_ar_id[7:0]}),
+<a name="297"><q-n>     297  </q-n></a>  .sfifo_empty(sfifo_rd_empty),
+<a name="298"><q-n>     298  </q-n></a>  .sfifo_almost_full(sfifo_rd_almost_full),
+<a name="299"><q-n>     299  </q-n></a>  .data_out({rdata_last, rdata[31:0], rresp[1:0], rid[7:0]})
+<a name="300"><q-n>     300  </q-n></a>  );
+<a name="301"><q-n>     301  </q-n></a>  <q-m>//Logic</q-m>
+<a name="302"><q-n>     302  </q-n></a>  <q-w>assign</q-w> rvalid      = ~sfifo_rd_empty;
+<a name="303"><q-n>     303  </q-n></a>  <q-w>assign</q-w> sfifo_rd_re = rvalid &amp; rready;
+<a name="304"><q-n>     304  </q-n></a>  <q-w>assign</q-w> sfifo_rd_we = write_to_rd_sfifo_i;
+<a name="305"><q-n>     305  </q-n></a>  <q-m>//RD_CH</q-m>
+<a name="306"><q-n>     306  </q-n></a>  <q-m>//resp_of_rdata</q-m>
+<a name="307"><q-n>     307  </q-n></a>  <q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="308"><q-n>     308  </q-n></a>    <q-w>if</q-w>(~pslverr_i)
+<a name="309"><q-n>     309  </q-n></a>	  resp_of_rdata = OKAY;
+<a name="310"><q-n>     310  </q-n></a>	<q-w>else</q-w> <q-w>if</q-w>(dec_error_i)
+<a name="311"><q-n>     311  </q-n></a>	  resp_of_rdata = DECERR;
+<a name="312"><q-n>     312  </q-n></a>	<q-w>else</q-w>
+<a name="313"><q-n>     313  </q-n></a>	  resp_of_rdata = PSLVERR;
+<a name="314"><q-n>     314  </q-n></a>  <q-w>end</q-w>
+<a name="315"><q-n>     315  </q-n></a>  <q-m>//rlast</q-m>
+<a name="316"><q-n>     316  </q-n></a>  <q-w>always_comb</q-w> <q-w>begin</q-w>
+<a name="317"><q-n>     317  </q-n></a>	<q-w>if</q-w>(rvalid &amp; rdata_last)
+<a name="318"><q-n>     318  </q-n></a>	  rlast = 1'b1;
+<a name="319"><q-n>     319  </q-n></a>	<q-w>else</q-w>
+<a name="320"><q-n>     320  </q-n></a>	  rlast = 1'b0;	
+<a name="321"><q-n>     321  </q-n></a>  <q-w>end</q-w>
+<a name="322"><q-n>     322  </q-n></a>  <q-m>//*******************************************************************</q-m>
+<a name="323"><q-n>     323  </q-n></a>  <q-m>//X2P_SFIFO_AW</q-m>
+<a name="324"><q-n>     324  </q-n></a>  <q-m>//*******************************************************************</q-m>
+<a name="325"><q-n>     325  </q-n></a>  sfiforeq #(
+<a name="326"><q-n>     326  </q-n></a>	  .DATA_WIDTH(X2P_SFIFO_AW_DATA_WIDTH),
+<a name="327"><q-n>     327  </q-n></a>	  .POINTER_WIDTH(POINTER_WIDTH)
+<a name="328"><q-n>     328  </q-n></a>) aw_sfifo(
+<a name="329"><q-n>     329  </q-n></a>  .clk(aclk),
+<a name="330"><q-n>     330  </q-n></a>  .rst_n(aresetn),
+<a name="331"><q-n>     331  </q-n></a>  .wr(sfifo_aw_we),
+<a name="332"><q-n>     332  </q-n></a>  .rd(sfifo_aw_re),
+<a name="333"><q-n>     333  </q-n></a>  .data_in({awaddr[31:0], awid[7:0], awlen[7:0], awsize[2:0], awburst[1:0], awprot[2:0]}),
+<a name="334"><q-n>     334  </q-n></a>  .sfifo_empty(sfifo_aw_empty),
+<a name="335"><q-n>     335  </q-n></a>  .sfifo_full(sfifo_aw_full),
+<a name="336"><q-n>     336  </q-n></a>  .data_out({sfifo_aw_addr[31:0], sfifo_aw_id[7:0], sfifo_aw_len[7:0],
+<a name="337"><q-n>     337  </q-n></a> 	 sfifo_aw_size[2:0], sfifo_aw_burst[1:0], sfifo_aw_prot[2:0]})
+<a name="338"><q-n>     338  </q-n></a>  );
+<a name="339"><q-n>     339  </q-n></a>  <q-m>//Logic</q-m>
+<a name="340"><q-n>     340  </q-n></a>  <q-w>assign</q-w> sfifo_aw_avail = ~sfifo_aw_empty;
+<a name="341"><q-n>     341  </q-n></a>  <q-w>assign</q-w> awready 	= ~sfifo_aw_full;
+<a name="342"><q-n>     342  </q-n></a>  <q-w>assign</q-w> sfifo_aw_we    = awready &amp; awvalid;
+<a name="343"><q-n>     343  </q-n></a>  <q-w>assign</q-w> sfifo_aw_re    = control[3] &amp; grant_i[1];
+<a name="344"><q-n>     344  </q-n></a>  <q-m>//*******************************************************************</q-m>
+<a name="345"><q-n>     345  </q-n></a>  <q-m>//X2P_SFIFO_WD</q-m>
+<a name="346"><q-n>     346  </q-n></a>  <q-m>//*******************************************************************</q-m>
+<a name="347"><q-n>     347  </q-n></a>  sfifowdata #(
+<a name="348"><q-n>     348  </q-n></a>	.DATA_WIDTH(X2P_SFIFO_WD_DATA_WIDTH), .POINTER_WIDTH(POINTER_WIDTH),
+<a name="349"><q-n>     349  </q-n></a>	.ALMOST_FULL_VALUE(ALMOST_FULL_VALUE), .ALMOST_EMPTY_VALUE(ALMOST_EMPTY_VALUE)
+<a name="350"><q-n>     350  </q-n></a>  ) wd_sfifo(
+<a name="351"><q-n>     351  </q-n></a>  .clk(aclk),
+<a name="352"><q-n>     352  </q-n></a>  .rst_n(aresetn),
+<a name="353"><q-n>     353  </q-n></a>  .wr(sfifo_wd_we),
+<a name="354"><q-n>     354  </q-n></a>  .rd(sfifo_wd_re),
+<a name="355"><q-n>     355  </q-n></a>  .data_in({wdata[31:0], wstrb[3:0], wlast}),
+<a name="356"><q-n>     356  </q-n></a>  .sfifo_almost_empty(sfifo_wd_almost_empty),
+<a name="357"><q-n>     357  </q-n></a>  .sfifo_full(sfifo_wd_full),
+<a name="358"><q-n>     358  </q-n></a>  .data_out({wdata_to_apb_o[31:0], wstrb_to_apb_o[3:0], wlast_flag})
+<a name="359"><q-n>     359  </q-n></a>  );
+<a name="360"><q-n>     360  </q-n></a><q-m>//logic</q-m>
+<a name="361"><q-n>     361  </q-n></a><q-w>assign</q-w> wready      = ~sfifo_wd_full;
+<a name="362"><q-n>     362  </q-n></a><q-w>assign</q-w> sfifo_wd_we = wvalid &amp; wready;
+<a name="363"><q-n>     363  </q-n></a><q-w>assign</q-w> sfifo_wd_re = grant_i[1] &amp; read_from_wd_sfifo_i;
+<a name="364"><q-n>     364  </q-n></a><q-m>//</q-m>
+<a name="365"><q-n>     365  </q-n></a><q-m>//B CHANNEL</q-m>
+<a name="366"><q-n>     366  </q-n></a><q-m>//</q-m>
+<a name="367"><q-n>     367  </q-n></a><q-m>//bresp register</q-m>
+<a name="368"><q-n>     368  </q-n></a><q-m>//</q-m>
+<a name="369"><q-n>     369  </q-n></a><q-w>always_ff</q-w>@(<q-a>posedge</q-w> aclk, <q-a>negedge</q-w> aresetn) <q-w>begin</q-w>
+<a name="370"><q-n>     370  </q-n></a>  <q-w>if</q-w>(~aresetn) bresp_register &lt;= 1'b0;
+<a name="371"><q-n>     371  </q-n></a>  <q-w>else</q-w> <q-w>if</q-w>(control[1]) bresp_register &lt;= 1'b0; 
+<a name="372"><q-n>     372  </q-n></a>  <q-w>else</q-w> <q-w>if</q-w>(latch_resp_i) bresp_register &lt;= pslverr_i;
+<a name="373"><q-n>     373  </q-n></a><q-w>end</q-w>
+<a name="374"><q-n>     374  </q-n></a><q-m>//</q-m>
+<a name="375"><q-n>     375  </q-n></a><q-m>//INFO</q-m>
+<a name="376"><q-n>     376  </q-n></a><q-m>//</q-m>
+<a name="377"><q-n>     377  </q-n></a><q-w>always_ff</q-w> @(<q-a>posedge</q-w> aclk, <q-a>negedge</q-w> aresetn) <q-w>begin</q-w>
+<a name="378"><q-n>     378  </q-n></a>	<q-w>if</q-w>(~aresetn) <q-w>begin</q-w>
+<a name="379"><q-n>     379  </q-n></a>	  bresp[1:0] &lt;= OKAY;
+<a name="380"><q-n>     380  </q-n></a>	  bid[7:0] &lt;= 8'd0;
+<a name="381"><q-n>     381  </q-n></a>	  bvalid &lt;= 1'b0;
+<a name="382"><q-n>     382  </q-n></a>  	<q-w>end</q-w>
+<a name="383"><q-n>     383  </q-n></a>	<q-w>else</q-w> <q-w>if</q-w>(control[1] &amp; grant_i[1]) <q-w>begin</q-w>
+<a name="384"><q-n>     384  </q-n></a>		  bid[7:0] &lt;= sfifo_aw_id[7:0];
+<a name="385"><q-n>     385  </q-n></a>		  bvalid &lt;= 1'b1;
+<a name="386"><q-n>     386  </q-n></a>		  <q-m>//</q-m>
+<a name="387"><q-n>     387  </q-n></a>		  <q-w>if</q-w>(~bresp_register | ~pslverr_i)
+<a name="388"><q-n>     388  </q-n></a>		    bresp[1:0] &lt;= OKAY | ~{2{wlast_flag}};
+<a name="389"><q-n>     389  </q-n></a>		  <q-w>else</q-w> <q-w>if</q-w>(dec_error_i)
+<a name="390"><q-n>     390  </q-n></a>		    bresp[1:0] &lt;= DECERR;
+<a name="391"><q-n>     391  </q-n></a>		  <q-w>else</q-w>
+<a name="392"><q-n>     392  </q-n></a>		    bresp[1:0] &lt;= PSLVERR;
+<a name="393"><q-n>     393  </q-n></a>	<q-w>end</q-w>
+<a name="394"><q-n>     394  </q-n></a>	<q-w>else</q-w> <q-w>if</q-w>(bready) <q-w>begin</q-w>
+<a name="395"><q-n>     395  </q-n></a>	  bresp[1:0] &lt;= OKAY;
+<a name="396"><q-n>     396  </q-n></a>	  bid[7:0] &lt;= 8'd0;
+<a name="397"><q-n>     397  </q-n></a>	  bvalid &lt;= 1'b0;
+<a name="398"><q-n>     398  </q-n></a>	<q-w>end</q-w>
+<a name="399"><q-n>     399  </q-n></a><q-w>end</q-w>
+<a name="400"><q-n>     400  </q-n></a><q-m>//</q-m>
+<a name="401"><q-n>     401  </q-n></a><q-m>//</q-m>
+<a name="402"><q-n>     402  </q-n></a><q-w>endmodule</q-w>: axi_transaction_controller 
+</pre>
+</tt>
+
+  
+</body>
+</html>

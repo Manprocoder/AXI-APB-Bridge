@@ -1,0 +1,458 @@
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>Questa Coverage Report</title>
+  <link rel="StyleSheet" media="screen" href="../css/hdl2html.css"/>
+</head>
+<body id="hdl2html">
+  <tt>
+<pre>
+<a name="1"><q-n>     1  </q-n></a><q-m>//</q-m>
+<a name="2"><q-n>     2  </q-n></a><q-m>//</q-m>
+<a name="3"><q-n>     3  </q-n></a><q-m>//</q-m>
+<a name="4"><q-n>     4  </q-n></a><q-w>interface</q-w> axi_intf(<q-w>input</q-w> <q-w>logic</q-w> aclk);
+<a name="5"><q-n>     5  </q-n></a>  <q-w>parameter</q-w> DW = 32;
+<a name="6"><q-n>     6  </q-n></a>  <q-w>parameter</q-w> AW1 = 32;
+<a name="7"><q-n>     7  </q-n></a>  <q-m>//axi address channel</q-m>
+<a name="8"><q-n>     8  </q-n></a>  <q-w>logic</q-w> aresetn;
+<a name="9"><q-n>     9  </q-n></a>  <q-w>logic</q-w> awvalid;
+<a name="10"><q-n>     10  </q-n></a>  <q-w>logic</q-w> [7:0] awid;
+<a name="11"><q-n>     11  </q-n></a>  <q-w>logic</q-w> [7:0] awlen;
+<a name="12"><q-n>     12  </q-n></a>  <q-w>logic</q-w> [1:0] awburst;
+<a name="13"><q-n>     13  </q-n></a>  <q-w>logic</q-w> [2:0] awsize;
+<a name="14"><q-n>     14  </q-n></a>  <q-w>logic</q-w> [AW1-1:0] awaddr;
+<a name="15"><q-n>     15  </q-n></a>  <q-w>logic</q-w> awready;
+<a name="16"><q-n>     16  </q-n></a>  <q-w>logic</q-w> [2:0] awprot;
+<a name="17"><q-n>     17  </q-n></a>
+<a name="18"><q-n>     18  </q-n></a>  <q-m>//axi write data channel</q-m>
+<a name="19"><q-n>     19  </q-n></a>  <q-w>logic</q-w> [DW-1:0] wdata;
+<a name="20"><q-n>     20  </q-n></a>  <q-w>logic</q-w> [3:0] wstrb;
+<a name="21"><q-n>     21  </q-n></a>  <q-w>logic</q-w> wvalid;
+<a name="22"><q-n>     22  </q-n></a>  <q-w>logic</q-w> wlast;
+<a name="23"><q-n>     23  </q-n></a>  <q-w>logic</q-w> wready;
+<a name="24"><q-n>     24  </q-n></a>
+<a name="25"><q-n>     25  </q-n></a>  <q-m>//axi write response channel</q-m>
+<a name="26"><q-n>     26  </q-n></a>  <q-w>logic</q-w> [7:0] bid;
+<a name="27"><q-n>     27  </q-n></a>  <q-w>logic</q-w> [1:0] bresp;
+<a name="28"><q-n>     28  </q-n></a>  <q-w>logic</q-w> bvalid;
+<a name="29"><q-n>     29  </q-n></a>  <q-w>logic</q-w> bready;
+<a name="30"><q-n>     30  </q-n></a>
+<a name="31"><q-n>     31  </q-n></a>  <q-m>//axi read address channel</q-m>
+<a name="32"><q-n>     32  </q-n></a>  <q-w>logic</q-w> arvalid;
+<a name="33"><q-n>     33  </q-n></a>  <q-w>logic</q-w> [7:0] arid;
+<a name="34"><q-n>     34  </q-n></a>  <q-w>logic</q-w> [7:0] arlen;
+<a name="35"><q-n>     35  </q-n></a>  <q-w>logic</q-w> [1:0] arburst;
+<a name="36"><q-n>     36  </q-n></a>  <q-w>logic</q-w> [2:0] arsize;
+<a name="37"><q-n>     37  </q-n></a>  <q-w>logic</q-w> [AW1-1:0] araddr;
+<a name="38"><q-n>     38  </q-n></a>  <q-w>logic</q-w> arready;
+<a name="39"><q-n>     39  </q-n></a>  <q-w>logic</q-w> [2:0] arprot;
+<a name="40"><q-n>     40  </q-n></a>
+<a name="41"><q-n>     41  </q-n></a>  <q-m>//axi read data channel</q-m>
+<a name="42"><q-n>     42  </q-n></a>  <q-w>logic</q-w> [7:0] rid;
+<a name="43"><q-n>     43  </q-n></a>  <q-w>logic</q-w> [DW-1:0] rdata;
+<a name="44"><q-n>     44  </q-n></a>  <q-w>logic</q-w> rvalid;
+<a name="45"><q-n>     45  </q-n></a>  <q-w>logic</q-w> rlast;
+<a name="46"><q-n>     46  </q-n></a>  <q-w>logic</q-w> rready;
+<a name="47"><q-n>     47  </q-n></a>  <q-w>logic</q-w> [1:0] rresp;
+<a name="48"><q-n>     48  </q-n></a><q-m>//AXI driver</q-m>
+<a name="49"><q-n>     49  </q-n></a><q-w>clocking</q-w> m_drv_cb @(<q-a>posedge</q-w> aclk);
+<a name="50"><q-n>     50  </q-n></a> <q-m>// default input #1 output #1;</q-m>
+<a name="51"><q-n>     51  </q-n></a>  <q-w>input</q-w> awready, wready, bid, bresp, bvalid, arready, rdata, rid, rvalid, rlast, rresp;
+<a name="52"><q-n>     52  </q-n></a>  <q-w>output</q-w> awvalid, awid, awlen, awburst, awsize, awaddr, awprot, wdata, wstrb, wvalid, wlast,bready, 
+<a name="53"><q-n>     53  </q-n></a>          arvalid, arid, arlen, arburst, arsize, araddr, arprot, rready;
+<a name="54"><q-n>     54  </q-n></a><q-w>endclocking</q-w>
+<a name="55"><q-n>     55  </q-n></a>
+<a name="56"><q-n>     56  </q-n></a>  <q-m>//AXI monitor</q-m>
+<a name="57"><q-n>     57  </q-n></a><q-w>clocking</q-w> m_mon_cb @(<q-a>posedge</q-w> aclk);
+<a name="58"><q-n>     58  </q-n></a>  <q-m>//default input #1;</q-m>
+<a name="59"><q-n>     59  </q-n></a>  <q-w>input</q-w> awready, wready, bid, bresp, bvalid, arready, rdata, rid, rvalid, rlast, rresp,
+<a name="60"><q-n>     60  </q-n></a>        awvalid, awid, awlen, awburst, awsize, awaddr, wdata, wvalid, wstrb, wlast,bready, 
+<a name="61"><q-n>     61  </q-n></a>        arvalid, arid, arlen, arburst, arsize, araddr, rready;
+<a name="62"><q-n>     62  </q-n></a><q-w>endclocking</q-w>
+<a name="63"><q-n>     63  </q-n></a>  <q-m>//</q-m>
+<a name="64"><q-n>     64  </q-n></a>  <q-m>//open file</q-m>
+<a name="65"><q-n>     65  </q-n></a>  `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="66"><q-n>     66  </q-n></a>	  <q-w>string</q-w> test_case;
+<a name="67"><q-n>     67  </q-n></a>  <q-w>string</q-w> sim_result_path;
+<a name="68"><q-n>     68  </q-n></a>  <q-w>int</q-w> axi_log_file;
+<a name="69"><q-n>     69  </q-n></a>  <q-m>//</q-m>
+<a name="70"><q-n>     70  </q-n></a>  <q-w>initial</q-w> <q-w>begin</q-w>
+<a name="71"><q-n>     71  </q-n></a>    <q-m>//</q-m>
+<a name="72"><q-n>     72  </q-n></a>    <q-w>if</q-w> (!$value$plusargs(<q-l>"UVM_TESTNAME=%s"</q-l>, test_case)) <q-w>begin</q-w>
+<a name="73"><q-n>     73  </q-n></a>      test_case = <q-l>"DEFAULT"</q-l>;
+<a name="74"><q-n>     74  </q-n></a>    <q-w>end</q-w>
+<a name="75"><q-n>     75  </q-n></a>    $sformat(sim_result_path, <q-l>"../SIM_RESULT/%0dSLAVE/%s"</q-l>, `SLAVE_CNT, test_case);
+<a name="76"><q-n>     76  </q-n></a>    axi_log_file = $fopen($sformatf(<q-l>"%s/VIF_SVA/axi_error.log"</q-l>, sim_result_path), <q-l>"a"</q-l>); <q-m>// "w" = overwrite, "a" = append</q-m>
+<a name="77"><q-n>     77  </q-n></a>    <q-w>if</q-w>(axi_log_file == 0) <q-w>begin</q-w>
+<a name="78"><q-n>     78  </q-n></a>      $display(<q-l>"ERROR: Could not open axi_error.log"</q-l>);
+<a name="79"><q-n>     79  </q-n></a>    <q-w>end</q-w>
+<a name="80"><q-n>     80  </q-n></a>  <q-w>end</q-w>
+<a name="81"><q-n>     81  </q-n></a>  `<q-a>endif</q-w>
+<a name="82"><q-n>     82  </q-n></a>  <q-m>//</q-m>
+<a name="83"><q-n>     83  </q-n></a>  <q-w>task</q-w> wait_for_reset();
+<a name="84"><q-n>     84  </q-n></a>    <q-w>wait</q-w>(aresetn == 1'b0);
+<a name="85"><q-n>     85  </q-n></a>  <q-w>endtask</q-w>
+<a name="86"><q-n>     86  </q-n></a>  <q-m>//</q-m>
+<a name="87"><q-n>     87  </q-n></a>  <q-w>task</q-w> wait_RisingEdge_reset();
+<a name="88"><q-n>     88  </q-n></a>    @(<q-a>posedge</q-w> aresetn);
+<a name="89"><q-n>     89  </q-n></a>  <q-w>endtask</q-w>
+<a name="90"><q-n>     90  </q-n></a>  <q-m>//</q-m>
+<a name="91"><q-n>     91  </q-n></a>  <q-w>task</q-w> wait_FallingEdge_reset();
+<a name="92"><q-n>     92  </q-n></a>    @(<q-a>negedge</q-w> aresetn);
+<a name="93"><q-n>     93  </q-n></a>  <q-w>endtask</q-w>
+<a name="94"><q-n>     94  </q-n></a>  <q-m>//</q-m>
+<a name="95"><q-n>     95  </q-n></a>  <q-w>function</q-w> <q-w>logic</q-w> aresetn_value();
+<a name="96"><q-n>     96  </q-n></a>    <q-w>return</q-w> aresetn;
+<a name="97"><q-n>     97  </q-n></a>  <q-w>endfunction</q-w>
+<a name="98"><q-n>     98  </q-n></a>  <q-m>//</q-m>
+<a name="99"><q-n>     99  </q-n></a>  <q-m>//CRITICAL NOTE: as using @(m_mon_cb), we must use m_mon_cb."signal" otherwise missed signal will occur</q-m>
+<a name="100"><q-n>     100  </q-n></a>  <q-m>//--obviously bvalid &amp;&amp; bready -&gt; false</q-m>
+<a name="101"><q-n>     101  </q-n></a>  <q-m>//</q-m>
+<a name="102"><q-n>     102  </q-n></a>  <q-w>task</q-w> one_write_req_done();
+<a name="103"><q-n>     103  </q-n></a>    <q-m>// @(posedge aclk iff bvalid &amp;&amp; bready);</q-m>
+<a name="104"><q-n>     104  </q-n></a>    @(m_mon_cb <q-w>iff</q-w> m_mon_cb.bvalid &amp;&amp; m_mon_cb.bready);
+<a name="105"><q-n>     105  </q-n></a>  <q-w>endtask</q-w>
+<a name="106"><q-n>     106  </q-n></a>  <q-m>//</q-m>
+<a name="107"><q-n>     107  </q-n></a>  <q-w>task</q-w> one_read_req_done();
+<a name="108"><q-n>     108  </q-n></a>    <q-m>// @(posedge aclk iff (rvalid &amp; rlast &amp; rready));</q-m>
+<a name="109"><q-n>     109  </q-n></a>    @(m_mon_cb <q-w>iff</q-w> (m_mon_cb.rvalid &amp;&amp; m_mon_cb.rlast &amp;&amp; m_mon_cb.rready)); 
+<a name="110"><q-n>     110  </q-n></a>  <q-w>endtask</q-w>
+<a name="111"><q-n>     111  </q-n></a>  <q-m>//****************************************************************************************************</q-m>
+<a name="112"><q-n>     112  </q-n></a>  <q-m>//-------------------------------------AXI PROTOCOL SVA</q-m>
+<a name="113"><q-n>     113  </q-n></a>  <q-m>//****************************************************************************************************</q-m>
+<a name="114"><q-n>     114  </q-n></a>
+<a name="115"><q-n>     115  </q-n></a>  <q-m>//(0.1) REQ RESET ASSERTION</q-m>
+<a name="116"><q-n>     116  </q-n></a>  <q-m>//DEFINE</q-m>
+<a name="117"><q-n>     117  </q-n></a>  <q-w>property</q-w> reset_all_reqsignal;
+<a name="118"><q-n>     118  </q-n></a>	@(<q-a>posedge</q-w> aclk)
+<a name="119"><q-n>     119  </q-n></a>	(!aresetn) |=&gt; (awvalid == 0 &amp;&amp; arvalid == 0 &amp;&amp; awready == 1 &amp;&amp; arready == 1);
+<a name="120"><q-n>     120  </q-n></a>  <q-w>endproperty</q-w>
+<a name="121"><q-n>     121  </q-n></a>  <q-m>//DO</q-m>
+<a name="122"><q-n>     122  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (reset_all_reqsignal)
+<a name="123"><q-n>     123  </q-n></a>  <q-w>else</q-w> <q-w>begin</q-w>
+<a name="124"><q-n>     124  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="125"><q-n>     125  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[RESET_REQSIGNAL][%0t ns]: All req signals are not properly reset!!!"</q-l>, $<q-w>time</q-w>);
+<a name="126"><q-n>     126  </q-n></a>    `<q-w>else</q-w>
+<a name="127"><q-n>     127  </q-n></a>    $<q-v>error</q-w>(<q-l>"[RESET_REQSIGNAL]: All req signals are not properly reset!!!"</q-l>);
+<a name="128"><q-n>     128  </q-n></a>    `<q-a>endif</q-w>
+<a name="129"><q-n>     129  </q-n></a>  <q-w>end</q-w>
+<a name="130"><q-n>     130  </q-n></a>  <q-m>//(0.2) DATA RESET ASSERTION</q-m>
+<a name="131"><q-n>     131  </q-n></a>  <q-m>//DEFINE</q-m>
+<a name="132"><q-n>     132  </q-n></a>  <q-w>property</q-w> reset_all_datasignal;
+<a name="133"><q-n>     133  </q-n></a>	@(<q-a>posedge</q-w> aclk)
+<a name="134"><q-n>     134  </q-n></a>	(!aresetn) |=&gt; (wvalid == 0 &amp;&amp; rvalid == 0 &amp;&amp; wlast == 0 &amp;&amp; rlast == 0 &amp;&amp; wready == 1 &amp;&amp; rready == 0);
+<a name="135"><q-n>     135  </q-n></a>  <q-w>endproperty</q-w>
+<a name="136"><q-n>     136  </q-n></a>  <q-m>//DO</q-m>
+<a name="137"><q-n>     137  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (reset_all_datasignal)
+<a name="138"><q-n>     138  </q-n></a>  <q-w>else</q-w> <q-w>begin</q-w>
+<a name="139"><q-n>     139  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="140"><q-n>     140  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[RESET_DATASIGNAL][%0t ns]: All data signals are not properly reset!!!"</q-l>, $<q-w>time</q-w>);
+<a name="141"><q-n>     141  </q-n></a>    `<q-w>else</q-w> 
+<a name="142"><q-n>     142  </q-n></a>    $<q-v>error</q-w>(<q-l>"[RESET_DATASIGNAL]: All data signals are not properly reset!!!"</q-l>);
+<a name="143"><q-n>     143  </q-n></a>    `<q-a>endif</q-w>
+<a name="144"><q-n>     144  </q-n></a>  <q-w>end</q-w>
+<a name="145"><q-n>     145  </q-n></a>  <q-m>//(0.3) RESP RESET ASSERTION</q-m>
+<a name="146"><q-n>     146  </q-n></a>  <q-m>//DEFINE</q-m>
+<a name="147"><q-n>     147  </q-n></a>  <q-w>property</q-w> reset_all_respsignal;
+<a name="148"><q-n>     148  </q-n></a>	@(<q-a>posedge</q-w> aclk)
+<a name="149"><q-n>     149  </q-n></a>	(!aresetn) |=&gt; (bvalid == 0 &amp;&amp; bready == 0 &amp;&amp; bresp == 0);
+<a name="150"><q-n>     150  </q-n></a>  <q-w>endproperty</q-w>
+<a name="151"><q-n>     151  </q-n></a>  <q-m>//DO</q-m>
+<a name="152"><q-n>     152  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (reset_all_respsignal)
+<a name="153"><q-n>     153  </q-n></a>  <q-w>else</q-w> <q-w>begin</q-w>
+<a name="154"><q-n>     154  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="155"><q-n>     155  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[RESET_RESPSIGNAL][%0t ns]: All resp signals are not properly reset!!!"</q-l>, $<q-w>time</q-w>);
+<a name="156"><q-n>     156  </q-n></a>    `<q-w>else</q-w>
+<a name="157"><q-n>     157  </q-n></a>    $<q-v>error</q-w>(<q-l>"[RESET_RESPSIGNAL]: All resp signals are not properly reset!!!"</q-l>);
+<a name="158"><q-n>     158  </q-n></a>    `<q-a>endif</q-w> 
+<a name="159"><q-n>     159  </q-n></a>  <q-w>end</q-w>
+<a name="160"><q-n>     160  </q-n></a>  <q-m>//**************************************************************************************************</q-m>
+<a name="161"><q-n>     161  </q-n></a>  <q-m>//*************************************ASSERTION WITH RESET = 1*************************************</q-m>
+<a name="162"><q-n>     162  </q-n></a>  <q-m>//(1)</q-m>
+<a name="163"><q-n>     163  </q-n></a>  <q-m>//DEFINE</q-m>
+<a name="164"><q-n>     164  </q-n></a>  <q-w>property</q-w> aw_handshake;
+<a name="165"><q-n>     165  </q-n></a>    @(<q-a>posedge</q-w> aclk) <q-w>disable</q-w> <q-w>iff</q-w> (!aresetn)
+<a name="166"><q-n>     166  </q-n></a>      awvalid |-&gt; strong(awvalid[*1:$] <q-w>intersect</q-w> awready[-&gt;1]);
+<a name="167"><q-n>     167  </q-n></a>  <q-w>endproperty</q-w>
+<a name="168"><q-n>     168  </q-n></a>  <q-m>//DO</q-m>
+<a name="169"><q-n>     169  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (aw_handshake)
+<a name="170"><q-n>     170  </q-n></a>  <q-w>else</q-w> <q-w>begin</q-w>
+<a name="171"><q-n>     171  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="172"><q-n>     172  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[AW_HANDSHAKE][%0t ns]: There is no handshake in AW channel!!!"</q-l>, $<q-w>time</q-w>);
+<a name="173"><q-n>     173  </q-n></a>    `<q-w>else</q-w>
+<a name="174"><q-n>     174  </q-n></a>    $<q-v>error</q-w>(<q-l>"[AW_HANDSHAKE]: There is no handshake in AW channel!!!"</q-l>);
+<a name="175"><q-n>     175  </q-n></a>    `<q-a>endif</q-w>
+<a name="176"><q-n>     176  </q-n></a>  <q-w>end</q-w>
+<a name="177"><q-n>     177  </q-n></a>
+<a name="178"><q-n>     178  </q-n></a>  <q-m>//***************************************REUSABLE ASSERTION*************************************</q-m>
+<a name="179"><q-n>     179  </q-n></a>  <q-m>//define start_of_burst sequence for future reusability</q-m>
+<a name="180"><q-n>     180  </q-n></a>  <q-m>//</q-m>
+<a name="181"><q-n>     181  </q-n></a><q-m>//sequence start_of_burst(valid, ready, last);</q-m>
+<a name="182"><q-n>     182  </q-n></a>   <q-m>//$rose(valid &amp;&amp; ready &amp;&amp; !last);</q-m>
+<a name="183"><q-n>     183  </q-n></a><q-m>//endsequence</q-m>
+<a name="184"><q-n>     184  </q-n></a>  <q-m>//***************************************W CHANNEL ASSERTION*************************************</q-m>
+<a name="185"><q-n>     185  </q-n></a>  <q-m>//(2)</q-m>
+<a name="186"><q-n>     186  </q-n></a>  <q-m>//2.1</q-m>
+<a name="187"><q-n>     187  </q-n></a>  <q-m>//DEFINE</q-m>
+<a name="188"><q-n>     188  </q-n></a>  <q-w>property</q-w> w_handshake;
+<a name="189"><q-n>     189  </q-n></a>    @(<q-a>posedge</q-w> aclk) <q-w>disable</q-w> <q-w>iff</q-w> (!aresetn)
+<a name="190"><q-n>     190  </q-n></a>      wvalid |-&gt; strong(wvalid[*1:$] <q-w>intersect</q-w> wready[-&gt;1]);
+<a name="191"><q-n>     191  </q-n></a>  <q-w>endproperty</q-w>
+<a name="192"><q-n>     192  </q-n></a>  <q-m>//DO</q-m>
+<a name="193"><q-n>     193  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (w_handshake)
+<a name="194"><q-n>     194  </q-n></a>  <q-w>else</q-w> <q-w>begin</q-w>
+<a name="195"><q-n>     195  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="196"><q-n>     196  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[W_HANDSHAKE][%0t ns]: There is no handshake in W channel!!!"</q-l>, $<q-w>time</q-w>);
+<a name="197"><q-n>     197  </q-n></a>    `<q-w>else</q-w>
+<a name="198"><q-n>     198  </q-n></a>    $<q-v>error</q-w>(<q-l>"[W_HANDSHAKE]: There is no handshake in W channel!!!"</q-l>);
+<a name="199"><q-n>     199  </q-n></a>    `<q-a>endif</q-w>
+<a name="200"><q-n>     200  </q-n></a>  <q-w>end</q-w>
+<a name="201"><q-n>     201  </q-n></a>  <q-m>////2.2</q-m>
+<a name="202"><q-n>     202  </q-n></a>  <q-m>////DEFINE</q-m>
+<a name="203"><q-n>     203  </q-n></a>  <q-m>//property full_wdata;</q-m>
+<a name="204"><q-n>     204  </q-n></a>	<q-m>//@(posedge aclk) disable iff (!aresetn)</q-m>
+<a name="205"><q-n>     205  </q-n></a>	 <q-m>//start_of_burst(wvalid, wready, wlast) |-&gt; (wvalid &amp; wready)[=1:255] ##1 (wvalid &amp; wlast);</q-m>
+<a name="206"><q-n>     206  </q-n></a>	 <q-m>////using non-consecutive operator "=1:255" =&gt; wvalid &amp; wlast could be</q-m>
+<a name="207"><q-n>     207  </q-n></a>	 <q-m>////active at any moment in the future</q-m>
+<a name="208"><q-n>     208  </q-n></a>  <q-m>//endproperty</q-m>
+<a name="209"><q-n>     209  </q-n></a>  <q-m>////DO</q-m>
+<a name="210"><q-n>     210  </q-n></a>  <q-m>//assert property (full_wdata)</q-m>
+<a name="211"><q-n>     211  </q-n></a>  <q-m>//else begin</q-m>
+<a name="212"><q-n>     212  </q-n></a>    <q-m>//`ifdef PRINT_TO_VIF_SVA_FILE</q-m>
+<a name="213"><q-n>     213  </q-n></a>    <q-m>//$fdisplay(axi_log_file, "[FULL_WDATA][%0t ns]: There is no complete transaction in W channel!!!", $time);</q-m>
+<a name="214"><q-n>     214  </q-n></a>    <q-m>//`else</q-m>
+<a name="215"><q-n>     215  </q-n></a>    <q-m>//$error("[FULL_WDATA]: There is no complete transaction in W channel!!!");</q-m>
+<a name="216"><q-n>     216  </q-n></a>    <q-m>//`endif</q-m>
+<a name="217"><q-n>     217  </q-n></a>  <q-m>//end</q-m>
+<a name="218"><q-n>     218  </q-n></a>  <q-m>//(3)</q-m>
+<a name="219"><q-n>     219  </q-n></a>  <q-m>//DEFINE</q-m>
+<a name="220"><q-n>     220  </q-n></a>  <q-w>property</q-w> b_handshake;
+<a name="221"><q-n>     221  </q-n></a>    @(<q-a>posedge</q-w> aclk) <q-w>disable</q-w> <q-w>iff</q-w> (!aresetn)
+<a name="222"><q-n>     222  </q-n></a>    	bvalid |-&gt; <q-w>first_match</q-w>(bvalid[*1:$] ##0 bready);
+<a name="223"><q-n>     223  </q-n></a>      <q-m>//$rose(bvalid) |-&gt; strong(bvalid[*1:$] intersect bready[-&gt;1]);</q-m>
+<a name="224"><q-n>     224  </q-n></a>  <q-w>endproperty</q-w>
+<a name="225"><q-n>     225  </q-n></a>  <q-m>//DO</q-m>
+<a name="226"><q-n>     226  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (b_handshake)
+<a name="227"><q-n>     227  </q-n></a>  <q-w>else</q-w> <q-w>begin</q-w>
+<a name="228"><q-n>     228  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="229"><q-n>     229  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[B_HANDSHAKE][%0t ns]: There is no handshake in B channel!!!"</q-l>, $<q-w>time</q-w>);
+<a name="230"><q-n>     230  </q-n></a>    `<q-w>else</q-w>
+<a name="231"><q-n>     231  </q-n></a>    $<q-v>error</q-w>(<q-l>"[B_HANDSHAKE]: There is no handshake in B channel!!!"</q-l>);
+<a name="232"><q-n>     232  </q-n></a>    `<q-a>endif</q-w>
+<a name="233"><q-n>     233  </q-n></a>  <q-w>end</q-w>
+<a name="234"><q-n>     234  </q-n></a>  <q-m>//**************************************************************************************</q-m>
+<a name="235"><q-n>     235  </q-n></a>  <q-m>//----------------------------READ SVA HANDLE</q-m>
+<a name="236"><q-n>     236  </q-n></a>  <q-m>//**************************************************************************************</q-m>
+<a name="237"><q-n>     237  </q-n></a>  <q-m>//(1)</q-m>
+<a name="238"><q-n>     238  </q-n></a>  <q-m>//DEFINE</q-m>
+<a name="239"><q-n>     239  </q-n></a>  <q-w>property</q-w> ar_handshake;
+<a name="240"><q-n>     240  </q-n></a>    @(<q-a>posedge</q-w> aclk) <q-w>disable</q-w> <q-w>iff</q-w> (!aresetn)
+<a name="241"><q-n>     241  </q-n></a>  	arvalid |-&gt; strong(arvalid[*1:$] <q-w>intersect</q-w> arready[-&gt;1]);
+<a name="242"><q-n>     242  </q-n></a>  <q-w>endproperty</q-w>
+<a name="243"><q-n>     243  </q-n></a>  <q-m>//DO</q-m>
+<a name="244"><q-n>     244  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (ar_handshake)
+<a name="245"><q-n>     245  </q-n></a>  <q-w>else</q-w> <q-w>begin</q-w>
+<a name="246"><q-n>     246  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="247"><q-n>     247  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[AR_HANDSHAKE][%0t ns]: There is no handshake in AR channel!!!"</q-l>, $<q-w>time</q-w>);
+<a name="248"><q-n>     248  </q-n></a>    `<q-w>else</q-w>
+<a name="249"><q-n>     249  </q-n></a>    $<q-v>error</q-w>(<q-l>"[AR_HANDSHAKE]: There is no handshake in AR channel!!!"</q-l>);
+<a name="250"><q-n>     250  </q-n></a>    `<q-a>endif</q-w>
+<a name="251"><q-n>     251  </q-n></a>  <q-w>end</q-w>
+<a name="252"><q-n>     252  </q-n></a>  <q-m>//2</q-m>
+<a name="253"><q-n>     253  </q-n></a>  <q-m>//***************************************R CHANNEL ASSERTION*************************************</q-m>
+<a name="254"><q-n>     254  </q-n></a>  <q-m>//(2.1)</q-m>
+<a name="255"><q-n>     255  </q-n></a>  <q-m>//DEFINE</q-m>
+<a name="256"><q-n>     256  </q-n></a>  <q-w>property</q-w> r_handshake;
+<a name="257"><q-n>     257  </q-n></a>    @(<q-a>posedge</q-w> aclk) <q-w>disable</q-w> <q-w>iff</q-w> (!aresetn)
+<a name="258"><q-n>     258  </q-n></a>      rvalid |-&gt; strong(rvalid[*1:$] <q-w>intersect</q-w> rready[-&gt;1]);
+<a name="259"><q-n>     259  </q-n></a>  <q-w>endproperty</q-w>
+<a name="260"><q-n>     260  </q-n></a>  <q-m>//DO</q-m>
+<a name="261"><q-n>     261  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (r_handshake)
+<a name="262"><q-n>     262  </q-n></a>  <q-w>else</q-w> <q-w>begin</q-w>
+<a name="263"><q-n>     263  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="264"><q-n>     264  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[R_HANDSHAKE][%0t ns]: There is no handshake in R channel!!!"</q-l>, $<q-w>time</q-w>);
+<a name="265"><q-n>     265  </q-n></a>    `<q-w>else</q-w>
+<a name="266"><q-n>     266  </q-n></a>    $<q-v>error</q-w>(<q-l>"[R_HANDSHAKE]: There is no handshake in R channel!!!"</q-l>);
+<a name="267"><q-n>     267  </q-n></a>    `<q-a>endif</q-w>
+<a name="268"><q-n>     268  </q-n></a>  <q-w>end</q-w>
+<a name="269"><q-n>     269  </q-n></a>
+<a name="270"><q-n>     270  </q-n></a>  <q-m>//2.2</q-m>
+<a name="271"><q-n>     271  </q-n></a>
+<a name="272"><q-n>     272  </q-n></a>  <q-m>////DEFINE</q-m>
+<a name="273"><q-n>     273  </q-n></a>  <q-m>//property full_rdata;</q-m>
+<a name="274"><q-n>     274  </q-n></a>	<q-m>//@(posedge aclk) disable iff (!aresetn)</q-m>
+<a name="275"><q-n>     275  </q-n></a>	<q-m>//start_of_burst(rvalid, rready, rlast) |-&gt; (rvalid &amp; rready)[=1:255] ##1 (rvalid &amp; rlast);</q-m>
+<a name="276"><q-n>     276  </q-n></a>  <q-m>//endproperty</q-m>
+<a name="277"><q-n>     277  </q-n></a>  <q-m>////DO</q-m>
+<a name="278"><q-n>     278  </q-n></a>  <q-m>//assert property (full_rdata) </q-m>
+<a name="279"><q-n>     279  </q-n></a>  <q-m>//else begin</q-m>
+<a name="280"><q-n>     280  </q-n></a>    <q-m>//`ifdef PRINT_TO_VIF_SVA_FILE</q-m>
+<a name="281"><q-n>     281  </q-n></a>    <q-m>//$fdisplay(axi_log_file, "[FULL_RDATA][%0t ns]: There is NO complete transaction in R channel!!!", $time);</q-m>
+<a name="282"><q-n>     282  </q-n></a>    <q-m>//`else</q-m>
+<a name="283"><q-n>     283  </q-n></a>    <q-m>//$error("[FULL_RDATA]: There is no complete transaction in R channel!!!");</q-m>
+<a name="284"><q-n>     284  </q-n></a>    <q-m>//`endif</q-m>
+<a name="285"><q-n>     285  </q-n></a>  <q-m>//end   </q-m>
+<a name="286"><q-n>     286  </q-n></a>
+<a name="287"><q-n>     287  </q-n></a>  <q-m>//</q-m>
+<a name="288"><q-n>     288  </q-n></a>  <q-m>//close file</q-m>
+<a name="289"><q-n>     289  </q-n></a>  <q-m>//</q-m>
+<a name="290"><q-n>     290  </q-n></a>  `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="291"><q-n>     291  </q-n></a>  <q-w>final</q-w> <q-w>begin</q-w>
+<a name="292"><q-n>     292  </q-n></a>    <q-w>if</q-w>(axi_log_file == 1) <q-w>begin</q-w>
+<a name="293"><q-n>     293  </q-n></a>     $fclose(axi_log_file);
+<a name="294"><q-n>     294  </q-n></a>    <q-w>end</q-w>
+<a name="295"><q-n>     295  </q-n></a>  <q-w>end</q-w>
+<a name="296"><q-n>     296  </q-n></a>  `<q-a>endif</q-w>
+<a name="297"><q-n>     297  </q-n></a><q-w>endinterface</q-w>
+<a name="298"><q-n>     298  </q-n></a>
+<a name="299"><q-n>     299  </q-n></a>
+<a name="300"><q-n>     300  </q-n></a><q-m>//</q-m>
+<a name="301"><q-n>     301  </q-n></a><q-w>interface</q-w> apb_intf (<q-w>input</q-w> <q-w>logic</q-w> pclk);
+<a name="302"><q-n>     302  </q-n></a><q-w>parameter</q-w> DW = 32;
+<a name="303"><q-n>     303  </q-n></a><q-w>parameter</q-w> AW2 = 32;
+<a name="304"><q-n>     304  </q-n></a><q-m>//apb channel</q-m>
+<a name="305"><q-n>     305  </q-n></a>  <q-w>logic</q-w> presetn;
+<a name="306"><q-n>     306  </q-n></a>  <q-w>logic</q-w> [`SLAVE_CNT-1:0] psel;
+<a name="307"><q-n>     307  </q-n></a>  <q-w>logic</q-w> penable;
+<a name="308"><q-n>     308  </q-n></a>  <q-w>logic</q-w> pwrite;
+<a name="309"><q-n>     309  </q-n></a>  <q-w>logic</q-w> [2:0] pprot;
+<a name="310"><q-n>     310  </q-n></a>  <q-w>logic</q-w> [3:0] pstrb;
+<a name="311"><q-n>     311  </q-n></a>  <q-w>logic</q-w> [AW2-1:0] paddr;
+<a name="312"><q-n>     312  </q-n></a>  <q-w>logic</q-w> [DW-1:0] pwdata;
+<a name="313"><q-n>     313  </q-n></a>  <q-w>logic</q-w> [`SLAVE_CNT-1:0][DW-1:0] prdata;
+<a name="314"><q-n>     314  </q-n></a>  <q-w>logic</q-w> [`SLAVE_CNT-1:0] pready;
+<a name="315"><q-n>     315  </q-n></a>  <q-w>logic</q-w> [`SLAVE_CNT-1:0] pslverr;
+<a name="316"><q-n>     316  </q-n></a>  <q-m>//</q-m>
+<a name="317"><q-n>     317  </q-n></a>  <q-m>//</q-m>
+<a name="318"><q-n>     318  </q-n></a>  <q-m>//Open file for logging</q-m>
+<a name="319"><q-n>     319  </q-n></a>  <q-m>//</q-m>
+<a name="320"><q-n>     320  </q-n></a>  `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="321"><q-n>     321  </q-n></a>	  <q-w>string</q-w> test_case;
+<a name="322"><q-n>     322  </q-n></a>  <q-w>string</q-w> sim_result_path; 
+<a name="323"><q-n>     323  </q-n></a>  <q-w>integer</q-w> apb_log_fh;
+<a name="324"><q-n>     324  </q-n></a>  <q-w>initial</q-w> <q-w>begin</q-w>
+<a name="325"><q-n>     325  </q-n></a>    <q-w>if</q-w> (!$value$plusargs(<q-l>"UVM_TESTNAME=%s"</q-l>, test_case)) <q-w>begin</q-w>
+<a name="326"><q-n>     326  </q-n></a>      test_case = <q-l>"DEFAULT"</q-l>;
+<a name="327"><q-n>     327  </q-n></a>    <q-w>end</q-w>
+<a name="328"><q-n>     328  </q-n></a>    $sformat(sim_result_path, <q-l>"../SIM_RESULT/%0dSLAVE/%s"</q-l>, `SLAVE_CNT, test_case);
+<a name="329"><q-n>     329  </q-n></a>    apb_log_fh = $fopen($sformatf(<q-l>"%s/VIF_SVA/apb_error.log"</q-l>, sim_result_path), <q-l>"a"</q-l>); <q-m>// "w" = overwrite, "a" = append</q-m>
+<a name="330"><q-n>     330  </q-n></a>    <q-w>if</q-w> (apb_log_fh == 0) <q-w>begin</q-w>
+<a name="331"><q-n>     331  </q-n></a>      $display(<q-l>"ERROR: Could not open apb_error.log!!!"</q-l>);
+<a name="332"><q-n>     332  </q-n></a>    <q-w>end</q-w>
+<a name="333"><q-n>     333  </q-n></a>  <q-w>end</q-w>
+<a name="334"><q-n>     334  </q-n></a>  `<q-a>endif</q-w>
+<a name="335"><q-n>     335  </q-n></a>  <q-m>// =====================================</q-m>
+<a name="336"><q-n>     336  </q-n></a>  <q-m>// SVA Protocol Checks</q-m>
+<a name="337"><q-n>     337  </q-n></a>  <q-m>// =====================================</q-m>
+<a name="338"><q-n>     338  </q-n></a>  <q-w>genvar</q-w> i;
+<a name="339"><q-n>     339  </q-n></a>    <q-w>generate</q-w>;
+<a name="340"><q-n>     340  </q-n></a>    <q-w>for</q-w>(i = 0; i &lt; `SLAVE_CNT; i++) <q-w>begin</q-w> : apb_slave_checks
+<a name="341"><q-n>     341  </q-n></a>      <q-m>//(1)</q-m>
+<a name="342"><q-n>     342  </q-n></a>      <q-w>property</q-w> psel_onehot;
+<a name="343"><q-n>     343  </q-n></a>        @(<q-a>posedge</q-w> pclk) <q-w>disable</q-w> <q-w>iff</q-w> (!presetn)
+<a name="344"><q-n>     344  </q-n></a>          $<q-v>onehot0</q-w>(psel);
+<a name="345"><q-n>     345  </q-n></a>      <q-w>endproperty</q-w>
+<a name="346"><q-n>     346  </q-n></a>      <q-w>assert</q-w> <q-w>property</q-w> (psel_onehot)
+<a name="347"><q-n>     347  </q-n></a>      <q-w>else</q-w> <q-w>begin</q-w>
+<a name="348"><q-n>     348  </q-n></a>        `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="349"><q-n>     349  </q-n></a>        $fdisplay(apb_log_fh, <q-l>"PSEL_SVA: multiple slaves selected at the same time!!! Value = %0b @time=%0t ns"</q-l>, psel, $<q-w>time</q-w>);
+<a name="350"><q-n>     350  </q-n></a>        `<q-w>else</q-w>
+<a name="351"><q-n>     351  </q-n></a>        $<q-v>error</q-w>(<q-l>"PSEL_SVA: multiple slaves selected at the same time!!! Value = %0b"</q-l>, psel);
+<a name="352"><q-n>     352  </q-n></a>        `<q-a>endif</q-w>
+<a name="353"><q-n>     353  </q-n></a>      <q-w>end</q-w>
+<a name="354"><q-n>     354  </q-n></a>      <q-m>//reset all signals</q-m>
+<a name="355"><q-n>     355  </q-n></a>      <q-m>//DEFINE</q-m>
+<a name="356"><q-n>     356  </q-n></a>      <q-w>property</q-w> reset_all_signals;
+<a name="357"><q-n>     357  </q-n></a>        @(<q-a>posedge</q-w> pclk) <q-w>disable</q-w> <q-w>iff</q-w> (!presetn)
+<a name="358"><q-n>     358  </q-n></a>        (presetn == 0) |=&gt; (psel == 0 &amp;&amp; penable == 0 &amp;&amp; paddr == 0);
+<a name="359"><q-n>     359  </q-n></a>      <q-w>endproperty</q-w>
+<a name="360"><q-n>     360  </q-n></a>      <q-m>//DO</q-m>
+<a name="361"><q-n>     361  </q-n></a>      <q-w>assert</q-w> <q-w>property</q-w> (reset_all_signals)
+<a name="362"><q-n>     362  </q-n></a>      <q-w>else</q-w> <q-w>begin</q-w>
+<a name="363"><q-n>     363  </q-n></a>        `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="364"><q-n>     364  </q-n></a>        $fdisplay(apb_log_fh, <q-l>"[RESEL_ALL_SIGNALS]: all APB signals are not properly reset!!! @time=%0t ns"</q-l>, $<q-w>time</q-w>);
+<a name="365"><q-n>     365  </q-n></a>        `<q-w>else</q-w>
+<a name="366"><q-n>     366  </q-n></a>        $<q-v>error</q-w>(<q-l>"[RESEL_ALL_SIGNALS]: all APB signals are not properly reset!!!"</q-l>);
+<a name="367"><q-n>     367  </q-n></a>        `<q-a>endif</q-w>
+<a name="368"><q-n>     368  </q-n></a>      <q-w>end</q-w>
+<a name="369"><q-n>     369  </q-n></a>      <q-m>//</q-m>
+<a name="370"><q-n>     370  </q-n></a>      <q-m>//(2)</q-m>
+<a name="371"><q-n>     371  </q-n></a>      <q-m>// access_phase: if psel[i] and !penable, then penable must go high next cycle</q-m>
+<a name="372"><q-n>     372  </q-n></a>      <q-w>property</q-w> access_phase;
+<a name="373"><q-n>     373  </q-n></a>        @(<q-a>posedge</q-w> pclk) <q-w>disable</q-w> <q-w>iff</q-w> (!presetn)
+<a name="374"><q-n>     374  </q-n></a>          (psel[i] &amp;&amp; !penable) |=&gt; penable;
+<a name="375"><q-n>     375  </q-n></a>      <q-w>endproperty</q-w>
+<a name="376"><q-n>     376  </q-n></a>      <q-w>assert</q-w> <q-w>property</q-w>(access_phase)
+<a name="377"><q-n>     377  </q-n></a>      <q-w>else</q-w> <q-w>begin</q-w>
+<a name="378"><q-n>     378  </q-n></a>        `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="379"><q-n>     379  </q-n></a>        $fdisplay(apb_log_fh, $sformatf(<q-l>"APB_SVA[%0d]: penable not asserted in ACCESS phase @time=%0t ns"</q-l>, i, $<q-w>time</q-w>));
+<a name="380"><q-n>     380  </q-n></a>        `<q-w>else</q-w>
+<a name="381"><q-n>     381  </q-n></a>        $<q-v>error</q-w>(<q-l>"APB[%0d]: penable not asserted in ACCESS phase"</q-l>, i);
+<a name="382"><q-n>     382  </q-n></a>        `<q-a>endif</q-w>
+<a name="383"><q-n>     383  </q-n></a>      <q-w>end</q-w>
+<a name="384"><q-n>     384  </q-n></a>      <q-m>//</q-m>
+<a name="385"><q-n>     385  </q-n></a>      <q-m>//(3)</q-m>
+<a name="386"><q-n>     386  </q-n></a>      <q-m>// Transfer Completion only when pready[i] is asserted</q-m>
+<a name="387"><q-n>     387  </q-n></a>      <q-m>//DEFINE</q-m>
+<a name="388"><q-n>     388  </q-n></a>      <q-w>property</q-w> complete_with_pready;
+<a name="389"><q-n>     389  </q-n></a>        @(<q-a>posedge</q-w> pclk) <q-w>disable</q-w> <q-w>iff</q-w> (!presetn)
+<a name="390"><q-n>     390  </q-n></a>          (psel[i] &amp;&amp; penable &amp;&amp; ~pready[i]) |=&gt; penable;
+<a name="391"><q-n>     391  </q-n></a>      <q-w>endproperty</q-w>
+<a name="392"><q-n>     392  </q-n></a>      <q-m>//DO</q-m>
+<a name="393"><q-n>     393  </q-n></a>      <q-w>assert</q-w> <q-w>property</q-w>(complete_with_pready)
+<a name="394"><q-n>     394  </q-n></a>      <q-w>else</q-w> <q-w>begin</q-w>
+<a name="395"><q-n>     395  </q-n></a>        `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="396"><q-n>     396  </q-n></a>        $fdisplay(apb_log_fh, $sformatf(<q-l>"APB_SVA[%0d]: Transfer ended without pready @time=%0t ns"</q-l>, i, $<q-w>time</q-w>));
+<a name="397"><q-n>     397  </q-n></a>        `<q-w>else</q-w>
+<a name="398"><q-n>     398  </q-n></a>        $<q-v>error</q-w>(<q-l>"APB_SVA[%0d]: Transfer ended without pready"</q-l>, i);
+<a name="399"><q-n>     399  </q-n></a>        `<q-a>endif</q-w>
+<a name="400"><q-n>     400  </q-n></a>      <q-w>end</q-w>
+<a name="401"><q-n>     401  </q-n></a>      <q-m>//</q-m>
+<a name="402"><q-n>     402  </q-n></a>      <q-m>//(4)</q-m>
+<a name="403"><q-n>     403  </q-n></a>      <q-m>//</q-m>
+<a name="404"><q-n>     404  </q-n></a>      <q-m>//DEFINE</q-m>
+<a name="405"><q-n>     405  </q-n></a>      <q-w>property</q-w> penable_deassert;
+<a name="406"><q-n>     406  </q-n></a>        @(<q-a>posedge</q-w> pclk) <q-w>disable</q-w> <q-w>iff</q-w> (!presetn)
+<a name="407"><q-n>     407  </q-n></a>          (psel[i] &amp;&amp; penable &amp;&amp; pready[i]) |=&gt; !penable;
+<a name="408"><q-n>     408  </q-n></a>      <q-w>endproperty</q-w>
+<a name="409"><q-n>     409  </q-n></a>      <q-m>//DO</q-m>
+<a name="410"><q-n>     410  </q-n></a>      <q-w>assert</q-w> <q-w>property</q-w>(penable_deassert)
+<a name="411"><q-n>     411  </q-n></a>      <q-w>else</q-w> <q-w>begin</q-w>
+<a name="412"><q-n>     412  </q-n></a>        `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="413"><q-n>     413  </q-n></a>        $fdisplay(apb_log_fh, $sformatf(<q-l>"APB_SVA[%0d]: Penable also ASSERT as pready is high @time=%0t ns"</q-l>, i, $<q-w>time</q-w>));
+<a name="414"><q-n>     414  </q-n></a>        `<q-w>else</q-w>
+<a name="415"><q-n>     415  </q-n></a>        $<q-v>error</q-w>(<q-l>"APB[%0d]: Penable also ASSERT as pready is high"</q-l>, i);
+<a name="416"><q-n>     416  </q-n></a>        `<q-a>endif</q-w>
+<a name="417"><q-n>     417  </q-n></a>      <q-w>end</q-w>
+<a name="418"><q-n>     418  </q-n></a>    <q-w>end</q-w>
+<a name="419"><q-n>     419  </q-n></a>  <q-w>endgenerate</q-w>
+<a name="420"><q-n>     420  </q-n></a>  <q-w>clocking</q-w> s_drv_cb @(<q-a>posedge</q-w> pclk);
+<a name="421"><q-n>     421  </q-n></a>      <q-w>input</q-w> psel, penable, pwrite, pstrb, paddr, pwdata, pprot;
+<a name="422"><q-n>     422  </q-n></a>      <q-w>output</q-w> prdata, pready, pslverr;
+<a name="423"><q-n>     423  </q-n></a>  <q-w>endclocking</q-w>
+<a name="424"><q-n>     424  </q-n></a>
+<a name="425"><q-n>     425  </q-n></a>  <q-m>//</q-m>
+<a name="426"><q-n>     426  </q-n></a>  <q-w>clocking</q-w> s_mon_cb @(<q-a>posedge</q-w> pclk);
+<a name="427"><q-n>     427  </q-n></a>      <q-w>input</q-w> psel, penable, pwrite, paddr, pwdata, pstrb, prdata, pready, pslverr, pprot;
+<a name="428"><q-n>     428  </q-n></a>  <q-w>endclocking</q-w>
+<a name="429"><q-n>     429  </q-n></a>
+<a name="430"><q-n>     430  </q-n></a>  <q-m>//</q-m>
+<a name="431"><q-n>     431  </q-n></a>  <q-m>//close file</q-m>
+<a name="432"><q-n>     432  </q-n></a>  <q-m>//</q-m>
+<a name="433"><q-n>     433  </q-n></a>  `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="434"><q-n>     434  </q-n></a>  <q-w>final</q-w> <q-w>begin</q-w>
+<a name="435"><q-n>     435  </q-n></a>    <q-w>if</q-w>(apb_log_fh == 1) <q-w>begin</q-w>
+<a name="436"><q-n>     436  </q-n></a>     $fclose(apb_log_fh);
+<a name="437"><q-n>     437  </q-n></a>    <q-w>end</q-w>
+<a name="438"><q-n>     438  </q-n></a>  <q-w>end</q-w>
+<a name="439"><q-n>     439  </q-n></a>  `<q-a>endif</q-w>
+<a name="440"><q-n>     440  </q-n></a><q-w>endinterface</q-w>
+<a name="441"><q-n>     441  </q-n></a>
+<a name="442"><q-n>     442  </q-n></a>
+</pre>
+</tt>
+
+  
+</body>
+</html>

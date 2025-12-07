@@ -1,0 +1,285 @@
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <title>Questa Coverage Report</title>
+  <link rel="StyleSheet" media="screen" href="../css/hdl2html.css"/>
+</head>
+<body id="hdl2html">
+  <tt>
+<pre>
+<a name="1"><q-n>     1  </q-n></a><q-m>//************************************************************</q-m>
+<a name="2"><q-n>     2  </q-n></a><q-m>//--file: common_sequence.sv</q-m>
+<a name="3"><q-n>     3  </q-n></a><q-m>//--function: AXI UVM sequence</q-m>
+<a name="4"><q-n>     4  </q-n></a><q-m>//--Author: Nguyen Ngoc Man</q-m>
+<a name="5"><q-n>     5  </q-n></a><q-m>//--Description: that includes 3 types of sequence</q-m>
+<a name="6"><q-n>     6  </q-n></a><q-m>//--+: Base sequence: burst, addr, id are setup by user</q-m>
+<a name="7"><q-n>     7  </q-n></a><q-m>//--+: Random sequence</q-m>
+<a name="8"><q-n>     8  </q-n></a><q-m>//--+: Random sequence with user-defined length</q-m>
+<a name="9"><q-n>     9  </q-n></a><q-m>//***********************************************************</q-m>
+<a name="10"><q-n>     10  </q-n></a><q-m>//**********************************************************</q-m>
+<a name="11"><q-n>     11  </q-n></a><q-m>//--------------------BASE SEQUENCE---------------</q-m>
+<a name="12"><q-n>     12  </q-n></a><q-m>//**********************************************************</q-m>
+<a name="13"><q-n>     13  </q-n></a><q-w>import</q-w> type_package::*;
+<a name="14"><q-n>     14  </q-n></a><q-m>//</q-m>
+<a name="15"><q-n>     15  </q-n></a><q-m>//this class takes responsibility for generating stimulus</q-m>
+<a name="16"><q-n>     16  </q-n></a><q-m>//</q-m>
+<a name="17"><q-n>     17  </q-n></a><q-w>class</q-w> stimulus_generator <q-w>extends</q-w> uvm_object; 
+<a name="18"><q-n>     18  </q-n></a>	`uvm_object_utils(stimulus_generator)
+<a name="19"><q-n>     19  </q-n></a>	<q-m>//</q-m>
+<a name="20"><q-n>     20  </q-n></a>	axi_transaction #(DW,AW1) w_trans_q [$];
+<a name="21"><q-n>     21  </q-n></a>	axi_transaction #(DW,AW1) r_trans_q [$];
+<a name="22"><q-n>     22  </q-n></a>	<q-m>//mailbox #(axi_transaction #(DW,AW1)) r_mb;</q-m>
+<a name="23"><q-n>     23  </q-n></a>	axi_transaction#(DW,AW1) w_trans, r_trans, tmp;
+<a name="24"><q-n>     24  </q-n></a>	<q-w>int</q-w> w_test_nums, r_test_nums;
+<a name="25"><q-n>     25  </q-n></a>	<q-w>int</q-w> idx;
+<a name="26"><q-n>     26  </q-n></a>	<q-w>logic</q-w> [7:0] start_id;
+<a name="27"><q-n>     27  </q-n></a>	<q-m>//test_plot test_plot_h;</q-m>
+<a name="28"><q-n>     28  </q-n></a>	<q-m>//</q-m>
+<a name="29"><q-n>     29  </q-n></a>	<q-m>//</q-m>
+<a name="30"><q-n>     30  </q-n></a>	<q-w>function</q-w> <q-w>new</q-w>(<q-w>string</q-w> name = <q-l>"stimulus_generator"</q-l>);
+<a name="31"><q-n>     31  </q-n></a>		<q-w>super</q-w>.<q-w>new</q-w>(name);
+<a name="32"><q-n>     32  </q-n></a>	<q-w>endfunction</q-w>
+<a name="33"><q-n>     33  </q-n></a>	<q-m>//</q-m>
+<a name="34"><q-n>     34  </q-n></a>	<q-m>//</q-m>
+<a name="35"><q-n>     35  </q-n></a>	<q-w>virtual</q-w> <q-w>task</q-w> generate_wr_item();
+<a name="36"><q-n>     36  </q-n></a>		`uvm_info(get_type_name(), $sformatf(<q-l>"w_test_nums = %0d"</q-l>, w_test_nums), UVM_LOW);
+<a name="37"><q-n>     37  </q-n></a>		start_id = 0;
+<a name="38"><q-n>     38  </q-n></a>	 	<q-w>repeat</q-w>(w_test_nums) <q-w>begin</q-w>
+<a name="39"><q-n>     39  </q-n></a>		      w_trans = axi_transaction#(DW,AW1)::type_id::create(<q-l>"axi_wr_stimulus"</q-l>);
+<a name="40"><q-n>     40  </q-n></a>		      <q-w>assert</q-w>(w_trans.randomize()<q-w>with</q-w>{
+<a name="41"><q-n>     41  </q-n></a>				w_trans.burst <q-w>inside</q-w> {FIXED, INCR, WRAP};
+<a name="42"><q-n>     42  </q-n></a>				w_trans.id == start_id;
+<a name="43"><q-n>     43  </q-n></a>			})<q-w>else</q-w> 
+<a name="44"><q-n>     44  </q-n></a>		      $<q-v>error</q-w>(<q-l>"[WRITE]Randomization failed for Stimulus_Generator object!!! [addr=0x%08h burst=%s id=%0d]"</q-l>,
+<a name="45"><q-n>     45  </q-n></a>		      w_trans.addr, burst_name'(w_trans.burst), start_id);
+<a name="46"><q-n>     46  </q-n></a>		      <q-m>//put generated item into queue</q-m>
+<a name="47"><q-n>     47  </q-n></a>			w_trans_q.push_back(w_trans);
+<a name="48"><q-n>     48  </q-n></a>			<q-m>//</q-m>
+<a name="49"><q-n>     49  </q-n></a>			start_id++;
+<a name="50"><q-n>     50  </q-n></a>		<q-w>end</q-w>
+<a name="51"><q-n>     51  </q-n></a>	<q-w>endtask</q-w>
+<a name="52"><q-n>     52  </q-n></a>	<q-m>//</q-m>
+<a name="53"><q-n>     53  </q-n></a>	<q-m>//</q-m>
+<a name="54"><q-n>     54  </q-n></a>	<q-w>virtual</q-w> <q-w>task</q-w> generate_rd_item();
+<a name="55"><q-n>     55  </q-n></a>		`uvm_info(get_type_name(), $sformatf(<q-l>"r_test_nums = %0d"</q-l>, r_test_nums), UVM_LOW);
+<a name="56"><q-n>     56  </q-n></a>		start_id = 0;
+<a name="57"><q-n>     57  </q-n></a>	 	<q-w>repeat</q-w>(r_test_nums) <q-w>begin</q-w>
+<a name="58"><q-n>     58  </q-n></a>		      r_trans = axi_transaction#(DW,AW1)::type_id::create(<q-l>"axi_rd_stimulus"</q-l>);
+<a name="59"><q-n>     59  </q-n></a>		      <q-w>assert</q-w>(r_trans.randomize()<q-w>with</q-w>{
+<a name="60"><q-n>     60  </q-n></a>				r_trans.burst <q-w>inside</q-w> {FIXED, INCR, WRAP};
+<a name="61"><q-n>     61  </q-n></a>				r_trans.id == start_id;
+<a name="62"><q-n>     62  </q-n></a>			})<q-w>else</q-w> 
+<a name="63"><q-n>     63  </q-n></a>		      $<q-v>error</q-w>(<q-l>"[READ]Randomization failed for Stimulus_Generator object!!! [addr=0x%08h burst=%s id=%0d]"</q-l>,
+<a name="64"><q-n>     64  </q-n></a>		      r_trans.addr, burst_name'(r_trans.burst), start_id);
+<a name="65"><q-n>     65  </q-n></a>		      <q-m>//put generated item into queue</q-m>
+<a name="66"><q-n>     66  </q-n></a>			r_trans_q.push_back(r_trans);
+<a name="67"><q-n>     67  </q-n></a>			<q-m>//</q-m>
+<a name="68"><q-n>     68  </q-n></a>			start_id++;
+<a name="69"><q-n>     69  </q-n></a>		<q-w>end</q-w>
+<a name="70"><q-n>     70  </q-n></a>	<q-w>endtask</q-w>
+<a name="71"><q-n>     71  </q-n></a>	<q-m>//</q-m>
+<a name="72"><q-n>     72  </q-n></a>	<q-m>//</q-m>
+<a name="73"><q-n>     73  </q-n></a>	<q-w>virtual</q-w> <q-w>task</q-w> clone_wr_into_rd();
+<a name="74"><q-n>     74  </q-n></a>		idx = 0;
+<a name="75"><q-n>     75  </q-n></a>		`uvm_info(get_type_name(), $sformatf(<q-l>"r_test_nums = %0d"</q-l>, r_test_nums), UVM_LOW);
+<a name="76"><q-n>     76  </q-n></a>	 	<q-w>repeat</q-w>(r_test_nums) <q-w>begin</q-w>
+<a name="77"><q-n>     77  </q-n></a>		      tmp = axi_transaction#(DW,AW1)::type_id::create(<q-l>"tmp_stimulus"</q-l>);
+<a name="78"><q-n>     78  </q-n></a>			<q-w>if</q-w>(w_trans_q.size() == 0) <q-w>begin</q-w>
+<a name="79"><q-n>     79  </q-n></a>				<q-w>if</q-w>(idx == 0) <q-w>begin</q-w>
+<a name="80"><q-n>     80  </q-n></a>					`uvm_warning(get_type_name(), $sformatf(<q-l>"[CLONE_WR_INTO_RD]: EMPTY w_trans_q!!!"</q-l>))
+<a name="81"><q-n>     81  </q-n></a>				<q-w>end</q-w>
+<a name="82"><q-n>     82  </q-n></a>				<q-w>break</q-w>;
+<a name="83"><q-n>     83  </q-n></a>			<q-w>end</q-w>
+<a name="84"><q-n>     84  </q-n></a>			<q-m>//</q-m>
+<a name="85"><q-n>     85  </q-n></a>			tmp = w_trans_q[idx];<q-m>//access item without removing it from queue </q-m>
+<a name="86"><q-n>     86  </q-n></a>			$<q-v>cast</q-w>(r_trans, tmp.clone());
+<a name="87"><q-n>     87  </q-n></a>			r_trans_q.push_back(r_trans);
+<a name="88"><q-n>     88  </q-n></a>			idx++;
+<a name="89"><q-n>     89  </q-n></a>		<q-w>end</q-w>
+<a name="90"><q-n>     90  </q-n></a>	<q-w>endtask</q-w>	
+<a name="91"><q-n>     91  </q-n></a>	<q-m>//</q-m>
+<a name="92"><q-n>     92  </q-n></a>	<q-m>//</q-m>
+<a name="93"><q-n>     93  </q-n></a>	<q-m>//virtual task make_plot();</q-m>
+<a name="94"><q-n>     94  </q-n></a>		<q-m>//idx = 0;</q-m>
+<a name="95"><q-n>     95  </q-n></a>		<q-m>//`uvm_info(get_type_name(), $sformatf("r_test_nums = %0d", r_test_nums), UVM_LOW);</q-m>
+<a name="96"><q-n>     96  </q-n></a>	 	<q-m>//repeat(r_test_nums) begin</q-m>
+<a name="97"><q-n>     97  </q-n></a>		      <q-m>//tmp = axi_transaction#(DW,AW1)::type_id::create("tmp_stimulus");</q-m>
+<a name="98"><q-n>     98  </q-n></a>		      <q-m>////r_trans = axi_transaction#(DW,AW1)::type_id::create("axi_rd_stimulus");</q-m>
+<a name="99"><q-n>     99  </q-n></a>		      <q-m>////</q-m>
+<a name="100"><q-n>     100  </q-n></a>		      <q-m>//case(test_plot_h)</q-m>
+<a name="101"><q-n>     101  </q-n></a>		      <q-m>//R_W_PARALLEL: begin</q-m>
+<a name="102"><q-n>     102  </q-n></a>			      <q-m>//if(w_trans_q.size() &gt; 0) begin </q-m>
+<a name="103"><q-n>     103  </q-n></a>					<q-m>//tmp = w_trans_q[idx];//access item without removing it from queue </q-m>
+<a name="104"><q-n>     104  </q-n></a>					<q-m>////</q-m>
+<a name="105"><q-n>     105  </q-n></a>					<q-m>////CRITICAL NOTE: Not having used clone() leads to no operation of read sequence  </q-m>
+<a name="106"><q-n>     106  </q-n></a>					<q-m>//if(!$cast(r_trans, tmp.clone())) begin</q-m>
+<a name="107"><q-n>     107  </q-n></a>					<q-m>////if(!$cast(r_trans, tmp)) begin</q-m>
+<a name="108"><q-n>     108  </q-n></a>						<q-m>//`uvm_error(get_type_name(), "r_trans NULL");</q-m>
+<a name="109"><q-n>     109  </q-n></a>					<q-m>//end </q-m>
+<a name="110"><q-n>     110  </q-n></a>					<q-m>////here: we use clone() method to</q-m>
+<a name="111"><q-n>     111  </q-n></a>					<q-m>////-- create independent object r_trans</q-m>
+<a name="112"><q-n>     112  </q-n></a>					<q-m>////--called "DEEP COPY"</q-m>
+<a name="113"><q-n>     113  </q-n></a>					<q-m>////other way to implement is: using</q-m>
+<a name="114"><q-n>     114  </q-n></a>					<q-m>////copy method</q-m>
+<a name="115"><q-n>     115  </q-n></a>					<q-m>////r_trans.copy(tmp); </q-m>
+<a name="116"><q-n>     116  </q-n></a>					<q-m>////use copy() method to create independent object "r_trans"</q-m>
+<a name="117"><q-n>     117  </q-n></a>					<q-m>////--and avoid the risk of object overlapping</q-m>
+<a name="118"><q-n>     118  </q-n></a>					<q-m>////</q-m>
+<a name="119"><q-n>     119  </q-n></a>					<q-m>//repeat(2) begin</q-m>
+<a name="120"><q-n>     120  </q-n></a>						<q-m>//r_trans_q.push_back(r_trans);</q-m>
+<a name="121"><q-n>     121  </q-n></a>					<q-m>////	`uvm_info(get_type_name(), $sformatf("succeed to create rd stimulus!!!"), UVM_LOW);</q-m>
+<a name="122"><q-n>     122  </q-n></a>					<q-m>//end</q-m>
+<a name="123"><q-n>     123  </q-n></a>					<q-m>//idx++;</q-m>
+<a name="124"><q-n>     124  </q-n></a>					<q-m>//if(idx == w_trans_q.size()) break;</q-m>
+<a name="125"><q-n>     125  </q-n></a>					<q-m>////`uvm_info(get_type_name(), $sformatf("succeed to create rd stimulus!!!"), UVM_LOW);</q-m>
+<a name="126"><q-n>     126  </q-n></a>				<q-m>//end</q-m>
+<a name="127"><q-n>     127  </q-n></a>				<q-m>//else begin</q-m>
+<a name="128"><q-n>     128  </q-n></a>					<q-m>//`uvm_warning(get_type_name(), $sformatf("write transaction queue is EMPTY!!!"))</q-m>
+<a name="129"><q-n>     129  </q-n></a>				<q-m>//end</q-m>
+<a name="130"><q-n>     130  </q-n></a>			<q-m>//end</q-m>
+<a name="131"><q-n>     131  </q-n></a>			<q-m>//NON_PARALLEL: begin </q-m>
+<a name="132"><q-n>     132  </q-n></a>			      <q-m>//if(w_trans_q.size() &gt; 0) begin </q-m>
+<a name="133"><q-n>     133  </q-n></a>					<q-m>//tmp = w_trans_q[idx];//access item without removing it from queue </q-m>
+<a name="134"><q-n>     134  </q-n></a>					<q-m>//$cast(r_trans, tmp.clone());</q-m>
+<a name="135"><q-n>     135  </q-n></a>					<q-m>//r_trans_q.push_back(r_trans);</q-m>
+<a name="136"><q-n>     136  </q-n></a>					<q-m>//idx++;</q-m>
+<a name="137"><q-n>     137  </q-n></a>				<q-m>//end</q-m>
+<a name="138"><q-n>     138  </q-n></a>			<q-m>//end	</q-m>
+<a name="139"><q-n>     139  </q-n></a>			<q-m>//endcase</q-m>
+<a name="140"><q-n>     140  </q-n></a>		<q-m>//end//end of repeat</q-m>
+<a name="141"><q-n>     141  </q-n></a>	<q-m>//endtask</q-m>
+<a name="142"><q-n>     142  </q-n></a>	<q-m>//</q-m>
+<a name="143"><q-n>     143  </q-n></a>	<q-m>//randomize write data again</q-m>
+<a name="144"><q-n>     144  </q-n></a>	<q-m>//</q-m>
+<a name="145"><q-n>     145  </q-n></a>	<q-w>virtual</q-w> <q-w>task</q-w> re_randomize_data();
+<a name="146"><q-n>     146  </q-n></a>		<q-w>if</q-w>(w_trans_q.size() == 0) <q-w>begin</q-w>
+<a name="147"><q-n>     147  </q-n></a>			`uvm_warning(get_type_name(), <q-l>"UNAVAILABLE W_TRANS in enable_data_randomize mode!!!"</q-l>);
+<a name="148"><q-n>     148  </q-n></a>			<q-w>return</q-w>;
+<a name="149"><q-n>     149  </q-n></a>		<q-w>end</q-w>
+<a name="150"><q-n>     150  </q-n></a>		<q-w>else</q-w> <q-w>begin</q-w>
+<a name="151"><q-n>     151  </q-n></a>			<q-w>foreach</q-w>(w_trans_q[idx]) <q-w>begin</q-w>
+<a name="152"><q-n>     152  </q-n></a>				`uvm_info(get_type_name(), <q-l>"BEFORE RE_RANDOMIZE"</q-l>, UVM_LOW);
+<a name="153"><q-n>     153  </q-n></a>				<q-m>//w_trans_q[idx].print();</q-m>
+<a name="154"><q-n>     154  </q-n></a>				<q-m>//</q-m>
+<a name="155"><q-n>     155  </q-n></a>				w_trans_q[idx].id = w_trans_q.size() + 1'd1;
+<a name="156"><q-n>     156  </q-n></a>				<q-w>foreach</q-w>(w_trans_q[idx].data[i]) <q-w>begin</q-w>
+<a name="157"><q-n>     157  </q-n></a>					w_trans_q[idx].data[i] = $urandom();
+<a name="158"><q-n>     158  </q-n></a>					<q-m>//using solver to randomize can lead</q-m>
+<a name="159"><q-n>     159  </q-n></a>					<q-m>//--to failed randomization in case of</q-m>
+<a name="160"><q-n>     160  </q-n></a>					<q-m>//--large data array (&gt;200 elements) </q-m>
+<a name="161"><q-n>     161  </q-n></a>					<q-m>//--therefore, we should use $urandom()</q-m>
+<a name="162"><q-n>     162  </q-n></a>				<q-w>end</q-w>
+<a name="163"><q-n>     163  </q-n></a>				`uvm_info(get_type_name(), <q-l>"AFTER RE_RANDOMIZE"</q-l>, UVM_LOW);
+<a name="164"><q-n>     164  </q-n></a>				<q-m>//w_trans_q[idx].print();</q-m>
+<a name="165"><q-n>     165  </q-n></a>			<q-w>end</q-w>	
+<a name="166"><q-n>     166  </q-n></a>			`uvm_info(get_type_name(), $sformatf(<q-l>"succeed to re_randomize wdata!!!HAHAHA"</q-l>), UVM_LOW);
+<a name="167"><q-n>     167  </q-n></a>		<q-w>end</q-w>
+<a name="168"><q-n>     168  </q-n></a>	<q-w>endtask</q-w>
+<a name="169"><q-n>     169  </q-n></a><q-w>endclass</q-w>
+<a name="170"><q-n>     170  </q-n></a><q-m>//**********************************************************************************</q-m>
+<a name="171"><q-n>     171  </q-n></a><q-m>//</q-m>
+<a name="172"><q-n>     172  </q-n></a><q-m>//**********************************************************************************</q-m>
+<a name="173"><q-n>     173  </q-n></a><q-m>//</q-m>
+<a name="174"><q-n>     174  </q-n></a><q-m>//--------------------------------AXI MASTER WRITE----------------------------------</q-m>
+<a name="175"><q-n>     175  </q-n></a><q-m>//</q-m>
+<a name="176"><q-n>     176  </q-n></a><q-w>class</q-w> AxiMasterWriteSeq #(DW, AW1) <q-w>extends</q-w> uvm_sequence#(axi_transaction #(DW,AW1));
+<a name="177"><q-n>     177  </q-n></a>    <q-m>//register UVM factory</q-m>
+<a name="178"><q-n>     178  </q-n></a>    `uvm_object_param_utils(AxiMasterWriteSeq#(DW, AW1))
+<a name="179"><q-n>     179  </q-n></a>  
+<a name="180"><q-n>     180  </q-n></a>    <q-m>// Variables</q-m>
+<a name="181"><q-n>     181  </q-n></a>    <q-w>logic</q-w> [7:0] start_id;
+<a name="182"><q-n>     182  </q-n></a>    <q-w>int</q-w> idx;
+<a name="183"><q-n>     183  </q-n></a>    <q-m>//</q-m>
+<a name="184"><q-n>     184  </q-n></a>    axi_transaction #(DW, AW1) axi_wr_trans;
+<a name="185"><q-n>     185  </q-n></a>    <q-m>//</q-m>
+<a name="186"><q-n>     186  </q-n></a>    stimulus_generator stimulus_gen_ref;
+<a name="187"><q-n>     187  </q-n></a>
+<a name="188"><q-n>     188  </q-n></a>    <q-m>// Constructor</q-m>
+<a name="189"><q-n>     189  </q-n></a>    <q-w>function</q-w> <q-w>new</q-w> (<q-w>string</q-w> name = <q-l>"AxiMasterWriteSeq"</q-l>);
+<a name="190"><q-n>     190  </q-n></a>        <q-w>super</q-w>.<q-w>new</q-w>(name);
+<a name="191"><q-n>     191  </q-n></a>      axi_wr_trans = axi_transaction#(DW,AW1)::type_id::create(<q-l>"axi_wr_trans"</q-l>);
+<a name="192"><q-n>     192  </q-n></a>    <q-w>endfunction</q-w>
+<a name="193"><q-n>     193  </q-n></a>
+<a name="194"><q-n>     194  </q-n></a>    <q-w>extern</q-w> <q-w>virtual</q-w> <q-w>task</q-w> body();
+<a name="195"><q-n>     195  </q-n></a>
+<a name="196"><q-n>     196  </q-n></a><q-w>endclass</q-w>
+<a name="197"><q-n>     197  </q-n></a>  
+<a name="198"><q-n>     198  </q-n></a><q-m>//main tasks in sequence</q-m>
+<a name="199"><q-n>     199  </q-n></a>    
+<a name="200"><q-n>     200  </q-n></a><q-m>//-- body()</q-m>
+<a name="201"><q-n>     201  </q-n></a><q-w>task</q-w> AxiMasterWriteSeq::body();
+<a name="202"><q-n>     202  </q-n></a>`uvm_info(get_type_name(), $sformatf(<q-l>"w_test_nums = %0d"</q-l>, stimulus_gen_ref.w_test_nums), UVM_LOW);
+<a name="203"><q-n>     203  </q-n></a>	idx = 0;
+<a name="204"><q-n>     204  </q-n></a>    <q-w>repeat</q-w>(stimulus_gen_ref.w_test_nums) <q-w>begin</q-w>
+<a name="205"><q-n>     205  </q-n></a>      <q-m>// wait_for_grant();</q-m>
+<a name="206"><q-n>     206  </q-n></a>      <q-m>//send_request(axi_wr_trans); //must pair wait_for_grant()</q-m>
+<a name="207"><q-n>     207  </q-n></a>      <q-w>if</q-w>(stimulus_gen_ref.w_trans_q.size() &gt; 0) <q-w>begin</q-w>
+<a name="208"><q-n>     208  </q-n></a>		<q-m>//`uvm_info(get_type_name(), $sformatf("[before] reading queue!!!"), UVM_LOW);</q-m>
+<a name="209"><q-n>     209  </q-n></a>	      axi_wr_trans = stimulus_gen_ref.w_trans_q[idx];
+<a name="210"><q-n>     210  </q-n></a>		<q-m>//`uvm_info(get_type_name(), $sformatf("[after] awid = %0d", axi_wr_trans.id), UVM_LOW);</q-m>
+<a name="211"><q-n>     211  </q-n></a>	      <q-m>//send item to sequencer</q-m>
+<a name="212"><q-n>     212  </q-n></a>	      start_item(axi_wr_trans); <q-m>//block until get_next_item() from driver</q-m>
+<a name="213"><q-n>     213  </q-n></a>	      axi_wr_trans.set_bytes_in_beat();
+<a name="214"><q-n>     214  </q-n></a>	      finish_item(axi_wr_trans);
+<a name="215"><q-n>     215  </q-n></a>	      idx++;
+<a name="216"><q-n>     216  </q-n></a>      <q-w>end</q-w>
+<a name="217"><q-n>     217  </q-n></a>      <q-w>else</q-w> <q-w>begin</q-w>
+<a name="218"><q-n>     218  </q-n></a>		`uvm_fatal(get_type_name(), $sformatf(<q-l>"wr_stimulus not available!!!"</q-l>))
+<a name="219"><q-n>     219  </q-n></a>      <q-w>end</q-w>
+<a name="220"><q-n>     220  </q-n></a>      <q-m>//#(`CLK_CYCLE);</q-m>
+<a name="221"><q-n>     221  </q-n></a>    <q-w>end</q-w>
+<a name="222"><q-n>     222  </q-n></a><q-w>endtask</q-w>
+<a name="223"><q-n>     223  </q-n></a><q-m>//</q-m>
+<a name="224"><q-n>     224  </q-n></a><q-m>//--------------AXI MASTER READ-------------------------</q-m>
+<a name="225"><q-n>     225  </q-n></a><q-m>//</q-m>
+<a name="226"><q-n>     226  </q-n></a><q-w>class</q-w> AxiMasterReadSeq#(DW,AW1) <q-w>extends</q-w> uvm_sequence#(axi_transaction #(DW,AW1));
+<a name="227"><q-n>     227  </q-n></a>  `uvm_object_param_utils(AxiMasterReadSeq#(DW,AW1))
+<a name="228"><q-n>     228  </q-n></a>  <q-m>//</q-m>
+<a name="229"><q-n>     229  </q-n></a>    <q-w>bit</q-w> reconfigure_id;
+<a name="230"><q-n>     230  </q-n></a>    <q-w>logic</q-w> [7:0] start_id; 
+<a name="231"><q-n>     231  </q-n></a>    <q-w>logic</q-w> [7:0] r_id;
+<a name="232"><q-n>     232  </q-n></a>    <q-w>int</q-w> idx_q;
+<a name="233"><q-n>     233  </q-n></a>    <q-m>//</q-m>
+<a name="234"><q-n>     234  </q-n></a>    axi_transaction #(DW,AW1) axi_rd_trans;
+<a name="235"><q-n>     235  </q-n></a>    stimulus_generator stimulus_gen_ref;
+<a name="236"><q-n>     236  </q-n></a>
+<a name="237"><q-n>     237  </q-n></a>    <q-w>function</q-w> <q-w>new</q-w>(<q-w>string</q-w> name = <q-l>"read transaction"</q-l>);
+<a name="238"><q-n>     238  </q-n></a>        <q-w>super</q-w>.<q-w>new</q-w>(name);
+<a name="239"><q-n>     239  </q-n></a>	      axi_rd_trans = axi_transaction#(DW,AW1)::type_id::create(<q-l>"axi_rd_trans"</q-l>);
+<a name="240"><q-n>     240  </q-n></a>    <q-w>endfunction</q-w> 
+<a name="241"><q-n>     241  </q-n></a>    <q-m>//</q-m>
+<a name="242"><q-n>     242  </q-n></a>    <q-w>extern</q-w> <q-w>virtual</q-w> <q-w>task</q-w> body();
+<a name="243"><q-n>     243  </q-n></a><q-w>endclass</q-w>
+<a name="244"><q-n>     244  </q-n></a><q-w>task</q-w> AxiMasterReadSeq::body();
+<a name="245"><q-n>     245  </q-n></a>	r_id = 0;
+<a name="246"><q-n>     246  </q-n></a>	idx_q = 0;
+<a name="247"><q-n>     247  </q-n></a>	`uvm_info(get_type_name(), $sformatf(<q-l>"r_test_nums = %0d"</q-l>, stimulus_gen_ref.r_test_nums), UVM_LOW);
+<a name="248"><q-n>     248  </q-n></a>	<q-w>repeat</q-w>(stimulus_gen_ref.r_test_nums) <q-w>begin</q-w>
+<a name="249"><q-n>     249  </q-n></a>	      <q-m>//stimulus_gen_ref.r_mb.get(tmp);</q-m>
+<a name="250"><q-n>     250  </q-n></a>	      <q-m>//axi_rd_trans.copy(tmp); </q-m>
+<a name="251"><q-n>     251  </q-n></a>	      <q-m>//start_item does not recognize mailbox's element; therefore, we use copy() method to create new object</q-m>
+<a name="252"><q-n>     252  </q-n></a>	      <q-m>//</q-m>
+<a name="253"><q-n>     253  </q-n></a>	      axi_rd_trans = stimulus_gen_ref.r_trans_q[idx_q];
+<a name="254"><q-n>     254  </q-n></a>	      <q-m>//send item to sequencer</q-m>
+<a name="255"><q-n>     255  </q-n></a>		`uvm_info(get_type_name(), $sformatf(<q-l>"[START]axi_rd_trans!!!"</q-l>), UVM_HIGH);
+<a name="256"><q-n>     256  </q-n></a>	      start_item(axi_rd_trans);
+<a name="257"><q-n>     257  </q-n></a>	      axi_rd_trans.set_bytes_in_beat();
+<a name="258"><q-n>     258  </q-n></a>	      <q-w>if</q-w>(reconfigure_id) <q-w>begin</q-w>
+<a name="259"><q-n>     259  </q-n></a>		      axi_rd_trans.set_id(r_id);
+<a name="260"><q-n>     260  </q-n></a>	      <q-w>end</q-w>
+<a name="261"><q-n>     261  </q-n></a>	      axi_rd_trans.set_aligned_addr();
+<a name="262"><q-n>     262  </q-n></a>	      <q-m>//item sent to driver done</q-m>
+<a name="263"><q-n>     263  </q-n></a>	      finish_item(axi_rd_trans);
+<a name="264"><q-n>     264  </q-n></a>		`uvm_info(get_type_name(), $sformatf(<q-l>"[DONE]axi_rd_trans!!!"</q-l>), UVM_HIGH);
+<a name="265"><q-n>     265  </q-n></a>	      r_id++;
+<a name="266"><q-n>     266  </q-n></a>	      idx_q++;
+<a name="267"><q-n>     267  </q-n></a>	<q-w>end</q-w>
+<a name="268"><q-n>     268  </q-n></a><q-w>endtask</q-w>
+<a name="269"><q-n>     269  </q-n></a><q-m>//</q-m>
+</pre>
+</tt>
+
+  
+</body>
+</html>

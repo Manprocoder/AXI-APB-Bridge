@@ -1,0 +1,13 @@
++incdir+../include
+../DUT/x2p_parameter.sv
+../DUT/RisiEdgeDetector.sv
+../DUT/sfiforeq.sv
+../DUT/sfifordata.sv 
+../DUT/sfifowdata.sv 
+../DUT/axi_transaction_controller.sv 
+../DUT/arbiter.sv 
+../DUT/counter.sv 
+../DUT/decoder.sv 
+../DUT/apb_master.sv 
+../DUT/x2p_top.sv 
+./tb.sv

@@ -1,0 +1,15 @@
+-html
+-htmldir
+../total_cov/1SLAVE/html_merged_all
+-verbose
+-assert
+-cvg
+-code
+bcesftx
+-source
+-details=abcdefgst
+-binrhs
+-testhitdataAll
+-stmtaltflow
+-testdetails
+../total_cov/1SLAVE/merged_all.ucdb
