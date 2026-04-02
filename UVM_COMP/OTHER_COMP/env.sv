@@ -39,7 +39,6 @@ endfunction
 function void m_env::connect_phase(uvm_phase phase); 
     super.connect_phase(phase);
     //
-    if(env_cfg.scoreboard) begin
         axi_mst_agt.m_monitor0.AxiResetn_toScoreBoard.connect(m_sb.aimp_Aresetn);           //ap_imp : analysis port implement
         axi_mst_agt.m_monitor0.AxiRdAddr_toScoreBoard.connect(m_sb.aimp_AxiRdRequest);           //ap_imp : analysis port implement
         axi_mst_agt.m_monitor0.AxiRData_toScoreBoard.connect(m_sb.aimp_AxiRData);           //ap_imp : analysis port implement
@@ -49,6 +48,4 @@ function void m_env::connect_phase(uvm_phase phase);
         apb_slv_agt.apb_monitor0.ApbContent_toScoreboard.connect(m_sb.aimp_ApbContent);    
         apb_slv_agt.apb_monitor0.presetn_toScoreboard.connect(m_sb.aimp_Presetn);    
         apb_slv_agt.apb_monitor0.pseltb_toScoreboard.connect(m_sb.aimp_Pseltb);    
-
-    end
 endfunction

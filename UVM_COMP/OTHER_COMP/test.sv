@@ -71,7 +71,8 @@ function void base_test::build_phase(uvm_phase phase);
     //**************************************************************
     //--store env_cfg into uvm_config_db to leverage reusability
     //**************************************************************
-    uvm_config_db#(env_config)::set(null, "uvm_test_top*", "env_cfg", env_cfg);
+    //uvm_config_db#(env_config)::set(null, "uvm_test_top*", "env_cfg", env_cfg);
+    uvm_config_db#(env_config)::set(this, "*", "env_cfg", env_cfg);
     //
     //Create and Store Sim Result Path
     //
@@ -82,8 +83,8 @@ function void base_test::build_phase(uvm_phase phase);
     $sformat(sim_result_path, "../SIM_RESULT/%0dSLAVE/%s", `SLAVE_CNT, testcase_name);
     //
     uvm_config_db#(string)::set(this, "*", "sim_result_path", sim_result_path);
-    //--store AXI_PROTOCOL_CHECKER into uvm_config_db
-    uvm_config_db#(string)::set(this, "*", "axi_chk_inst_name", "AXI_CHECKER");
+    ////--store AXI_PROTOCOL_CHECKER into uvm_config_db
+    //uvm_config_db#(string)::set(this, "*", "axi_chk_inst_name", "AXI_CHECKER");
     //
 endfunction
 
@@ -119,7 +120,6 @@ task base_test::run_phase(uvm_phase phase);
             //---passing 'null' argument is not effective if using uvm_do_on_with macro
             //---it means using virtual sequence MUST entail virtual sequencer 
             //--simply because we CAN NOT use "null" argument
-
         end
 	//
         begin

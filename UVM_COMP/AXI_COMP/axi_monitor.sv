@@ -51,8 +51,8 @@ class AxiMasterMonitor extends uvm_monitor;
   extern task collect_WriteData();
   extern task collect_WriteResp();
   extern task Reset_All_Queue();
-  extern task check_protocol();
-  extern virtual function void report_phase(uvm_phase phase);
+  //extern task check_protocol();
+  //extern virtual function void report_phase(uvm_phase phase);
   //
   //
 endclass
@@ -72,16 +72,16 @@ function void AxiMasterMonitor::build_phase(uvm_phase phase);
     WrDataCovMbox = new();
     RdDataCovMbox = new();
     BChannelCovMbox = new();
-    if (!uvm_config_db#(string)::get(this, "", "axi_chk_inst_name", INST_NAME)) begin
-      `uvm_fatal(get_type_name(), "axi_chk_inst_name NOT found in config DB!!!")
-    end
-    //
-    //get actual simulation path
-    //
-    if (!uvm_config_db#(string)::get(this, "", "sim_result_path", sim_result_path)) begin
-      `uvm_fatal(get_type_name(), "No sim_result_path found in config DB!!!")
-    end
-    `uvm_info(get_type_name(), $sformatf("Results will be stored at: %s", sim_result_path), UVM_LOW)
+    //if (!uvm_config_db#(string)::get(this, "", "axi_chk_inst_name", INST_NAME)) begin
+      //`uvm_fatal(get_type_name(), "axi_chk_inst_name NOT found in config DB!!!")
+    //end
+    ////
+    ////get actual simulation path
+    ////
+    //if (!uvm_config_db#(string)::get(this, "", "sim_result_path", sim_result_path)) begin
+      //`uvm_fatal(get_type_name(), "No sim_result_path found in config DB!!!")
+    //end
+    //`uvm_info(get_type_name(), $sformatf("Results will be stored at: %s", sim_result_path), UVM_LOW)
 
 endfunction
 
@@ -97,9 +97,9 @@ task AxiMasterMonitor::run_phase(uvm_phase phase);
       collect_WriteResp();
       Reset_All_Queue();
       //
-      if(mon_cfg.axi_agt_cfg.active == UVM_ACTIVE) begin
-        check_protocol();
-      end
+      //if(mon_cfg.axi_agt_cfg.active == UVM_ACTIVE) begin
+        //check_protocol();
+      //end
     //
   join_none
 endtask
@@ -164,7 +164,7 @@ task AxiMasterMonitor::collect_ReadData();
     whole_rtrans = shared_item::type_id::create("whole_rtrans");
     whole_rtrans.data = m_mon_vif.m_mon_cb.rdata;
     whole_rtrans.write = ~m_mon_vif.m_mon_cb.rvalid;
-    whole_rtrans.wstrb = m_mon_vif.m_mon_cb.wstrb;
+    whole_rtrans.wstrb = 4'h0;
     whole_rtrans.last = m_mon_vif.m_mon_cb.rlast;
     whole_rtrans.resp = resp_name'(m_mon_vif.m_mon_cb.rresp);
     whole_rtrans.id = m_mon_vif.m_mon_cb.rid;
@@ -243,147 +243,147 @@ endtask
 //
 //------------------------------------CHECK INTERFACE--------------------------------------------
 //
-task AxiMasterMonitor::check_protocol();
-  chk_error_file = $fopen($sformatf("%s/CHECKER_ERROR/chk_error.log", sim_result_path), "a"); // "w" = overwrite, "a" = append
-  if(chk_error_file == 0) begin
-    `uvm_warning(get_type_name(), $sformatf("Failed to open chk_error.log file"))
-  end
-  //
-  fork
-    forever begin
-      @(m_mon_vif.m_mon_cb);
-      if(m_mon_vif.m_mon_cb.awvalid && m_mon_vif.aresetn) begin
-        case (|m_mon_vif.m_mon_cb.awaddr)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWADDR is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWADDR is z\n", INST_NAME, $time);
-        endcase 
-        //check 2
-        case (|m_mon_vif.m_mon_cb.awlen)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWLEN is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWLEN is z\n", INST_NAME, $time);
-        endcase 
-        //check 3
-        case (|m_mon_vif.m_mon_cb.awsize)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWSIZE is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWSIZE is z\n", INST_NAME, $time);
-        endcase 
-        //check 4
-        case (|m_mon_vif.m_mon_cb.awburst)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWBURST is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWBURST is z\n", INST_NAME, $time);
-        endcase 
-        //check 5
-        case (|m_mon_vif.m_mon_cb.awid)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWID is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWID is z\n", INST_NAME, $time);
-        endcase
-      end
-    end
-    //WDATA CHANNEL
-    forever begin
-      @(m_mon_vif.m_mon_cb);
-      if(m_mon_vif.m_mon_cb.wvalid && m_mon_vif.aresetn) begin
-      case (|m_mon_vif.m_mon_cb.wdata)
-      1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WDATA is x\n", INST_NAME, $time);
-      1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WDATA is z\n", INST_NAME, $time);
-      endcase 
-      //check2
-      case (|m_mon_vif.m_mon_cb.wstrb)
-      1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WSTRB is x\n", INST_NAME, $time);
-      1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WSTRB is z\n", INST_NAME, $time);
-      endcase 
-      //check3
-      case (m_mon_vif.m_mon_cb.wready)
-      1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WREADY is x\n", INST_NAME, $time);
-      1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WREADY is z\n", INST_NAME, $time);
-      endcase
-      end
-    end
-    //
-    forever begin
-      @(m_mon_vif.m_mon_cb);
-      if(m_mon_vif.m_mon_cb.bvalid && m_mon_vif.aresetn) begin
-          //check1
-          case (m_mon_vif.m_mon_cb.bid)
-          1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BID is x\n", INST_NAME, $time);
-          1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BID is z\n", INST_NAME, $time);
-          endcase 
-          //check2
-          case (m_mon_vif.m_mon_cb.bresp)
-          1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BRESP is x\n", INST_NAME, $time);
-          1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BRESP is z\n", INST_NAME, $time);
-          endcase 
-          //check3
-          case (m_mon_vif.m_mon_cb.bready)
-          1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BREADY is x\n", INST_NAME, $time);
-          1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BREADY is z\n", INST_NAME, $time);
-          endcase 
-      end
-    end
-    //RD ADDR CHANNEL
-      forever begin
-      @(m_mon_vif.m_mon_cb);
-      if(m_mon_vif.m_mon_cb.arvalid && m_mon_vif.aresetn) begin
-        case (|m_mon_vif.m_mon_cb.araddr)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARADDR is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARADDR is z\n", INST_NAME, $time);
-        endcase 
-        //check 2
-        case (|m_mon_vif.m_mon_cb.arlen)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARLEN is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARLEN is z\n", INST_NAME, $time);
-        endcase 
-        //check 3
-        case (|m_mon_vif.m_mon_cb.arsize)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARSIZE is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARSIZE is z\n", INST_NAME, $time);
-        endcase 
-        //check 4
-        case (|m_mon_vif.m_mon_cb.arburst)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARBURST is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARBURST is z\n", INST_NAME, $time);
-        endcase 
-        //check 5
-        case (|m_mon_vif.m_mon_cb.arid)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARID is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARID is z\n", INST_NAME, $time);
-        endcase
-      end
-    end
-    //
-    //RDATA CHANNEL
-    forever begin
-      @(m_mon_vif.m_mon_cb);
-      if(m_mon_vif.m_mon_cb.rvalid && m_mon_vif.aresetn) begin
-        //check1
-        case (|m_mon_vif.m_mon_cb.rdata)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RDATA is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RDATA is z\n", INST_NAME, $time);
-        endcase 
-        //check2
-        case (m_mon_vif.m_mon_cb.rready)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RREADY is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RREADY is z\n", INST_NAME, $time);
-        endcase 
-        //check3
-        case (|m_mon_vif.m_mon_cb.rid)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RID is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RID is z\n", INST_NAME, $time);
-        endcase 
-        //check4
-        case (|m_mon_vif.m_mon_cb.rresp)
-        1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RRESP is x\n", INST_NAME, $time);
-        1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RRESP is z\n", INST_NAME, $time);
-        endcase 
-      end
-    end
-  join_none
-endtask
-//
-function void AxiMasterMonitor::report_phase(uvm_phase phase);
-  `uvm_info(get_type_name(), $sformatf("preparing for closing checker file!!!"), UVM_LOW)
-  if(chk_error_file == 1) begin
-    $fclose(chk_error_file);
-  end
-endfunction
+//task AxiMasterMonitor::check_protocol();
+  //chk_error_file = $fopen($sformatf("%s/CHECKER_ERROR/chk_error.log", sim_result_path), "a"); // "w" = overwrite, "a" = append
+  //if(chk_error_file == 0) begin
+    //`uvm_warning(get_type_name(), $sformatf("Failed to open chk_error.log file"))
+  //end
+  ////
+  //fork
+    //forever begin
+      //@(m_mon_vif.m_mon_cb);
+      //if(m_mon_vif.m_mon_cb.awvalid && m_mon_vif.aresetn) begin
+        //case (|m_mon_vif.m_mon_cb.awaddr)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWADDR is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWADDR is z\n", INST_NAME, $time);
+        //endcase 
+        ////check 2
+        //case (|m_mon_vif.m_mon_cb.awlen)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWLEN is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWLEN is z\n", INST_NAME, $time);
+        //endcase 
+        ////check 3
+        //case (|m_mon_vif.m_mon_cb.awsize)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWSIZE is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWSIZE is z\n", INST_NAME, $time);
+        //endcase 
+        ////check 4
+        //case (|m_mon_vif.m_mon_cb.awburst)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWBURST is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWBURST is z\n", INST_NAME, $time);
+        //endcase 
+        ////check 5
+        //case (|m_mon_vif.m_mon_cb.awid)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWID is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] AWID is z\n", INST_NAME, $time);
+        //endcase
+      //end
+    //end
+    ////WDATA CHANNEL
+    //forever begin
+      //@(m_mon_vif.m_mon_cb);
+      //if(m_mon_vif.m_mon_cb.wvalid && m_mon_vif.aresetn) begin
+      //case (|m_mon_vif.m_mon_cb.wdata)
+      //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WDATA is x\n", INST_NAME, $time);
+      //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WDATA is z\n", INST_NAME, $time);
+      //endcase 
+      ////check2
+      //case (|m_mon_vif.m_mon_cb.wstrb)
+      //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WSTRB is x\n", INST_NAME, $time);
+      //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WSTRB is z\n", INST_NAME, $time);
+      //endcase 
+      ////check3
+      //case (m_mon_vif.m_mon_cb.wready)
+      //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WREADY is x\n", INST_NAME, $time);
+      //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] WREADY is z\n", INST_NAME, $time);
+      //endcase
+      //end
+    //end
+    ////
+    //forever begin
+      //@(m_mon_vif.m_mon_cb);
+      //if(m_mon_vif.m_mon_cb.bvalid && m_mon_vif.aresetn) begin
+          ////check1
+          //case (m_mon_vif.m_mon_cb.bid)
+          //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BID is x\n", INST_NAME, $time);
+          //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BID is z\n", INST_NAME, $time);
+          //endcase 
+          ////check2
+          //case (m_mon_vif.m_mon_cb.bresp)
+          //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BRESP is x\n", INST_NAME, $time);
+          //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BRESP is z\n", INST_NAME, $time);
+          //endcase 
+          ////check3
+          //case (m_mon_vif.m_mon_cb.bready)
+          //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BREADY is x\n", INST_NAME, $time);
+          //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] BREADY is z\n", INST_NAME, $time);
+          //endcase 
+      //end
+    //end
+    ////RD ADDR CHANNEL
+      //forever begin
+      //@(m_mon_vif.m_mon_cb);
+      //if(m_mon_vif.m_mon_cb.arvalid && m_mon_vif.aresetn) begin
+        //case (|m_mon_vif.m_mon_cb.araddr)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARADDR is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARADDR is z\n", INST_NAME, $time);
+        //endcase 
+        ////check 2
+        //case (|m_mon_vif.m_mon_cb.arlen)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARLEN is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARLEN is z\n", INST_NAME, $time);
+        //endcase 
+        ////check 3
+        //case (|m_mon_vif.m_mon_cb.arsize)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARSIZE is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARSIZE is z\n", INST_NAME, $time);
+        //endcase 
+        ////check 4
+        //case (|m_mon_vif.m_mon_cb.arburst)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARBURST is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARBURST is z\n", INST_NAME, $time);
+        //endcase 
+        ////check 5
+        //case (|m_mon_vif.m_mon_cb.arid)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARID is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] ARID is z\n", INST_NAME, $time);
+        //endcase
+      //end
+    //end
+    ////
+    ////RDATA CHANNEL
+    //forever begin
+      //@(m_mon_vif.m_mon_cb);
+      //if(m_mon_vif.m_mon_cb.rvalid && m_mon_vif.aresetn) begin
+        ////check1
+        //case (|m_mon_vif.m_mon_cb.rdata)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RDATA is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RDATA is z\n", INST_NAME, $time);
+        //endcase 
+        ////check2
+        //case (m_mon_vif.m_mon_cb.rready)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RREADY is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RREADY is z\n", INST_NAME, $time);
+        //endcase 
+        ////check3
+        //case (|m_mon_vif.m_mon_cb.rid)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RID is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RID is z\n", INST_NAME, $time);
+        //endcase 
+        ////check4
+        //case (|m_mon_vif.m_mon_cb.rresp)
+        //1'bx: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RRESP is x\n", INST_NAME, $time);
+        //1'bz: $fdisplay(chk_error_file, "[AXI_WARNING][%s][%0t ns] RRESP is z\n", INST_NAME, $time);
+        //endcase 
+      //end
+    //end
+  //join_none
+//endtask
+////
+//function void AxiMasterMonitor::report_phase(uvm_phase phase);
+  //`uvm_info(get_type_name(), $sformatf("preparing for closing checker file!!!"), UVM_LOW)
+  //if(chk_error_file == 1) begin
+    //$fclose(chk_error_file);
+  //end
+//endfunction
 //

@@ -4,7 +4,6 @@
 module decoder(
 	start_addr_i,
 	size_of_transfer_i,
-	burst_type_i,
 	//
 	//
  	dec_error_o,
@@ -17,7 +16,6 @@ import parameter_pkg::*;
 //PORTS
 input logic [31:0] start_addr_i;
 input logic [2:0] size_of_transfer_i;
-input logic [1:0] burst_type_i;
 //
 output logic dec_error_o;
 output logic nonexist_transfer_o;
@@ -25,7 +23,7 @@ output logic [`SLAVE_CNT-1:0] true_psel_o;
 //
 //output assigment
 //
-assign nonexist_transfer_o = (burst_type_i[1:0] == 2'b11) | (size_of_transfer_i != 3'd2); 
+assign nonexist_transfer_o = (size_of_transfer_i != 3'd2); 
 //
 //psel for APB slave 
 //

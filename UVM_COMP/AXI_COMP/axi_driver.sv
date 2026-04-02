@@ -37,10 +37,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
   // build_phase: get virtual interface
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    //if(!uvm_config_db#(virtual interface axi_intf #(DW, AW1))::get(this, "", "m_vif", axi_vif)) begin
-	    //`uvm_error(get_type_name(), "axi_vif not found!!!")
-    //end
-    seq_item_port2 = new("seq_item_port2", this);
+      seq_item_port2 = new("seq_item_port2", this);
     //
     if(drv_cfg.axi_agt_cfg.active == UVM_ACTIVE) begin
       seq_item_port3 = new("seq_item_port3", this);
@@ -250,14 +247,6 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
           m_drv_vif.m_drv_cb.awsize  <= tx.size;
           m_drv_vif.m_drv_cb.awburst <= tx.burst;
           m_drv_vif.m_drv_cb.awprot <= tx.prot;
-
-          //m_drv_vif.m_drv_cb.awvalid = 1;
-          //m_drv_vif.m_drv_cb.awid    = tx.id;
-          //m_drv_vif.m_drv_cb.awaddr  = tx.addr;
-          //m_drv_vif.m_drv_cb.awlen   = tx.len;
-          //m_drv_vif.m_drv_cb.awsize  = tx.size;
-          //m_drv_vif.m_drv_cb.awburst = tx.burst;
-          //m_drv_vif.m_drv_cb.awprot = tx.prot;
           // wait until slave asserts awready
           @(m_drv_vif.m_drv_cb iff m_drv_vif.m_drv_cb.awready);
           // deassert and z-state

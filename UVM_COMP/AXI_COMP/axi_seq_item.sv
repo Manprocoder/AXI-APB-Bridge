@@ -44,6 +44,9 @@ class axi_transaction #(DW = 32, AW= 32) extends uvm_sequence_item;
         is_valid dist {1:=8, 0:=2};
     }
     //
+    constraint burst_type {
+	    burst inside {FIXED, INCR, WRAP};
+    }
     //
     constraint data_array {
         //solve order constraints

@@ -14,7 +14,7 @@ class axi_agent extends uvm_agent;
     ResetSequencer rst_seqr;
     AxiMasterMonitor m_monitor0;
     //config
-    env_config env_cfg_inst;
+    env_config env_cfg_h;
     //constructor
     function new(string name = "axi_agent", uvm_component parent);
         super.new(name, parent);
@@ -28,27 +28,27 @@ endclass
 function void axi_agent::build_phase(uvm_phase phase);
     super.build_phase(phase);
     //
-    if(!uvm_config_db #(env_config)::get(this,"", "env_cfg", env_cfg_inst))begin
+    if(!uvm_config_db #(env_config)::get(this,"", "env_cfg", env_cfg_h))begin
         `uvm_fatal(get_type_name(), "env_cfg object is not found!!!")
     end
         m_driver0 = AxiMasterDriver::type_id::create("m_driver0", this);
         w_seqr0   = WriteSequencer::type_id::create("w_seqr0", this);
         r_seqr0   = ReadSequencer::type_id::create("r_seqr0", this);
     //
-    if (env_cfg_inst.axi_agt_cfg.active == UVM_ACTIVE) begin
+    if (env_cfg_h.axi_agt_cfg.active == UVM_ACTIVE) begin
         rst_seqr  = ResetSequencer::type_id::create("rst_seqr", this);
     end
-
+    //
     m_monitor0 = AxiMasterMonitor::type_id::create("m_monitor0", this);
     //
-    m_driver0.drv_cfg = env_cfg_inst;
-    m_monitor0.mon_cfg = env_cfg_inst;
+    m_driver0.drv_cfg = env_cfg_h;
+    m_monitor0.mon_cfg = env_cfg_h;
     //
     //assign driver, monitor, and sequencer(as needed) interfaces
-    m_driver0.m_drv_vif  = env_cfg_inst.axi_agt_cfg.axi_vif;
-    m_monitor0.m_mon_vif = env_cfg_inst.axi_agt_cfg.axi_vif;
-    w_seqr0.axi_vif = env_cfg_inst.axi_agt_cfg.axi_vif;
-    r_seqr0.axi_vif = env_cfg_inst.axi_agt_cfg.axi_vif;
+    m_driver0.m_drv_vif  = env_cfg_h.axi_agt_cfg.axi_vif;
+    m_monitor0.m_mon_vif = env_cfg_h.axi_agt_cfg.axi_vif;
+    w_seqr0.axi_vif = env_cfg_h.axi_agt_cfg.axi_vif;
+    r_seqr0.axi_vif = env_cfg_h.axi_agt_cfg.axi_vif;
 
 endfunction
 
@@ -57,7 +57,7 @@ function void axi_agent::connect_phase(uvm_phase phase);
     m_driver0.seq_item_port.connect(w_seqr0.seq_item_export);
     m_driver0.seq_item_port2.connect(r_seqr0.seq_item_export);
     //
-    if (env_cfg_inst.axi_agt_cfg.active == UVM_ACTIVE) begin
+    if (env_cfg_h.axi_agt_cfg.active == UVM_ACTIVE) begin
         m_driver0.seq_item_port3.connect(rst_seqr.seq_item_export);
     end
     //

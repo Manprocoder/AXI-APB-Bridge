@@ -130,7 +130,7 @@ logic [2:0] read_burst_prot;
 logic [31:0] selected_addr;
 logic [7:0] selected_len;
 logic [2:0] selected_size;
-logic [1:0] selected_burst;
+//logic [1:0] selected_burst;
 logic [2:0] selected_prot;
 logic wr_trans_done;
 logic rd_trans_done;
@@ -142,7 +142,7 @@ logic burst_almost_done;
 logic burst_done;
 //DECODER outputs
 logic dec_error;
-logic nonexist_transfer
+logic nonexist_transfer;
 logic [`SLAVE_CNT-1:0] true_psel;
 //APB MASTER outputs
 //---send to AXI transaction controller
@@ -198,7 +198,7 @@ logic [4:0] master_ctrl;
 	.wr_trans_done_i(wr_trans_done),
 	//apb master input
 	.prdata_i(prdataX),
-	.pslverr_i(pslverrX),
+	.err_of_transfer_i(pslverrX),
 	.write_to_rd_sfifo_i(master_ctrl[4]),
 	.read_from_wd_sfifo_i(master_ctrl[3]),
 	.dec_error_i(dec_error),
@@ -266,7 +266,7 @@ arbiter arbiter_inst(
 	.selected_addr_o(selected_addr),
 	.selected_len_o(selected_len),
 	.selected_size_o(selected_size),
-	.selected_burst_o(selected_burst),
+	//.selected_burst_o(selected_burst),
 	.selected_prot_o(selected_prot),
 	.next_transfer_rdy_o(transfer),
 	.wr_trans_done_o(wr_trans_done),
@@ -294,7 +294,6 @@ counter cnt_inst(
 decoder decoder_inst(
 	.start_addr_i(selected_addr),
 	.size_of_transfer_i(selected_size),
-	.burst_type_i(selected_burst),
 	//
  	.dec_error_o(dec_error),
 	.nonexist_transfer_o(nonexist_transfer),

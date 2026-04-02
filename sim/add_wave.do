@@ -20,6 +20,12 @@ add wave -noupdate /tb/dut_top/wvalid
 add wave -noupdate /tb/dut_top/wstrb
 add wave -noupdate /tb/dut_top/wlast
 add wave -noupdate -hex /tb/dut_top/wdata
+add wave -noupdate -divider -height 23 {AXI CTRL INTERNALS}
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/read_from_wd_sfifo_i
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/wr_trans_done_i
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/wlast_flag
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/err_of_transfer_i
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bresp_reg
 add wave -noupdate -divider -height 23 {WDATA FIFO}
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_wd_we
 add wave -noupdate -unsigned /tb/dut_top/axi_slv_inst/wd_sfifo/w_pointer
@@ -27,7 +33,6 @@ add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_wd_full
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/wd_sfifo/data_in
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_wd_re
 add wave -noupdate -unsigned /tb/dut_top/axi_slv_inst/wd_sfifo/r_pointer
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_wd_almost_empty
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/wd_sfifo/data_out
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/wlast_flag
 add wave -noupdate -divider -height 23 {AXI WRITE RESP CHANNEL}
@@ -62,30 +67,32 @@ add wave -noupdate -divider -height 23 {AXI CLOCK}
 add wave -noupdate /tb/dut_top/axi_slv_inst/aclk
 add wave -noupdate -divider -height 23 {RDATA FIFO}
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_we
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_almost_full
+add wave -noupdate -bin /tb/dut_top/sfifo_rd_almost_full
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/rd_sfifo/data_in
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_re
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_empty
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/rd_sfifo/data_out
-add wave -noupdate -divider -height 23 {AXI FSM}
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/new_req_rdy
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/burst_en
-add wave -noupdate -hex /tb/dut_top/axi_slv_inst/axi_cs
-add wave -noupdate -hex /tb/dut_top/axi_slv_inst/axi_ns
 add wave -noupdate -divider -height 23 {ARBITER}
+add wave -noupdate -hex /tb/dut_top/arbiter_inst/abt_cs
+add wave -noupdate -hex /tb/dut_top/arbiter_inst/abt_ns
+add wave -noupdate -bin /tb/dut_top/arbiter_inst/new_req_rdy
+add wave -noupdate -bin /tb/dut_top/arbiter_inst/burst_en
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/rd_req_avail
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/wr_req_avail
-add wave -noupdate -bin /tb/dut_top/arbiter_inst/used_grant_o
+add wave -noupdate -bin /tb/dut_top/arbiter_inst/selected_burst
+add wave -noupdate -bin /tb/dut_top/arbiter_inst/addr_incr_en_i
+add wave -noupdate -bin /tb/dut_top/arbiter_inst/addr_incr_active
+add wave -noupdate -hex /tb/dut_top/arbiter_inst/addr_reg
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/nextSel
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/nextGrant
 add wave -noupdate /tb/dut_top/arbiter_inst/update
 add wave -noupdate -divider -height 23 {DECODER}
-add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/nonexist_transfer
-add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/preadyX_o
-add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/pslverrX_o
-add wave -noupdate -hex /tb/dut_top/apb_mst_inst/decoder_inst/true_psel_o
-add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/false_psel_o
-add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/dec_error_o
+#add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/nonexist_transfer
+#add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/preadyX_o
+#add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/pslverrX_o
+#add wave -noupdate -hex /tb/dut_top/apb_mst_inst/decoder_inst/true_psel_o
+#add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/false_psel_o
+#add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/dec_error_o
 add wave -noupdate -divider -height 23 {COUNTER}
 add wave -noupdate -unsigned /tb/dut_top/cnt_inst/transfer_cnt
 add wave -noupdate -bin /tb/dut_top/cnt_inst/burst_almost_done_o
@@ -93,19 +100,22 @@ add wave -noupdate -bin /tb/dut_top/cnt_inst/burst_done_o
 add wave -noupdate -divider -height 23 {TRANSACTION_ID}
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/sfifo_ar_id
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/sfifo_aw_id
+add wave -noupdate -divider -height 23 {APB INTERNALS}
+add wave -noupdate -hex /tb/dut_top/apb_mst_inst/apb_cs
+add wave -noupdate -hex /tb/dut_top/apb_mst_inst/apb_ns
+add wave -noupdate -bin /tb/dut_top/apb_mst_inst/transfer_i
+add wave -noupdate -bin /tb/dut_top/apb_mst_inst/preadyX
+add wave -noupdate -hex /tb/dut_top/apb_mst_inst/master_ctrl_o
+add wave -noupdate -bin /tb/dut_top/apb_mst_inst/out_pslverr
+add wave -noupdate -bin /tb/dut_top/apb_mst_inst/invalid_psel
+add wave -noupdate -bin /tb/dut_top/apb_mst_inst/nonexist_transfer_i
+add wave -noupdate -bin /tb/dut_top/apb_mst_inst/pslverrX_o
 add wave -noupdate -divider -height 23 {APB INTERFACE}
 add wave -noupdate /tb/dut_top/pclk
 add wave -noupdate /tb/dut_top/preset_n
-add wave -noupdate -hex /tb/dut_top/apb_mst_inst/apb_cs
-add wave -noupdate -hex /tb/dut_top/apb_mst_inst/apb_ns
-add wave -noupdate -hex /tb/dut_top/apb_mst_inst/start_addr_i
-add wave -noupdate -bin /tb/dut_top/apb_mst_inst/begin_transfer
-add wave -noupdate -bin /tb/dut_top/apb_mst_inst/next_transfer_rdy_i
-add wave -noupdate -bin /tb/dut_top/apb_mst_inst/end_of_burst_i
-add wave -noupdate /tb/dut_top/pwrite
 add wave -noupdate -bin /tb/dut_top/apb_mst_inst/psel
-add wave -noupdate -bin /tb/dut_top/apb_mst_inst/invalid_psel
 add wave -noupdate /tb/dut_top/apb_mst_inst/penable
+add wave -noupdate /tb/dut_top/pwrite
 add wave -noupdate -hex /tb/dut_top/apb_mst_inst/paddr
 add wave -noupdate -hex /tb/dut_top/apb_mst_inst/pwdata
 add wave -noupdate /tb/dut_top/apb_mst_inst/pstrb

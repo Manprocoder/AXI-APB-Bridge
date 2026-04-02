@@ -7,11 +7,13 @@
 ../DUT/sfifordata.sv
 ../DUT/sfiforeq.sv
 ../DUT/sfifowdata.sv
+../DUT/x2p_parameter.sv
 ../DUT/x2p_top.sv
 ../UVM_COMP/APB_COMP/apb_seq.sv
 ../UVM_COMP/AXI_COMP/common_sequence.sv
 ../UVM_COMP/AXI_COMP/reset_sequence.sv
 ../UVM_COMP/OTHER_COMP/interface.sv
+../UVM_COMP/OTHER_COMP/scoreboard.sv
 ../cov_module/axi_cov.sv
 ../cov_module/axi_cov_top.sv
 ./tb.sv

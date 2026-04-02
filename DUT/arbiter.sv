@@ -38,7 +38,7 @@ module arbiter(
 	selected_addr_o,
 	selected_len_o,
 	selected_size_o,
-	selected_burst_o,
+	//selected_burst_o,
 	selected_prot_o,
 	next_transfer_rdy_o,
 	wr_trans_done_o,
@@ -84,7 +84,7 @@ output logic [31:0] transfer_addr_o;
 output logic [31:0] selected_addr_o;
 output logic [7:0] selected_len_o;
 output logic [2:0] selected_size_o;
-output logic [1:0] selected_burst_o;
+//output logic [1:0] selected_burst_o;
 output logic [2:0] selected_prot_o;
 output logic next_transfer_rdy_o;
 output logic wr_trans_done_o;
@@ -94,7 +94,7 @@ output logic write_enable_o;
 //variables
 //*****************************************************************
 //ABT state machine
-typedef enum logic [1:0] {A_IDLE, ABT_GO, ABT_DONE} abt_st;
+typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE} abt_st;
   abt_st abt_cs, abt_ns;
   //
   logic [1:0] nextSel;
@@ -107,6 +107,7 @@ typedef enum logic [1:0] {A_IDLE, ABT_GO, ABT_DONE} abt_st;
   logic burst_en;
   logic new_req_rdy;
   logic [1:0] control;
+  logic [1:0] selected_burst;
   //addr variables
   logic addr_incr_active;
   logic [31:0] addr_reg;
@@ -117,6 +118,7 @@ typedef enum logic [1:0] {A_IDLE, ABT_GO, ABT_DONE} abt_st;
   logic [3:0] bit3Addr;
   logic [4:0] bit4Addr;
   logic [5:0] bit5Addr;
+  logic [6:0] bit6Addr;
   //***************************************************
   //output assignment
   //***************************************************
@@ -125,7 +127,6 @@ assign next_transfer_rdy_o = burst_go ? (current_grant[0] ? ~sfifo_rd_almost_ful
 assign selected_prot_o = current_grant[0] ? read_burst_prot_i : write_burst_prot_i;
 assign selected_addr_o = current_grant[0] ? read_burst_addr_i : write_burst_addr_i;
 assign selected_len_o = current_grant[0] ? read_burst_len_i : write_burst_len_i;
-assign selected_burst_o = current_grant[0] ? read_burst_name_i : write_burst_name_i;
 assign selected_size_o = current_grant[0] ? read_burst_size_i : write_burst_size_i;
 assign wr_trans_done_o = current_grant[1] & control[1];
 assign rd_trans_done_o = current_grant[0] & control[1];
@@ -133,6 +134,7 @@ assign write_enable_o = current_grant[1];
   //***************************************************
   //internal assignment
   //***************************************************
+assign selected_burst = current_grant[0] ? read_burst_name_i : write_burst_name_i;
 assign rd_req_avail = ~sfifo_ar_empty_i;
 assign wr_req_avail = ~sfifo_aw_empty_i;
 assign burst_en = new_req_rdy ? (current_grant[0] ? ~sfifo_ar_empty_i : ~sfifo_aw_empty_i) : 1'b0;
@@ -152,7 +154,7 @@ assign burst_en = new_req_rdy ? (current_grant[0] ? ~sfifo_ar_empty_i : ~sfifo_a
 //state reg
 //
 always_ff@(posedge aclk, negedge aresetn) begin
-	if(~aresetn) abt_cs <= A_IDLE;
+	if(~aresetn) abt_cs <= ABT_IDLE;
 	else abt_cs <= abt_ns;
 end
   //
@@ -162,13 +164,13 @@ always_comb begin
   control = 2'b0;
   //
   case(abt_cs)
-  A_IDLE: begin
+  ABT_IDLE: begin
 	  if(burst_en) begin
 		  abt_ns = ABT_GO;
 		  control = 2'b01;
 	  end
 	  else begin
-		  abt_ns = A_IDLE;
+		  abt_ns = ABT_IDLE;
 		  control = 2'b00;
 	  end
   end
@@ -180,7 +182,7 @@ always_comb begin
   end
   ABT_DONE: begin
 	  if(burst_done_i) begin
-		  abt_ns = A_IDLE;
+		  abt_ns = ABT_IDLE;
 		  control = 2'b10;
 	  end
 	  else abt_ns = ABT_DONE;
@@ -246,7 +248,8 @@ always_ff @(posedge aclk, negedge aresetn) begin
 end
 //
 //address register
-assign addr_incr_active = control[1] ? addr_incr_en_i : 1'b0;
+//assign addr_incr_active = control[1] ? addr_incr_en_i : 1'b0;
+assign addr_incr_active = burst_go ? addr_incr_en_i : 1'b0;
 //
 always_ff@(posedge pclk, negedge preset_n) begin
 	if(~preset_n) addr_reg <= 32'd0;
@@ -254,7 +257,7 @@ always_ff@(posedge pclk, negedge preset_n) begin
 		addr_reg <= {selected_addr_o[31:2], 2'b00};
 	end
 	else if(addr_incr_active) begin
-		case(selected_burst_o) 
+		case(selected_burst) 
 			2'b00: addr_reg <= addr_reg;
 			2'b01: addr_reg <= next_addr_for_incr;
 			2'b10: addr_reg <= next_addr_for_wrap;

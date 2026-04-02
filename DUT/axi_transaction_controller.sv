@@ -47,7 +47,7 @@ module axi_transaction_controller (// AXI protocol
 	wr_trans_done_i,
 	//apb master input
 	prdata_i,
-	pslverr_i,
+	err_of_transfer_i,
 	write_to_rd_sfifo_i,
 	read_from_wd_sfifo_i,
 	dec_error_i,
@@ -122,7 +122,7 @@ module axi_transaction_controller (// AXI protocol
 input logic rd_trans_done_i;
 input logic wr_trans_done_i;
 input logic [31:0] prdata_i;
-input logic pslverr_i;
+input logic err_of_transfer_i;
 input logic write_to_rd_sfifo_i;
 input logic read_from_wd_sfifo_i;
 input logic dec_error_i;
@@ -177,7 +177,7 @@ output logic [3:0] wstrb_to_apb_o;
   logic[1:0]                      resp_of_rdata;
   logic 			  rdata_last;
   //WRITE RESPONSE
-  logic bresp_register;
+  logic bresp_reg;
   //
   parameter logic [POINTER_WIDTH:0] ALMOST_FULL_VALUE = 2**POINTER_WIDTH - 1'b1;
   parameter logic [POINTER_WIDTH:0] ALMOST_EMPTY_VALUE = 2**POINTER_WIDTH - 4'd14;
@@ -215,10 +215,10 @@ output logic [3:0] wstrb_to_apb_o;
   .rst_n(aresetn),
   .wr(sfifo_rd_we),
   .rd(sfifo_rd_re),
-  .data_in({rd_trans_done_i, prdata_i[31:0], resp_of_rdata[1:0], sfifo_ar_id[7:0]}),
+  .data_in({rd_trans_done_i, resp_of_rdata[1:0], sfifo_ar_id[7:0], prdata_i[31:0]}),
   .sfifo_empty(sfifo_rd_empty),
   .sfifo_almost_full(sfifo_rd_almost_full_o),
-  .data_out({rdata_last, rdata[31:0], rresp[1:0], rid[7:0]})
+  .data_out({rdata_last, rresp[1:0], rid[7:0], rdata[31:0]})
   );
   //Logic
   assign rvalid      = ~sfifo_rd_empty;
@@ -227,7 +227,7 @@ output logic [3:0] wstrb_to_apb_o;
   //RD_CH
   //resp_of_rdata
   always_comb begin
-    if(~pslverr_i)
+    if(~err_of_transfer_i)
 	  resp_of_rdata = OKAY;
 	else if(dec_error_i)
 	  resp_of_rdata = DECERR;
@@ -273,10 +273,10 @@ output logic [3:0] wstrb_to_apb_o;
   .rst_n(aresetn),
   .wr(sfifo_wd_we),
   .rd(sfifo_wd_re),
-  .data_in({wdata[31:0], wstrb[3:0], wlast}),
+  .data_in({wlast, wstrb[3:0], wdata[31:0]}),
   .sfifo_almost_empty(sfifo_wd_almost_empty_o),
   .sfifo_full(sfifo_wd_full),
-  .data_out({wdata_to_apb_o[31:0], wstrb_to_apb_o[3:0], wlast_flag})
+  .data_out({wlast_flag, wstrb_to_apb_o[3:0], wdata_to_apb_o[31:0]})
   );
 //logic
 assign wready      = ~sfifo_wd_full;
@@ -288,9 +288,9 @@ assign sfifo_wd_re = read_from_wd_sfifo_i;
 //bresp register
 //
 always_ff@(posedge aclk, negedge aresetn) begin
-  if(~aresetn) bresp_register <= 1'b0;
-  else if(wr_trans_done_i) bresp_register <= 1'b0; 
-  else if(latch_resp_i) bresp_register <= pslverr_i;
+  if(~aresetn) bresp_reg <= 1'b0;
+  else if(wr_trans_done_i) bresp_reg <= 1'b0; 
+  else if(latch_resp_i) bresp_reg <= (bresp_reg | err_of_transfer_i);
 end
 //
 //INFO
@@ -305,8 +305,10 @@ always_ff @(posedge aclk, negedge aresetn) begin
 		  bid[7:0] <= sfifo_aw_id[7:0];
 		  bvalid <= 1'b1;
 		  //
-		  if(~bresp_register | ~pslverr_i)
-		    bresp[1:0] <= OKAY | ~{2{wlast_flag}};
+		  if(~wlast_flag) 
+		    bresp[1:0] <= PSLVERR;
+		  else if(~bresp_reg)
+		    bresp[1:0] <= OKAY;
 		  else if(dec_error_i)
 		    bresp[1:0] <= DECERR;
 		  else

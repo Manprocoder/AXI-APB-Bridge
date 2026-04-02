@@ -75,6 +75,7 @@ logic [`SLAVE_CNT-1:0] out_pslverr;
 logic [`SLAVE_CNT-1:0][31:0] out_prdata;
 logic [`SLAVE_CNT-1:0] preadyX;
 logic invalid_psel;
+logic store_rdata, fetch_wdata, latch_resp, set_up_phase, addr_incr_en;
 //
 assign master_ctrl_o = {store_rdata, fetch_wdata, latch_resp, set_up_phase, addr_incr_en};
 //
@@ -125,10 +126,10 @@ assign master_ctrl_o = {store_rdata, fetch_wdata, latch_resp, set_up_phase, addr
 		P_IDLE: begin
 			if(transfer_i) begin
 				apb_ns[1:0] = SETUP;
-				fetch_wdata = (grant_to_write_i) ? 1'b1 : 1'b0;
 			end
-			else
-			apb_ns[1:0] = P_IDLE;
+			else begin
+				apb_ns[1:0] = P_IDLE;
+			end
 		end
 		SETUP: begin
 			apb_ns[1:0] = ACCESS;
@@ -145,18 +146,23 @@ assign master_ctrl_o = {store_rdata, fetch_wdata, latch_resp, set_up_phase, addr
 			pwrite = (grant_to_write_i) ? 1'b1: 1'b0;
 			pwdata = (grant_to_write_i) ? wdata_to_apb_i[31:0] : 32'd0;
 		    pstrb[3:0] = (grant_to_write_i) ? wstrb_to_apb_i[3:0] : 4'h0;
+		    //
+			store_rdata = 0;
+			fetch_wdata = 0;
+			latch_resp = 0;
 		        set_up_phase = 1'b1;
+			addr_incr_en = 0;
 		end
 		ACCESS: begin
 			if(preadyX) begin
 				//
-				latch_resp = 1'b1;
+				latch_resp = (grant_to_write_i) ? 1'b1 : 1'b0;
 				addr_incr_en = 1'b1;
 				store_rdata = (grant_to_write_i) ? 1'b0 : 1'b1;
+				fetch_wdata = (grant_to_write_i) ? 1'b1 : 1'b0;
 				//
 				if(transfer_i) begin
 					apb_ns[1:0] = SETUP;
-					fetch_wdata = (grant_to_write_i) ? 1'b1 : 1'b0;
 				end
 				else begin
 					apb_ns[1:0] = P_IDLE;

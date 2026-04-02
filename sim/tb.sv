@@ -14,7 +14,6 @@ module tb;
     clk_tb = 0;
     forever #(`CLK_CYCLE/2) clk_tb = ~clk_tb;
   end
-  //
     //----------------------------------------
     //instantiate interface pin
     //----------------------------------------
