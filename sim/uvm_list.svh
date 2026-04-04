@@ -7,14 +7,18 @@ parameter AW2 = 32;
 `include "uvm_macros.svh"
 import uvm_pkg::*;
 `include "../UVM_COMP/OTHER_COMP/interface.sv"
+//
 `include "../UVM_COMP/OTHER_COMP/type_package.sv"
 `include "../UVM_COMP/OTHER_COMP/config_object.svh"
 `include "../cov_module/axi_cov.sv"
 `include "../cov_module/axi_cov_top.sv"
 //
-//
-`include "../UVM_COMP/AXI_COMP/axi_seq_item.sv"
 `include "../UVM_COMP/APB_COMP/apb_seq_item.sv"
+`include "../UVM_COMP/AXI_COMP/axi_seq_item.sv"
+`include "../UVM_COMP/OBJECT_IN_AXI_MON/axi_req_item.sv"
+`include "../UVM_COMP/OBJECT_IN_AXI_MON/axi_data_item.sv"
+`include "../UVM_COMP/OBJECT_IN_AXI_MON/axi_brsp_item.sv"
+//
 `include "../UVM_COMP/SHARED_ITEM/shared_item.sv"
 `include "../UVM_COMP/AXI_COMP/common_sequence.sv" //write seq and read seq for AXI protocol
 `include "../UVM_COMP/AXI_COMP/reset_sequence.sv" //write seq and read seq for AXI protocol

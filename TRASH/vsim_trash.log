@@ -1,0 +1,371 @@
+# vsim -voptargs="+acc" work.tb "+UVM_TESTNAME=base_test" "+UVM_VERBOSITY=UVM_LOW" -coverage -coveranalysis -cvgperinstance -wlf ../SIM_RESULT/1SLAVE/base_test/vsim.wlf -l ../SIM_RESULT/1SLAVE/base_test/vsim.log -do "do add_wave.do; run -all; coverage save ../SIM_RESULT/1SLAVE/base_test/base_test_cov.ucdb " 
+# Start time: 22:37:33 on Apr 03,2026
+# Loading C:/Users/LENOVO/AppData/Local/Temp\LENOVO@NGOCMAN_dpi_15552\win64_gcc-4.5.0\export_tramp.dll
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Note: (vopt-143) Recognized 1 FSM in module "arbiter(fast)".
+# Loading sv_std.std
+# Loading work.type_package(fast)
+# Loading work.uvm_pkg(fast)
+# Loading work.tb_sv_unit(fast)
+# ** Note: (vsim-8785) UVM-aware debugging capabilities will be disabled since no compiled "questa_uvm_pkg" can be found.
+# This also means that later if you turn on UVM-aware debugging your debug simulations may have
+# different random seeds from your non-debug simulations.
+# Loading work.tb(fast)
+# Loading work.axi_intf(fast)
+# Loading work.apb_intf(fast)
+# Loading work.x2p_top(fast)
+# Loading work.parameter_pkg(fast)
+# Loading work.axi_transaction_controller(fast)
+# Loading work.sfiforeq(fast)
+# Loading work.sfifordata(fast)
+# Loading work.sfifowdata(fast)
+# Loading work.arbiter(fast)
+# Loading work.RiSiEdgeDetector(fast)
+# Loading work.counter(fast)
+# Loading work.decoder(fast)
+# Loading work.apb_master(fast)
+# Loading work.axi_cov_top(fast)
+# Loading work.axi_cov(fast)
+# Loading work.axi_intf(fast)
+# Loading work.apb_intf(fast)
+# Compiling C:/Users/LENOVO/AppData/Local/Temp\LENOVO@NGOCMAN_dpi_15552\win64_gcc-4.5.0\exportwrapper.c
+# Loading C:/Users/LENOVO/AppData/Local/Temp\LENOVO@NGOCMAN_dpi_15552\win64_gcc-4.5.0\vsim_auto_compile.dll
+# do add_wave.do
+#  run -all
+# UVM_INFO C:/questasim64_10.7c/uvm-1.2/src/base/uvm_root.svh(392) @ 0: reporter [UVM/RELNOTES] 
+# ----------------------------------------------------------------
+# UVM-1.2
+# (C) 2007-2014 Mentor Graphics Corporation
+# (C) 2007-2014 Cadence Design Systems, Inc.
+# (C) 2006-2014 Synopsys, Inc.
+# (C) 2011-2013 Cypress Semiconductor Corp.
+# (C) 2013-2014 NVIDIA Corporation
+# ----------------------------------------------------------------
+# 
+#   ***********       IMPORTANT RELEASE NOTES         ************
+# 
+#   You are using a version of the UVM library that has been compiled
+#   with `UVM_NO_DEPRECATED undefined.
+#   See http://www.eda.org/svdb/view.php?id=3313 for more details.
+# 
+#   You are using a version of the UVM library that has been compiled
+#   with `UVM_OBJECT_DO_NOT_NEED_CONSTRUCTOR undefined.
+#   See http://www.eda.org/svdb/view.php?id=3770 for more details.
+# 
+#       (Specify +UVM_NO_RELNOTES to turn off this notice)
+# 
+# UVM_INFO C:/questasim64_10.7c/uvm-1.2/src/base/uvm_root.svh(453) @ 0: reporter [NO_DPI_TSTNAME] UVM_NO_DPI defined--getting UVM_TESTNAME directly, without DPI
+# UVM_INFO @ 0: reporter [RNTST] Running test base_test...
+# UVM_INFO C:/questasim64_10.7c/uvm-1.2/src/base/uvm_root.svh(579) @ 0: reporter [UVMTOP] UVM testbench topology:
+# ---------------------------------------------------------------------------
+# Name                             Type                           Size  Value
+# ---------------------------------------------------------------------------
+# uvm_test_top                     base_test                      -     @347 
+#   m_env0                         m_env                          -     @362 
+#     apb_slv_agt                  apb_agent                      -     @391 
+#       apb_driver0                apb_driver                     -     @421 
+#         rsp_port                 uvm_analysis_port              -     @440 
+#         seq_item_port            uvm_seq_item_pull_port         -     @430 
+#       apb_monitor0               apb_monitor                    -     @412 
+#         ApbContent_toScoreboard  uvm_analysis_port              -     @587 
+#         presetn_toScoreboard     uvm_analysis_port              -     @597 
+#         pseltb_toScoreboard      uvm_analysis_port              -     @607 
+#       s_seqr0                    ApbSequencer                   -     @450 
+#         rsp_export               uvm_analysis_export            -     @459 
+#         seq_item_export          uvm_seq_item_pull_imp          -     @577 
+#         arbitration_queue        array                          0     -    
+#         lock_queue               array                          0     -    
+#         num_last_reqs            integral                       32    'd1  
+#         num_last_rsps            integral                       32    'd1  
+#     axi_mst_agt                  axi_agent                      -     @382 
+#       m_driver0                  AxiMasterDriver                -     @624 
+#         rsp_port                 uvm_analysis_port              -     @643 
+#         seq_item_port            uvm_seq_item_pull_port         -     @633 
+#         seq_item_port2           uvm_seq_item_pull_port         -     @1073
+#         seq_item_port3           uvm_seq_item_pull_port         -     @1083
+#       m_monitor0                 AxiMasterMonitor               -     @1064
+#         AxiBresp_toScoreBoard    uvm_analysis_port              -     @1143
+#         AxiRData_toScoreBoard    uvm_analysis_port              -     @1113
+#         AxiRdAddr_toScoreBoard   uvm_analysis_port              -     @1103
+#         AxiResetn_toScoreBoard   uvm_analysis_port              -     @1093
+#         AxiWData_toScoreBoard    uvm_analysis_port              -     @1133
+#         AxiWrAddr_toScoreBoard   uvm_analysis_port              -     @1123
+#       r_seqr0                    ReadSequencer                  -     @790 
+#         rsp_export               uvm_analysis_export            -     @799 
+#         seq_item_export          uvm_seq_item_pull_imp          -     @917 
+#         arbitration_queue        array                          0     -    
+#         lock_queue               array                          0     -    
+#         num_last_reqs            integral                       32    'd1  
+#         num_last_rsps            integral                       32    'd1  
+#       rst_seqr                   ResetSequencer                 -     @927 
+#         rsp_export               uvm_analysis_export            -     @936 
+#         seq_item_export          uvm_seq_item_pull_imp          -     @1054
+#         arbitration_queue        array                          0     -    
+#         lock_queue               array                          0     -    
+#         num_last_reqs            integral                       32    'd1  
+#         num_last_rsps            integral                       32    'd1  
+#       w_seqr0                    WriteSequencer                 -     @653 
+#         rsp_export               uvm_analysis_export            -     @662 
+#         seq_item_export          uvm_seq_item_pull_imp          -     @780 
+#         arbitration_queue        array                          0     -    
+#         lock_queue               array                          0     -    
+#         num_last_reqs            integral                       32    'd1  
+#         num_last_rsps            integral                       32    'd1  
+#     m_sb                         scoreboard                     -     @401 
+#       aimp_ApbContent            uvm_analysis_imp_ApbContent    -     @1238
+#       aimp_Aresetn               uvm_analysis_imp_Aresetn       -     @1168
+#       aimp_AxiBresp              uvm_analysis_imp_AxiBresp      -     @1218
+#       aimp_AxiRData              uvm_analysis_imp_AxiRData      -     @1188
+#       aimp_AxiRdRequest          uvm_analysis_imp_AxiRdRequest  -     @1178
+#       aimp_AxiWData              uvm_analysis_imp_AxiWData      -     @1208
+#       aimp_AxiWrRequest          uvm_analysis_imp_AxiWrRequest  -     @1198
+#       aimp_Presetn               uvm_analysis_imp_Presetn       -     @1228
+#       aimp_Pseltb                uvm_analysis_imp_Pseltb        -     @1248
+# ---------------------------------------------------------------------------
+# 
+# UVM_INFO C:/questasim64_10.7c/uvm-1.2/src/base/uvm_traversal.svh(279) @ 0: reporter [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
+# UVM_INFO ../UVM_COMP/AXI_COMP/common_sequence.sv(36) @ 0: reporter [stimulus_generator] w_test_nums = 20
+# UVM_INFO ../UVM_COMP/AXI_COMP/common_sequence.sv(75) @ 0: reporter [stimulus_generator] r_test_nums = 20
+# UVM_INFO ../TEST_CASES/SLAVE1/rd_wr_parallel/rd_wr_parallel.sv(49) @ 0: reporter@@rd_wr_parallel_vseq [rd_wr_parallel_vseq] Actual size of r_trans_q: 20
+# UVM_INFO ../TEST_CASES/SLAVE1/rd_wr_parallel/rd_wr_parallel.sv(55) @ 0: reporter@@rd_wr_parallel_vseq [rd_wr_parallel_vseq] rd_wr_parallel_vseq start!!!
+# UVM_INFO ../UVM_COMP/AXI_COMP/common_sequence.sv(202) @ 0: uvm_test_top.m_env0.axi_mst_agt.w_seqr0@@WriteSeq [uvm_sequence_item] w_test_nums = 20
+# UVM_INFO ../UVM_COMP/AXI_COMP/common_sequence.sv(247) @ 0: uvm_test_top.m_env0.axi_mst_agt.r_seqr0@@ReadSeq [uvm_sequence_item] r_test_nums = 20
+# UVM_INFO ../UVM_COMP/APB_COMP/apb_seq.sv(30) @ 0: uvm_test_top.m_env0.apb_slv_agt.s_seqr0@@ApbSeq [uvm_sequence_item] APB SLAVE SEQUENCE body() enters!!!
+# UVM_INFO ../UVM_COMP/AXI_COMP/axi_driver.sv(102) @ 0: uvm_test_top.m_env0.axi_mst_agt.m_driver0 [AxiMasterDriver] [LEVEL_SENSITIVE]all signals reset!!!
+# ** Error: [RESET_RESPSIGNAL]: All resp signals are not properly reset!!!
+#    Time: 25 ns Started: 15 ns  Scope: tb.AXI File: ../UVM_COMP/OTHER_COMP/interface.sv Line: 157
+# ** Error: [RESET_REQSIGNAL]: All req signals are not properly reset!!!
+#    Time: 25 ns Started: 15 ns  Scope: tb.AXI File: ../UVM_COMP/OTHER_COMP/interface.sv Line: 127
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 275: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][0(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 395: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][1(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 405: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][0(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 465: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][1(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 515: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][2(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 555: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][2(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 765: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][3(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 805: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][3(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 1335: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][4(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 1775: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][4(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 2185: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][5(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 2215: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][6(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 2245: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][5(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 2255: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][6(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 2325: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][7(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 2375: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][7(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 2755: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][8(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 3115: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][8(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 4605: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][9(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 5925: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][9(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 7415: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][10(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 8865: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][10(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 9475: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][11(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 9825: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][11(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 10555: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][12(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 15375: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][13(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 15385: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][12(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 20795: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][13(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 20925: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][14(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 20995: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][14(ID)]
+# UVM_WARNING ../UVM_COMP/OTHER_COMP/scoreboard.sv(762) @ 25995: uvm_test_top.m_env0.m_sb [scoreboard] at[25995 (ns)]APB TRANSFER TIMEOUT!!!
+# UVM_WARNING ../UVM_COMP/OTHER_COMP/scoreboard.sv(762) @ 31005: uvm_test_top.m_env0.m_sb [scoreboard] at[31005 (ns)]APB TRANSFER TIMEOUT!!!
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 32555: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][15(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 32555: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][16(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 32555: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][17(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 32965: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][18(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 32995: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][15(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 32995: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][16(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 32995: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][17(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 33335: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][18(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(267) @ 39205: uvm_test_top.m_env0.m_sb [scoreboard] [NEW]Store SIM RESULT of [READ_][19(ID)]
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(261) @ 45625: uvm_test_top.m_env0.m_sb [scoreboard] [EXISTING]Store SIM RESULT of [WRITE][19(ID)]
+# UVM_WARNING ../UVM_COMP/OTHER_COMP/scoreboard.sv(762) @ 50625: uvm_test_top.m_env0.m_sb [scoreboard] at[50625 (ns)]APB TRANSFER TIMEOUT!!!
+# UVM_WARNING ../UVM_COMP/OTHER_COMP/scoreboard.sv(762) @ 55635: uvm_test_top.m_env0.m_sb [scoreboard] at[55635 (ns)]APB TRANSFER TIMEOUT!!!
+#--------------------------------------------------------------
+# UVM_WARNING ../UVM_COMP/OTHER_COMP/test.sv(128) @ 10000000: uvm_test_top [TEST WARNING] TIMEOUT TIMEOUT TIMEOUT TIMEOUT TIMEOUT!!!
+#--------------------------------------------------------------
+# UVM_INFO C:/questasim64_10.7c/uvm-1.2/src/base/uvm_objection.svh(1270) @ 10000000: reporter [TEST_DONE] 'run' phase is ready to proceed to the 'extract' phase
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(411) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] ================== REPORT SUMMARY =================
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 0(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[0] READ_:Addr=0x0875_68cc Len_1=4 Size=4(bytes_in_beat) Burst=FIXED Resp=DECERR | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[0] WRITE:Addr=0x0875_68ce Len_1=4 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 1(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[1] READ_:Addr=0x0000_0464 Len_1=4 Size=4(bytes_in_beat) Burst=FIXED Resp=PSLVERR | PASS=4, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[1] WRITE:Addr=0x0000_0464 Len_1=4 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=4, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 2(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[2] READ_:Addr=0x0000_00a0 Len_1=1 Size=4(bytes_in_beat) Burst=INCR Resp=OKAY | PASS=1, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[2] WRITE:Addr=0x0000_00a1 Len_1=1 Size=4(bytes_in_beat) Burst=INCR Resp=NO_USE | PASS=1, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 3(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[3] READ_:Addr=0x0000_0f1c Len_1=4 Size=4(bytes_in_beat) Burst=FIXED Resp=OKAY | PASS=4, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[3] WRITE:Addr=0x0000_0f1c Len_1=4 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=4, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 4(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[4] READ_:Addr=0x0000_0370 Len_1=16 Size=4(bytes_in_beat) Burst=WRAP Resp=OKAY | PASS=16, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[4] WRITE:Addr=0x0000_0370 Len_1=16 Size=4(bytes_in_beat) Burst=WRAP Resp=NO_USE | PASS=16, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 5(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[5] READ_:Addr=0xf945_1ff4 Len_1=8 Size=4(bytes_in_beat) Burst=WRAP Resp=DECERR | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[5] WRITE:Addr=0xf945_1ff5 Len_1=8 Size=4(bytes_in_beat) Burst=WRAP Resp=NO_USE | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 6(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[6] READ_:Addr=0x0000_0750 Len_1=2 Size=4(bytes_in_beat) Burst=FIXED Resp=OKAY | PASS=2, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[6] WRITE:Addr=0x0000_0750 Len_1=2 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=2, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 7(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[7] READ_:Addr=0x0000_0944 Len_1=2 Size=4(bytes_in_beat) Burst=FIXED Resp=OKAY | PASS=2, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[7] WRITE:Addr=0x0000_0944 Len_1=2 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=2, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 8(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[8] READ_:Addr=0x0000_096c Len_1=14 Size=4(bytes_in_beat) Burst=INCR Resp=OKAY | PASS=14, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[8] WRITE:Addr=0x0000_096c Len_1=14 Size=4(bytes_in_beat) Burst=INCR Resp=NO_USE | PASS=14, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 9(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[9] READ_:Addr=0x0000_0028 Len_1=58 Size=4(bytes_in_beat) Burst=INCR Resp=OKAY | PASS=58, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[9] WRITE:Addr=0x0000_0029 Len_1=58 Size=4(bytes_in_beat) Burst=INCR Resp=NO_USE | PASS=58, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 10(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[10] READ_:Addr=0x0000_0674 Len_1=54 Size=4(bytes_in_beat) Burst=INCR Resp=OKAY | PASS=54, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[10] WRITE:Addr=0x0000_0676 Len_1=54 Size=4(bytes_in_beat) Burst=INCR Resp=NO_USE | PASS=54, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 11(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[11] READ_:Addr=0x0000_032c Len_1=16 Size=4(bytes_in_beat) Burst=FIXED Resp=OKAY | PASS=16, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[11] WRITE:Addr=0x0000_032c Len_1=16 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=16, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 12(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[12] READ_:Addr=0x6e5a_7f80 Len_1=16 Size=4(bytes_in_beat) Burst=FIXED Resp=DECERR | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[12] WRITE:Addr=0x6e5a_7f81 Len_1=16 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 13(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[13] READ_:Addr=0x0000_02d0 Len_1=201 Size=4(bytes_in_beat) Burst=INCR Resp=OKAY | PASS=201, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[13] WRITE:Addr=0x0000_02d2 Len_1=201 Size=4(bytes_in_beat) Burst=INCR Resp=NO_USE | PASS=201, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 14(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[14] READ_:Addr=0x0000_0bc0 Len_1=4 Size=4(bytes_in_beat) Burst=FIXED Resp=OKAY | PASS=4, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[14] WRITE:Addr=0x0000_0bc0 Len_1=4 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=4, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 15(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[15] READ_:Addr=0xa043_d3a8 Len_1=8 Size=4(bytes_in_beat) Burst=FIXED Resp=DECERR | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[15] WRITE:Addr=0xa043_d3ab Len_1=8 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 16(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[16] READ_:Addr=0xfc4d_9f14 Len_1=8 Size=4(bytes_in_beat) Burst=FIXED Resp=DECERR | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[16] WRITE:Addr=0xfc4d_9f17 Len_1=8 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 17(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[17] READ_:Addr=0xbd36_6390 Len_1=256 Size=4(bytes_in_beat) Burst=INCR Resp=DECERR | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[17] WRITE:Addr=0xbd36_6392 Len_1=256 Size=4(bytes_in_beat) Burst=INCR Resp=NO_USE | PASS=0, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 18(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[18] READ_:Addr=0x0000_0250 Len_1=16 Size=4(bytes_in_beat) Burst=FIXED Resp=OKAY | PASS=16, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[18] WRITE:Addr=0x0000_0250 Len_1=16 Size=4(bytes_in_beat) Burst=FIXED Resp=NO_USE | PASS=16, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(420) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] SIM RESULT of 19(ID):
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[19] READ_:Addr=0x0000_0c64 Len_1=239 Size=4(bytes_in_beat) Burst=INCR Resp=OKAY | PASS=239, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(446) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] TRANS[19] WRITE:Addr=0x0000_0c66 Len_1=239 Size=4(bytes_in_beat) Burst=INCR Resp=NO_USE | PASS=239, FAIL=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(460) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] 
+# 
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(478) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] ===================================================
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(493) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] ================== BCHANNEL REPORT =================
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=0---expected_bid=0
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=DECERR___expected_bresp=DECERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=1---expected_bid=1
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=2---expected_bid=2
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=OKAY___expected_bresp=OKAY
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=3---expected_bid=3
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=4---expected_bid=4
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=5---expected_bid=5
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=DECERR___expected_bresp=DECERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=6---expected_bid=6
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=7---expected_bid=7
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=8---expected_bid=8
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=9---expected_bid=9
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=10---expected_bid=10
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=11---expected_bid=11
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=12---expected_bid=12
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=DECERR___expected_bresp=DECERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=13---expected_bid=13
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=14---expected_bid=14
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=15---expected_bid=15
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=DECERR___expected_bresp=DECERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=16---expected_bid=16
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=DECERR___expected_bresp=DECERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=17---expected_bid=17
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=DECERR___expected_bresp=DECERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=18---expected_bid=18
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(524) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [COMPARE_BCHANNEL]: actual_bid=19---expected_bid=19
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(528) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] [----------------][PASS]: actual_bresp=PSLVERR___expected_bresp=PSLVERR
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(569) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] RESP CHECK: 20(PASS)___0(FAIL)
+# UVM_INFO ../UVM_COMP/OTHER_COMP/scoreboard.sv(570) @ 10000000: uvm_test_top.m_env0.m_sb [scoreboard] =======================================================
+# UVM_INFO C:/questasim64_10.7c/uvm-1.2/src/base/uvm_report_server.svh(847) @ 10000000: reporter [UVM/REPORT/SERVER] 
+# --- UVM Report Summary ---
+# 
+# ** Report counts by severity
+# UVM_INFO :  179
+# UVM_WARNING :    5
+# UVM_ERROR :    0
+# UVM_FATAL :    0
+# ** Report counts by id
+# [AxiMasterDriver]     1
+# [NO_DPI_TSTNAME]     1
+# [RNTST]     1
+# [TEST WARNING]     1
+# [TEST_DONE]     1
+# [UVM/COMP/NAMECHECK]     1
+# [UVM/RELNOTES]     1
+# [UVMTOP]     1
+# [rd_wr_parallel_vseq]     2
+# [scoreboard]   169
+# [stimulus_generator]     2
+# [uvm_sequence_item]     3
+# 
+# ** Note: $finish    : C:/questasim64_10.7c/uvm-1.2/src/base/uvm_root.svh(517)
+#    Time: 10 ms  Iteration: 68  Instance: /tb
+# 1
+# Break in Task uvm_pkg/uvm_root::run_test at C:/questasim64_10.7c/uvm-1.2/src/base/uvm_root.svh line 517
+#  coverage save ../SIM_RESULT/1SLAVE/base_test/base_test_cov.ucdb 
+# >>> Completed test: base_test
+# partial file in all_ucdb: 
+# ../SIM_RESULT/1SLAVE/base_test/base_test_cov.ucdb
+# >>> HTML coverage report in: ../total_cov/1SLAVE/html_merged_all
+# >>> Merged coverage report generated at: ../total_cov/1SLAVE/total_report.txt
+# ==================================================
+# >>> All runs completed!
+# ==================================================
+quit -sim
+# End time: 22:43:38 on Apr 03,2026, Elapsed time: 0:06:05
+# Errors: 2, Warnings: 0
+.main clear
+quit -f

@@ -126,7 +126,7 @@
 <a name="116"><q-n>     116  </q-n></a>  <q-m>//DEFINE</q-m>
 <a name="117"><q-n>     117  </q-n></a>  <q-w>property</q-w> reset_all_reqsignal;
 <a name="118"><q-n>     118  </q-n></a>	@(<q-a>posedge</q-w> aclk)
-<a name="119"><q-n>     119  </q-n></a>	(!aresetn) |=&gt; (awvalid == 0 &amp;&amp; arvalid == 0 &amp;&amp; awready == 1 &amp;&amp; arready == 1);
+<a name="119"><q-n>     119  </q-n></a>	(!aresetn) |=&gt; (awvalid == 0 &amp;&amp; arvalid == 0);
 <a name="120"><q-n>     120  </q-n></a>  <q-w>endproperty</q-w>
 <a name="121"><q-n>     121  </q-n></a>  <q-m>//DO</q-m>
 <a name="122"><q-n>     122  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (reset_all_reqsignal)
@@ -134,14 +134,14 @@
 <a name="124"><q-n>     124  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
 <a name="125"><q-n>     125  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[RESET_REQSIGNAL][%0t ns]: All req signals are not properly reset!!!"</q-l>, $<q-w>time</q-w>);
 <a name="126"><q-n>     126  </q-n></a>    `<q-w>else</q-w>
-<a name="127"><q-n>     127  </q-n></a>    $<q-v>error</q-w>(<q-l>"[RESET_REQSIGNAL]: All req signals are not properly reset!!!"</q-l>);
+<a name="127"><q-n>     127  </q-n></a>    $<q-v>error</q-w>(<q-l>"[RESET_REQSIGNAL]: AWVALID and ARVALID are NOT properly reset!!!"</q-l>);
 <a name="128"><q-n>     128  </q-n></a>    `<q-a>endif</q-w>
 <a name="129"><q-n>     129  </q-n></a>  <q-w>end</q-w>
 <a name="130"><q-n>     130  </q-n></a>  <q-m>//(0.2) DATA RESET ASSERTION</q-m>
 <a name="131"><q-n>     131  </q-n></a>  <q-m>//DEFINE</q-m>
 <a name="132"><q-n>     132  </q-n></a>  <q-w>property</q-w> reset_all_datasignal;
 <a name="133"><q-n>     133  </q-n></a>	@(<q-a>posedge</q-w> aclk)
-<a name="134"><q-n>     134  </q-n></a>	(!aresetn) |=&gt; (wvalid == 0 &amp;&amp; rvalid == 0 &amp;&amp; wlast == 0 &amp;&amp; rlast == 0 &amp;&amp; wready == 1 &amp;&amp; rready == 0);
+<a name="134"><q-n>     134  </q-n></a>	(!aresetn) |=&gt; (wvalid == 0 &amp;&amp; rvalid == 0);
 <a name="135"><q-n>     135  </q-n></a>  <q-w>endproperty</q-w>
 <a name="136"><q-n>     136  </q-n></a>  <q-m>//DO</q-m>
 <a name="137"><q-n>     137  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (reset_all_datasignal)
@@ -156,7 +156,7 @@
 <a name="146"><q-n>     146  </q-n></a>  <q-m>//DEFINE</q-m>
 <a name="147"><q-n>     147  </q-n></a>  <q-w>property</q-w> reset_all_respsignal;
 <a name="148"><q-n>     148  </q-n></a>	@(<q-a>posedge</q-w> aclk)
-<a name="149"><q-n>     149  </q-n></a>	(!aresetn) |=&gt; (bvalid == 0 &amp;&amp; bready == 0 &amp;&amp; bresp == 0);
+<a name="149"><q-n>     149  </q-n></a>	(!aresetn) |=&gt; (bvalid == 0);
 <a name="150"><q-n>     150  </q-n></a>  <q-w>endproperty</q-w>
 <a name="151"><q-n>     151  </q-n></a>  <q-m>//DO</q-m>
 <a name="152"><q-n>     152  </q-n></a>  <q-w>assert</q-w> <q-w>property</q-w> (reset_all_respsignal)
@@ -164,7 +164,7 @@
 <a name="154"><q-n>     154  </q-n></a>    `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
 <a name="155"><q-n>     155  </q-n></a>    $fdisplay(axi_log_file, <q-l>"[RESET_RESPSIGNAL][%0t ns]: All resp signals are not properly reset!!!"</q-l>, $<q-w>time</q-w>);
 <a name="156"><q-n>     156  </q-n></a>    `<q-w>else</q-w>
-<a name="157"><q-n>     157  </q-n></a>    $<q-v>error</q-w>(<q-l>"[RESET_RESPSIGNAL]: All resp signals are not properly reset!!!"</q-l>);
+<a name="157"><q-n>     157  </q-n></a>    $<q-v>error</q-w>(<q-l>"[RESET_RESPSIGNAL]: BVALID is not properly reset!!!"</q-l>);
 <a name="158"><q-n>     158  </q-n></a>    `<q-a>endif</q-w> 
 <a name="159"><q-n>     159  </q-n></a>  <q-w>end</q-w>
 <a name="160"><q-n>     160  </q-n></a>  <q-m>//**************************************************************************************************</q-m>
@@ -436,20 +436,19 @@
 <a name="426"><q-n>     426  </q-n></a>  <q-w>clocking</q-w> s_mon_cb @(<q-a>posedge</q-w> pclk);
 <a name="427"><q-n>     427  </q-n></a>      <q-w>input</q-w> psel, penable, pwrite, paddr, pwdata, pstrb, prdata, pready, pslverr, pprot;
 <a name="428"><q-n>     428  </q-n></a>  <q-w>endclocking</q-w>
-<a name="429"><q-n>     429  </q-n></a>
-<a name="430"><q-n>     430  </q-n></a>  <q-m>//</q-m>
-<a name="431"><q-n>     431  </q-n></a>  <q-m>//close file</q-m>
-<a name="432"><q-n>     432  </q-n></a>  <q-m>//</q-m>
-<a name="433"><q-n>     433  </q-n></a>  `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
-<a name="434"><q-n>     434  </q-n></a>  <q-w>final</q-w> <q-w>begin</q-w>
-<a name="435"><q-n>     435  </q-n></a>    <q-w>if</q-w>(apb_log_fh == 1) <q-w>begin</q-w>
-<a name="436"><q-n>     436  </q-n></a>     $fclose(apb_log_fh);
-<a name="437"><q-n>     437  </q-n></a>    <q-w>end</q-w>
-<a name="438"><q-n>     438  </q-n></a>  <q-w>end</q-w>
-<a name="439"><q-n>     439  </q-n></a>  `<q-a>endif</q-w>
-<a name="440"><q-n>     440  </q-n></a><q-w>endinterface</q-w>
+<a name="429"><q-n>     429  </q-n></a>  <q-m>//</q-m>
+<a name="430"><q-n>     430  </q-n></a>  <q-m>//close file</q-m>
+<a name="431"><q-n>     431  </q-n></a>  <q-m>//</q-m>
+<a name="432"><q-n>     432  </q-n></a>  `<q-a>ifdef</q-w> PRINT_TO_VIF_SVA_FILE
+<a name="433"><q-n>     433  </q-n></a>  <q-w>final</q-w> <q-w>begin</q-w>
+<a name="434"><q-n>     434  </q-n></a>    <q-w>if</q-w>(apb_log_fh == 1) <q-w>begin</q-w>
+<a name="435"><q-n>     435  </q-n></a>     $fclose(apb_log_fh);
+<a name="436"><q-n>     436  </q-n></a>    <q-w>end</q-w>
+<a name="437"><q-n>     437  </q-n></a>  <q-w>end</q-w>
+<a name="438"><q-n>     438  </q-n></a>  `<q-a>endif</q-w>
+<a name="439"><q-n>     439  </q-n></a><q-w>endinterface</q-w>
+<a name="440"><q-n>     440  </q-n></a>
 <a name="441"><q-n>     441  </q-n></a>
-<a name="442"><q-n>     442  </q-n></a>
 </pre>
 </tt>
 

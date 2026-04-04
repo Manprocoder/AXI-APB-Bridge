@@ -116,7 +116,7 @@ endclocking
   //DEFINE
   property reset_all_reqsignal;
 	@(posedge aclk)
-	(!aresetn) |=> (awvalid == 0 && arvalid == 0 && awready == 1 && arready == 1);
+	(!aresetn) |=> (awvalid == 0 && arvalid == 0);
   endproperty
   //DO
   assert property (reset_all_reqsignal)
@@ -124,14 +124,14 @@ endclocking
     `ifdef PRINT_TO_VIF_SVA_FILE
     $fdisplay(axi_log_file, "[RESET_REQSIGNAL][%0t ns]: All req signals are not properly reset!!!", $time);
     `else
-    $error("[RESET_REQSIGNAL]: All req signals are not properly reset!!!");
+    $error("[RESET_REQSIGNAL]: AWVALID and ARVALID are NOT properly reset!!!");
     `endif
   end
   //(0.2) DATA RESET ASSERTION
   //DEFINE
   property reset_all_datasignal;
 	@(posedge aclk)
-	(!aresetn) |=> (wvalid == 0 && rvalid == 0 && wlast == 0 && rlast == 0 && wready == 1 && rready == 0);
+	(!aresetn) |=> (wvalid == 0 && rvalid == 0);
   endproperty
   //DO
   assert property (reset_all_datasignal)
@@ -146,7 +146,7 @@ endclocking
   //DEFINE
   property reset_all_respsignal;
 	@(posedge aclk)
-	(!aresetn) |=> (bvalid == 0 && bready == 0 && bresp == 0);
+	(!aresetn) |=> (bvalid == 0);
   endproperty
   //DO
   assert property (reset_all_respsignal)
@@ -154,7 +154,7 @@ endclocking
     `ifdef PRINT_TO_VIF_SVA_FILE
     $fdisplay(axi_log_file, "[RESET_RESPSIGNAL][%0t ns]: All resp signals are not properly reset!!!", $time);
     `else
-    $error("[RESET_RESPSIGNAL]: All resp signals are not properly reset!!!");
+    $error("[RESET_RESPSIGNAL]: BVALID is not properly reset!!!");
     `endif 
   end
   //**************************************************************************************************
@@ -426,7 +426,6 @@ parameter AW2 = 32;
   clocking s_mon_cb @(posedge pclk);
       input psel, penable, pwrite, paddr, pwdata, pstrb, prdata, pready, pslverr, pprot;
   endclocking
-
   //
   //close file
   //

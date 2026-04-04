@@ -92,7 +92,7 @@ proc clean_result {dir bin_dir} {
 
 clean_result $result_dir $bin_dir
 #delete all old files (vsim.log, vsim.wlf)
-file delete -force $bin_dir
+#file delete -force $bin_dir
 #---------------------------------------------
 # Main loop for SLAVE_CNT
 #---------------------------------------------
@@ -113,6 +113,8 @@ for {set slave_cnt $start_slave} {$slave_cnt <= $max_slave} {incr slave_cnt} {
     if {![file exists $slv_dir]} {
         file mkdir $slv_dir
     }
+      #+define+PRINT_TO_VIF_SVA_FILE \
+      #+define+PRINT_TO_SVA1_FILE \
     #---------------------------------------------
     # Compilation (once per slave count)
     #---------------------------------------------
@@ -120,9 +122,7 @@ for {set slave_cnt $start_slave} {$slave_cnt <= $max_slave} {incr slave_cnt} {
       +define+UVM_CMDLINE_NO_DPI \
       +define+UVM_REGEX_NO_DPI \
       +define+UVM_NO_DPI \
-      +define+PRINT_TO_SUM_FILE \
-      +define+PRINT_TO_VIF_SVA_FILE \
-      +define+PRINT_TO_SVA1_FILE \
+      +define+PRINT_TO_COMPARE_FILE \
       +define+CLK_CYCLE=10 \
       +define+SLAVE_CNT=$slave_cnt \
       +incdir+$UVM_HOME/src \

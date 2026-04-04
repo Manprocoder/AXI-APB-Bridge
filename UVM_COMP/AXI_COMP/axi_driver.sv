@@ -67,7 +67,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
       if(rst_tx.rst_run_time_enable == 1'b1) begin
         if(m_drv_vif.aresetn == 1'b0) begin
           while(rst_cnt < rst_tx.rst_low_delay) begin
-            // `uvm_info(get_type_name(), $sformatf("rst_cnt = %0d", rst_cnt), UVM_LOW);
+            // `uvm_info(get_type_name(), $sformatf("rst_cnt = %0d", rst_cnt), UVM_MEDIUM);
             @(m_drv_vif.m_drv_cb);
             rst_cnt++; 
           end
@@ -75,7 +75,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
         end
         else begin
           while(rst_high_cnt < rst_tx.rst_high_delay) begin
-            // `uvm_info(get_type_name(), $sformatf("rst_cnt = %0d", rst_cnt), UVM_LOW);
+            // `uvm_info(get_type_name(), $sformatf("rst_cnt = %0d", rst_cnt), UVM_MEDIUM);
             @(m_drv_vif.m_drv_cb);
             rst_high_cnt++; 
           end
@@ -84,7 +84,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
       end //end of if rst_run_time_enable
       else if(m_drv_vif.aresetn == 1'b0) begin
         while(rst_cnt < rst_tx.rst_low_delay) begin
-          // `uvm_info(get_type_name(), $sformatf("rst_cnt = %0d", rst_cnt), UVM_LOW);
+          // `uvm_info(get_type_name(), $sformatf("rst_cnt = %0d", rst_cnt), UVM_MEDIUM);
           @(m_drv_vif.m_drv_cb);
           rst_cnt++; 
         end
@@ -99,7 +99,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
     m_drv_vif.wait_for_reset();
     begin
       w_trans_mailbox = new();
-      `uvm_info(get_type_name(), $sformatf("[LEVEL_SENSITIVE]all signals reset!!!"), UVM_LOW)
+      `uvm_info(get_type_name(), $sformatf("[LEVEL_SENSITIVE]all signals reset!!!"), UVM_MEDIUM)
       //
       m_drv_vif.m_drv_cb.awvalid <= 0;
       m_drv_vif.m_drv_cb.awid    <= 0;
@@ -129,7 +129,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
     while(1) begin
       m_drv_vif.wait_FallingEdge_reset();
       w_trans_mailbox = new();
-      `uvm_info(get_type_name(), $sformatf("[EDGE_SENSITIVE]all signals reset!!!"), UVM_LOW)
+      `uvm_info(get_type_name(), $sformatf("[EDGE_SENSITIVE]all signals reset!!!"), UVM_MEDIUM)
       //
       m_drv_vif.m_drv_cb.awvalid <= 0;
       m_drv_vif.m_drv_cb.awid    <= 0;
@@ -165,22 +165,21 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
       fork
         forever begin
           m_drv_vif.wait_RisingEdge_reset();
-         // #10ns;
+         // #(`CLK_CYCLE);
           while(m_drv_vif.aresetn_value() == 1'b1) begin
-            // get_next_item / item_done must be in same thread for this port
-	     //	`uvm_info(get_type_name(), $sformatf("W_Driver starts!!!"), UVM_LOW);
+	     //	`uvm_info(get_type_name(), $sformatf("W_Driver starts!!!"), UVM_MEDIUM);
             seq_item_port.get_next_item(wtx0);
             //put transaction into mailbox for later usage of wdata chnnel
             send_write_address(wtx0);
             w_trans_mailbox.put(wtx0);
             //
             seq_item_port.item_done();
-	     //	`uvm_info(get_type_name(), $sformatf("W_Driver done!!!"), UVM_LOW);
+	     //	`uvm_info(get_type_name(), $sformatf("W_Driver done!!!"), UVM_MEDIUM);
           end
         end
         //
         forever begin
-          // `uvm_info(get_type_name(), $sformatf("WAITING RISING EDGE ARESETN---SendWriteData() TASK!!!"), UVM_LOW);
+          // `uvm_info(get_type_name(), $sformatf("WAITING RISING EDGE ARESETN---SendWriteData() TASK!!!"), UVM_MEDIUM);
           m_drv_vif.wait_RisingEdge_reset();
           while(m_drv_vif.aresetn_value() == 1'b1) begin
             w_trans_mailbox.get(wtx1);
@@ -189,7 +188,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
         end
         forever begin
           m_drv_vif.wait_RisingEdge_reset();
-          //#10ns;
+          //#(`CLK_CYCLE);
           while(m_drv_vif.aresetn_value() == 1'b1) begin
             get_bresp();
           end
@@ -206,19 +205,19 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
       fork
         forever begin
           m_drv_vif.wait_RisingEdge_reset();
-          //#10ns;
+          //#(`CLK_CYCLE);
           while(m_drv_vif.aresetn_value() == 1'b1) begin
             `uvm_info(get_name(), $sformatf("[START]Master_Read_Driver"), UVM_HIGH);
             seq_item_port2.get_next_item(rtx);
             `uvm_info(get_name(), $sformatf("[DONE]Master_Read_Driver"), UVM_HIGH);
             send_read_address(rtx);
             seq_item_port2.item_done();
-            // `uvm_info(get_name(), $sformatf("Master_Read_Driver: transaction done (id=%0d)", rtx.id), UVM_LOW);
+            // `uvm_info(get_name(), $sformatf("Master_Read_Driver: transaction done (id=%0d)", rtx.id), UVM_MEDIUM);
           end
         end
         forever begin
           m_drv_vif.wait_RisingEdge_reset();
-          //#10ns;
+          //#(`CLK_CYCLE);
           while(m_drv_vif.aresetn_value() == 1'b1) begin
             get_read_data();
           end
@@ -228,16 +227,16 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
 
   // send_write_address: issue AW until awready
   // "ref" keyword means this task is inside class -- we do not use "extern" keyword
-  virtual task send_write_address(ref REQ tx);
-      // `uvm_info(get_type_name(), $sformatf("time_0 = %0t", $time), UVM_LOW);
+  virtual task send_write_address(input REQ tx);
+      // `uvm_info(get_type_name(), $sformatf("time_0 = %0t", $time), UVM_MEDIUM);
       fork
         begin
           m_drv_vif.wait_FallingEdge_reset();
         end
         begin
-           `uvm_info(get_type_name(), $sformatf("time_0 = %0t", $time), UVM_DEBUG);
+           `uvm_info(get_type_name(), $sformatf("time_0 = %0t", $time), UVM_HIGH);
           @(m_drv_vif.m_drv_cb);
-           `uvm_info(get_type_name(), $sformatf("time_1 = %0t", $time), UVM_DEBUG);
+           `uvm_info(get_type_name(), $sformatf("time_1 = %0t", $time), UVM_HIGH);
           // present AW signals
 	  //tx.print();
           m_drv_vif.m_drv_cb.awvalid <= 1;
@@ -260,25 +259,25 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
         end
       join_any
       disable fork;
-      // `uvm_info(get_name(), $sformatf("send_write_address: AW accepted (id=%0d)", tx.id), UVM_LOW);
+      // `uvm_info(get_name(), $sformatf("send_write_address: AW accepted (id=%0d)", tx.id), UVM_MEDIUM);
       // break;  //avoid this task to pass SAME ITEM down to DUT before get NEW ITEM
     // end
   endtask
   //
   // send_write_data: stream WDATA and WSTRB for tx.len+1 beats
   //
-  virtual task send_write_data(ref REQ tx);
+  virtual task send_write_data(input REQ tx);
     beats = 0;
     //
     beats = tx.len + 1;
-    // `uvm_info(get_type_name(), $sformatf("WR_BEATS = %0d", beats), UVM_LOW)
+    // `uvm_info(get_type_name(), $sformatf("WR_BEATS = %0d", beats), UVM_MEDIUM)
     //
     // ensure tx.data[] and tx.wstrb[] are valid and sized appropriately before calling
     fork 
       begin
         // @(negedge m_drv_vif.aresetn);
         m_drv_vif.wait_FallingEdge_reset();
-        // `uvm_info(get_type_name(), $sformatf("FALLING EDGE ARESETN---SendWriteData() TASK!!!"), UVM_LOW);
+        // `uvm_info(get_type_name(), $sformatf("FALLING EDGE ARESETN---SendWriteData() TASK!!!"), UVM_MEDIUM);
       end
       //
       begin
@@ -302,7 +301,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
       end
     join_any
     disable fork;
-    // `uvm_info(get_type_name(), $sformatf("W_TRANS[%0d]:DISABLE FORK_JOIN_ANY---SendWriteData() TASK!!!", tx.id), UVM_LOW);
+    // `uvm_info(get_type_name(), $sformatf("W_TRANS[%0d]:DISABLE FORK_JOIN_ANY---SendWriteData() TASK!!!", tx.id), UVM_MEDIUM);
   endtask
   //
   //
@@ -321,7 +320,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
       end
     join_any
     disable fork;
-    // `uvm_info(get_type_name(), $sformatf("DISABLE FORK_JOIN_ANY---GetBresp() TASK!!!"), UVM_LOW);
+    // `uvm_info(get_type_name(), $sformatf("DISABLE FORK_JOIN_ANY---GetBresp() TASK!!!"), UVM_MEDIUM);
   endtask
   //
   //--------------------------------------AXI READ TRANSACTION-----------------------------------------
@@ -355,7 +354,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
       end
     join_any
     disable fork;
-    // `uvm_info(get_name(), $sformatf("send_read_address: AR accepted (id=%0d)", tx.id), UVM_LOW);
+    // `uvm_info(get_name(), $sformatf("send_read_address: AR accepted (id=%0d)", tx.id), UVM_MEDIUM);
   endtask
 
   virtual task get_read_data();
@@ -363,14 +362,14 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
     begin
         // @(negedge m_drv_vif.aresetn);
       m_drv_vif.wait_FallingEdge_reset();
-        // `uvm_info(get_type_name(), $sformatf("FALLING EDGE ARESETN---GetReadData() TASK!!!"), UVM_LOW);
+        // `uvm_info(get_type_name(), $sformatf("FALLING EDGE ARESETN---GetReadData() TASK!!!"), UVM_MEDIUM);
     end 
     //
     begin
       forever begin
         @(m_drv_vif.m_drv_cb);
         RREADY = $urandom_range(1'b0, 1'b1);
-        // `uvm_info(get_type_name(), $sformatf("RREADY = %0b", RREADY), UVM_LOW)
+        // `uvm_info(get_type_name(), $sformatf("RREADY = %0b", RREADY), UVM_MEDIUM)
         m_drv_vif.m_drv_cb.rready <= RREADY;
         //consistently wait rvalid == 1'b1 event each clock 
         //CRITICAL NOTE: be careful to handle this event, if event never occurs, program will be stuck forever HERE
@@ -380,7 +379,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
     //
     join_any
     disable fork;
-    // `uvm_info(get_type_name(), $sformatf("DISABLE FORK_JOIN_ANY---GetReadData() TASK!!!"), UVM_LOW);
+    // `uvm_info(get_type_name(), $sformatf("DISABLE FORK_JOIN_ANY---GetReadData() TASK!!!"), UVM_MEDIUM);
   endtask
 
 endclass : AxiMasterDriver

@@ -115,10 +115,8 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                           24        16         8     66.66
-    Branches                        12         4         8     33.33
-    FEC Condition Terms              4         0         4      0.00
-    Toggle Bins                    776       615       161     79.25
+    Stmts                           14        12         2     85.71
+    Toggle Bins                    648       612        36     94.44
 
 =================================================================================
 === File: ../cov_module/axi_cov.sv
@@ -146,7 +144,7 @@ Coverage Report Summary Data by file
 
 TOTAL COVERGROUP COVERAGE: 83.34%  COVERGROUP TYPES: 5
 
-TOTAL ASSERTION COVERAGE: 88.88%  ASSERTIONS: 18
+TOTAL ASSERTION COVERAGE: 94.44%  ASSERTIONS: 18
 
-Total Coverage By File (code coverage only, filtered view): 84.54%
+Total Coverage By File (code coverage only, filtered view): 92.50%
 

@@ -2,10 +2,8 @@
 //
 //
 class apb_seq_item #(DW = 32, AW = 32) extends uvm_sequence_item;
-//
     typedef apb_seq_item#(DW, AW) this_type_t;
     `uvm_object_param_utils(apb_seq_item#(DW, AW))
-
     //===================================
     // Randomized Slave Response Fields
     //===================================

@@ -1,7 +1,7 @@
 //======================================================
 //UVM component
 //======================================================
-import type_package::*; //req_info
+import type_package::*; //axi_req_item
 class AxiMasterMonitor extends uvm_monitor;
   `uvm_component_utils(AxiMasterMonitor)
   //--------------------------------------------------
@@ -14,29 +14,35 @@ class AxiMasterMonitor extends uvm_monitor;
   //config object
   env_config mon_cfg;
   //FUNCTIONAL COVERAGE
-  req_info req_info_cov;
+  axi_req_item axi_req_item_cov;
   //
-  mailbox #(req_info) WrReqCovMbox, RdReqCovMbox;
-  mailbox #(shared_item) RdDataCovMbox;
-  mailbox #(shared_item) WrDataCovMbox;
-  mailbox #(b_channel_info) BChannelCovMbox;
+  mailbox #(axi_req_item) WrReqCovMbox, RdReqCovMbox;
+  mailbox #(axi_data_item) RdDataCovMbox;
+  mailbox #(axi_data_item) WrDataCovMbox;
+  mailbox #(axi_brsp_item) BChannelCovMbox;
   //
   string sim_result_path;
   int chk_error_file;
   string INST_NAME;
   //SCOREBOARD
   logic axi_mon_resetn;
-  b_channel_info b_channel_info_sb;
-  //axi_transaction #(DW, AW1) w_trans, r_trans;   //sequence item
-  shared_item whole_wtrans, whole_rtrans;    //new object only contains needed details to compare
+  //axi_brsp_item brsp_h;
+  //axi_data_item wdata_h, rdata_h;    //new object only contains needed details to compare
+  axi_req_item wreq_h, rreq_h;
+  axi_data_item wdata_h, rdata_h;
+  axi_brsp_item brsp_h;
   //-- port to connect sb and fc
   uvm_analysis_port #(logic) AxiResetn_toScoreBoard;
-  uvm_analysis_port #(req_info) AxiRdAddr_toScoreBoard;
-  uvm_analysis_port #(shared_item) AxiRData_toScoreBoard;
-  uvm_analysis_port #(req_info) AxiWrAddr_toScoreBoard;
-  uvm_analysis_port #(shared_item) AxiWData_toScoreBoard;
-  uvm_analysis_port #(b_channel_info) AxiBresp_toScoreBoard;
-  //
+  //uvm_analysis_port #(axi_req_item) AxiRdAddr_toScoreBoard;
+  //uvm_analysis_port #(axi_data_item) AxiRData_toScoreBoard;
+  //uvm_analysis_port #(axi_req_item) AxiWrAddr_toScoreBoard;
+  //uvm_analysis_port #(axi_data_item) AxiWData_toScoreBoard;
+  //uvm_analysis_port #(axi_brsp_item) AxiBresp_toScoreBoard;
+  uvm_analysis_port #(axi_req_item) AxiRdAddr_toScoreBoard;
+  uvm_analysis_port #(axi_data_item) AxiRData_toScoreBoard;
+  uvm_analysis_port #(axi_req_item) AxiWrAddr_toScoreBoard;
+  uvm_analysis_port #(axi_data_item) AxiWData_toScoreBoard;
+  uvm_analysis_port #(axi_brsp_item) AxiBresp_toScoreBoard;
   //
   function new(string name = "AxiMasterMonitor", uvm_component parent);
     super.new(name, parent);
@@ -137,60 +143,57 @@ endtask
 //
 //--collect Read Request
 task AxiMasterMonitor::collect_RdRequest();
-  req_info rd;
   //
   while(1) begin
     @(m_mon_vif.m_mon_cb);
     if(m_mon_vif.m_mon_cb.arvalid && m_mon_vif.m_mon_cb.arready) begin
       //
-      rd.id = {1'b0, m_mon_vif.m_mon_cb.arid};
-      rd.address = m_mon_vif.m_mon_cb.araddr;
-      rd.len = m_mon_vif.m_mon_cb.arlen;
-      rd.size = m_mon_vif.m_mon_cb.arsize;
-      rd.burst = burst_name'(m_mon_vif.m_mon_cb.arburst);
-      //send to ScoreBoard
-      AxiRdAddr_toScoreBoard.write(rd);
-    end
+      rreq_h = axi_req_item::type_id::create("rreq_h");
+      rreq_h.wr_or_rd = 1'b0;
+      rreq_h.id = m_mon_vif.m_mon_cb.arid;
+      rreq_h.addr = m_mon_vif.m_mon_cb.araddr;
+      rreq_h.len = m_mon_vif.m_mon_cb.arlen;
+      rreq_h.size = m_mon_vif.m_mon_cb.arsize;
+      rreq_h.burst = burst_name'(m_mon_vif.m_mon_cb.arburst);
+      //send to ScoreBoarreq_h
+      AxiRdAddr_toScoreBoard.write(rreq_h);
+  end
   end
 endtask
 //
 //
 task AxiMasterMonitor::collect_ReadData();
-  //
-  //
   while(1) begin
     @(m_mon_vif.m_mon_cb iff (m_mon_vif.m_mon_cb.rvalid && m_mon_vif.m_mon_cb.rready));
     //scoreboard
-    whole_rtrans = shared_item::type_id::create("whole_rtrans");
-    whole_rtrans.data = m_mon_vif.m_mon_cb.rdata;
-    whole_rtrans.write = ~m_mon_vif.m_mon_cb.rvalid;
-    whole_rtrans.wstrb = 4'h0;
-    whole_rtrans.last = m_mon_vif.m_mon_cb.rlast;
-    whole_rtrans.resp = resp_name'(m_mon_vif.m_mon_cb.rresp);
-    whole_rtrans.id = m_mon_vif.m_mon_cb.rid;
+    rdata_h = axi_data_item::type_id::create("rdata_h");
+    rdata_h.data = m_mon_vif.m_mon_cb.rdata;
+    rdata_h.wr_or_rd = ~m_mon_vif.m_mon_cb.rvalid;
+    rdata_h.be = 4'h0;
+    rdata_h.last = m_mon_vif.m_mon_cb.rlast;
+    rdata_h.resp = resp_name'(m_mon_vif.m_mon_cb.rresp);
+    rdata_h.id = m_mon_vif.m_mon_cb.rid;
     //write item on scoreboard
-    AxiRData_toScoreBoard.write(whole_rtrans);
-    // end
+    AxiRData_toScoreBoard.write(rdata_h);
   end
 endtask
 //
 //--collect Write Request
 task AxiMasterMonitor::collect_WrRequest();
-  req_info wr;
-  //
   while(1) begin
     @(m_mon_vif.m_mon_cb);
     if(m_mon_vif.m_mon_cb.awvalid && m_mon_vif.m_mon_cb.awready) begin
-      //
-      wr.id = {1'b1, m_mon_vif.m_mon_cb.awid};
-      wr.address = m_mon_vif.m_mon_cb.awaddr;
-      wr.len = m_mon_vif.m_mon_cb.awlen;
-      wr.size = m_mon_vif.m_mon_cb.awsize;
-      wr.burst = burst_name'(m_mon_vif.m_mon_cb.awburst);
+      wreq_h = axi_req_item::type_id::create("wreq_h");
+      wreq_h.wr_or_rd = 1'b1;
+      wreq_h.id = m_mon_vif.m_mon_cb.awid;
+      wreq_h.addr = m_mon_vif.m_mon_cb.awaddr;
+      wreq_h.len = m_mon_vif.m_mon_cb.awlen;
+      wreq_h.size = m_mon_vif.m_mon_cb.awsize;
+      wreq_h.burst = burst_name'(m_mon_vif.m_mon_cb.awburst);
       //send to ScoreBoard
-      AxiWrAddr_toScoreBoard.write(wr);
+      AxiWrAddr_toScoreBoard.write(wreq_h);
       //
-    end
+  end
   end
 endtask
 //main task
@@ -202,24 +205,25 @@ task AxiMasterMonitor::collect_WriteData();
     while(1) begin  
       @(m_mon_vif.m_mon_cb iff (m_mon_vif.m_mon_cb.wvalid && m_mon_vif.m_mon_cb.wready));
       //
-      whole_wtrans = shared_item::type_id::create("whole_wtrans");//(**)
+      wdata_h = axi_data_item::type_id::create("wdata_h");//(**)
       //-- create item in build_phase() (*)
       //-- AXI wdata generated (randomize) is array (multiple beats) once 
       //-- this monitor only sends one beat to Scoreboard in turn
       //-- (*) causes DATA LOSS (data override) (***) 
       //-- therefore create new item (**) to avoid (***)
-      whole_wtrans.data = m_mon_vif.m_mon_cb.wdata;
-      whole_wtrans.wstrb = m_mon_vif.m_mon_cb.wstrb;
-      whole_wtrans.write = m_mon_vif.m_mon_cb.wvalid;
-      whole_wtrans.last = m_mon_vif.m_mon_cb.wlast;
-      whole_wtrans.resp = resp_name'(2'b01); 
+      wdata_h.id = 'hz;
+      wdata_h.data = m_mon_vif.m_mon_cb.wdata;
+      wdata_h.be = m_mon_vif.m_mon_cb.wstrb;
+      wdata_h.wr_or_rd = m_mon_vif.m_mon_cb.wvalid;
+      wdata_h.last = m_mon_vif.m_mon_cb.wlast;
+      wdata_h.resp = resp_name'(2'b01); 
       //
       //scoreboard
-      AxiWData_toScoreBoard.write(whole_wtrans);
+      AxiWData_toScoreBoard.write(wdata_h);
       //functional coverage
       //if(mon_cfg.functional_coverage) begin
-        //// WrDataCovQueue.push_back(whole_wtrans);
-        //WrDataCovMbox.put(whole_wtrans);
+        //// WrDataCovQueue.push_back(wdata_h);
+        //WrDataCovMbox.put(wdata_h);
       //end
       //
     end //end of while(1)
@@ -229,13 +233,14 @@ endtask
 task AxiMasterMonitor::collect_WriteResp();
   while(1) begin
     @(m_mon_vif.m_mon_cb iff m_mon_vif.m_mon_cb.bvalid && m_mon_vif.m_mon_cb.bready);
-    b_channel_info_sb.bresp = resp_name'(m_mon_vif.m_mon_cb.bresp);
-    b_channel_info_sb.bid = m_mon_vif.m_mon_cb.bid;
+    brsp_h = axi_brsp_item::type_id::create("brsp_h");
+    brsp_h.resp = resp_name'(m_mon_vif.m_mon_cb.bresp);
+    brsp_h.id = m_mon_vif.m_mon_cb.bid;
     //
-    AxiBresp_toScoreBoard.write(b_channel_info_sb);
+    AxiBresp_toScoreBoard.write(brsp_h);
     //if(mon_cfg.functional_coverage) begin
-      //// BrespCovQueue.push_back(b_channel_info_sb);
-      //BChannelCovMbox.put(b_channel_info_sb);
+      //// BrespCovQueue.push_back(brsp_h);
+      //BChannelCovMbox.put(brsp_h);
     //end
     //
   end

@@ -50,14 +50,9 @@ class shared_item extends uvm_object;
         
         do_compare = super.do_compare(rhs, comparer);
         do_compare &= {(item.write == this.write) && (item.data == this.data) && (item.addr == this.addr)
-                        && (item.wstrb == this.wstrb)};
-        //do_compare &= {(rhs.write == this.write) && (rhs.data == this.data) && (rhs.addr == this.addr)
-          //              && (rhs.wstrb == this.wstrb)};
-                //
-        //
+                       && (item.wstrb == this.wstrb)};
         return do_compare;
     endfunction
-
     //-----------------------------------------------------------
     //convert2string()
     //-----------------------------------------------------------
