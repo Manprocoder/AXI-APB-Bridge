@@ -161,7 +161,6 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
   //-- here, we MUST use fork-join_none to initialize two independent thread
   // ------------------------------------------------------------------------
   virtual task Master_Write_Driver();
-    // forever begin
       fork
         forever begin
           m_drv_vif.wait_RisingEdge_reset();
@@ -226,9 +225,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
   endtask
 
   // send_write_address: issue AW until awready
-  // "ref" keyword means this task is inside class -- we do not use "extern" keyword
   virtual task send_write_address(input REQ tx);
-      // `uvm_info(get_type_name(), $sformatf("time_0 = %0t", $time), UVM_MEDIUM);
       fork
         begin
           m_drv_vif.wait_FallingEdge_reset();
@@ -237,7 +234,6 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
            `uvm_info(get_type_name(), $sformatf("time_0 = %0t", $time), UVM_HIGH);
           @(m_drv_vif.m_drv_cb);
            `uvm_info(get_type_name(), $sformatf("time_1 = %0t", $time), UVM_HIGH);
-          // present AW signals
 	  //tx.print();
           m_drv_vif.m_drv_cb.awvalid <= 1;
           m_drv_vif.m_drv_cb.awid    <= tx.id;

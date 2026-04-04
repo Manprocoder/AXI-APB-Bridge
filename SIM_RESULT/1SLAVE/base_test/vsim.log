@@ -1,0 +1,52 @@
+# vsim -voptargs="+acc" work.tb "+UVM_TESTNAME=base_test" "+UVM_VERBOSITY=UVM_LOW" -coverage -coveranalysis -cvgperinstance -wlf ../SIM_RESULT/1SLAVE/base_test/vsim.wlf -l ../SIM_RESULT/1SLAVE/base_test/vsim.log -do "do add_wave.do; run -all; coverage save ../SIM_RESULT/1SLAVE/base_test/base_test_cov.ucdb " 
+# Start time: 15:43:58 on Apr 04,2026
+# Loading C:/Users/LENOVO/AppData/Local/Temp\LENOVO@NGOCMAN_dpi_14004\win64_gcc-4.5.0\export_tramp.dll
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# doVOpenFlatFile(): INTERNAL ERROR: page load failed for file D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_deps (0:0 1:1 55 0 12525 1775270913 0x53:0x1)
+# ** Warning: (vopt-56) Problem with optimized design dependency file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_deps" - file open failed.
+# No such file or directory. (errno = ENOENT)
+# ** Fatal: (vopt-8) Problem while reading dependency file "_deps".
+# No such file or directory. (errno = ENOENT)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib.qdb".
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib1_0.qdb".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib1_0.qpg".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib1_0.qtl".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib2_0.qdb".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib2_0.qpg".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib2_0.qtl".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib3_0.qdb".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib3_0.qpg".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib3_0.qtl".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib4_0.qdb".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib4_0.qpg".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib4_0.qtl".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib6_0.qdb".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib6_0.qpg".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+# ** Warning: (vopt-31) Unable to unlink file "D:/DV/AXI2APB/MYSELF/sim/work/@_opt/_lib6_0.qtl".
+# The process cannot access the file because it is being used by another process. (GetLastError() = 32)
+** Warning: (vopt-133) Unable to remove dirBreak key hit
+# ectory "D:/DV/AXI2APB/MYSELF/sim/work/@_opt".
+# Error loading design
+# Error: Error loading design
+#        Pausing macro execution
+# MACRO ./run.do PAUSED at line 205
+.main clear
+quit f
+# unknown switch: f
+quit -f
+# End time: 15:44:44 on Apr 04,2026, Elapsed time: 0:00:46
+# Errors: 0, Warnings: 0

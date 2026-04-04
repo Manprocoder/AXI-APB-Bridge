@@ -48,15 +48,7 @@ module axi_cov();
             bins value_0 = {1'b0};
             bins value_1 = {1'b1};
         }
-        awid_cp: coverpoint awid iff awvalid && awready;//{
-            //bins very_low = {[0:15]};
-            //bins mid0_low = {[16:31]};
-            //bins mid1_low = {[32:45]};
-            //bins low  = {[46:63]};
-            //bins mid  = {[64:127]};
-            //bins high = {[128:191]};
-            //bins top  = {[192:255]};
-        //}
+        awid_cp: coverpoint awid iff awvalid && awready;
         awaddr_cp: coverpoint awaddr iff awvalid && awready{
             wildcard bins aligned_addr = {32'b00000000_0000000?_????????_??????00};
             wildcard bins unaligned_addr0 = {32'b00000000_0000000?_????????_???????1};
@@ -126,12 +118,7 @@ module axi_cov();
             bins value_0 = {1'b0};
             bins value_1 = {1'b1};
         }
-        bid_cp: coverpoint bid iff bvalid && bready; //{
-            //bins low  = {[0:63]};
-            //bins mid  = {[64:127]};
-            //bins high = {[128:191]};
-            //bins top  = {[192:255]};
-        //}
+        bid_cp: coverpoint bid iff bvalid && bready;
         bresp_cp: coverpoint bresp iff bvalid && bready{
             bins okay = {2'b00};  // OKAY response
             ignore_bins exokay = {2'b01}; // EXOKAY response
