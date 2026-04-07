@@ -5,6 +5,7 @@ parameter X2P_SFIFO_AW_DATA_WIDTH = 56;
 parameter X2P_SFIFO_AR_DATA_WIDTH = 56;
 parameter X2P_SFIFO_WD_DATA_WIDTH = 37;
 parameter X2P_SFIFO_RD_DATA_WIDTH = 43;
+parameter X2P_SFIFO_BCHANNEL_WIDTH = 10;
 parameter POINTER_WIDTH           = 4;
 //Error
 parameter OKAY                    = 2'b00;

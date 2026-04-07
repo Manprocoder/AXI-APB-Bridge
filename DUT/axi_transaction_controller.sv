@@ -71,6 +71,7 @@ module axi_transaction_controller (// AXI protocol
 	  read_burst_name_o,
 	  read_burst_prot_o,
 	  //
+	  bchannel_rdy_o,
 	  wdata_to_apb_o,
 	  wstrb_to_apb_o
 	  //
@@ -146,6 +147,7 @@ output logic [2:0]  read_burst_size_o;
 output logic [1:0]  read_burst_name_o;
 output logic [2:0]  read_burst_prot_o;
 //
+output logic 	    bchannel_rdy_o;
 output logic [31:0] wdata_to_apb_o;
 output logic [3:0] wstrb_to_apb_o;
   //******************************************************
@@ -176,8 +178,16 @@ output logic [3:0] wstrb_to_apb_o;
   //RD_CH
   logic[1:0]                      resp_of_rdata;
   logic 			  rdata_last;
+   //bchannel_sfifo
+  logic sfifo_brsp_we;
+  logic sfifo_brsp_re;
+  logic sfifo_brsp_empty;
+  logic sfifo_brsp_almost_full;
   //WRITE RESPONSE
-  logic bresp_reg;
+  logic status;
+  logic [1:0] bresp_reg;
+  logic [7:0] bid_reg;
+  logic new_brsp_vld;
   //
   parameter logic [POINTER_WIDTH:0] ALMOST_FULL_VALUE = 2**POINTER_WIDTH - 1'b1;
   parameter logic [POINTER_WIDTH:0] ALMOST_EMPTY_VALUE = 2**POINTER_WIDTH - 4'd14;
@@ -197,7 +207,6 @@ output logic [3:0] wstrb_to_apb_o;
   .sfifo_full(sfifo_ar_full),
   .data_out({read_burst_addr_o[31:0], sfifo_ar_id[7:0], read_burst_len_o[7:0], 
 	  read_burst_size_o[2:0], read_burst_name_o[1:0], read_burst_prot_o[2:0]})
-  //
   //
   );
   //Logic
@@ -278,49 +287,70 @@ output logic [3:0] wstrb_to_apb_o;
   .sfifo_full(sfifo_wd_full),
   .data_out({wlast_flag, wstrb_to_apb_o[3:0], wdata_to_apb_o[31:0]})
   );
-//logic
+//
 assign wready      = ~sfifo_wd_full;
 assign sfifo_wd_we = wvalid & wready;
 assign sfifo_wd_re = read_from_wd_sfifo_i;
 //
 //B CHANNEL
 //
+//*******************************************************************
+//X2P_SFIFO_BRSP
+//*******************************************************************
+  sfifobresp #(
+	.DATA_WIDTH(X2P_SFIFO_BCHANNEL_WIDTH), 
+	.POINTER_WIDTH(POINTER_WIDTH),
+	.ALMOST_FULL_VALUE(ALMOST_FULL_VALUE), 
+	.ALMOST_EMPTY_VALUE(ALMOST_EMPTY_VALUE)
+  ) bchannel_sfifo(
+  .clk(aclk),
+  .rst_n(aresetn),
+  .wr(sfifo_brsp_we),
+  .rd(sfifo_brsp_re),
+  .data_in({bresp_reg[1:0], bid_reg[7:0]}),
+  .sfifo_empty(sfifo_brsp_empty),
+  .sfifo_almost_full(sfifo_brsp_almost_full),
+  .data_out({bresp[1:0], bid[7:0]})
+  );
+  //
+assign bvalid = ~sfifo_brsp_empty;
+assign sfifo_brsp_re = bvalid & bready;
+assign sfifo_brsp_we = new_brsp_vld;
+assign bchannel_rdy_o = ~sfifo_brsp_almost_full; 
+//
 //bresp register
 //
 always_ff@(posedge aclk, negedge aresetn) begin
-  if(~aresetn) bresp_reg <= 1'b0;
-  else if(wr_trans_done_i) bresp_reg <= 1'b0; 
-  else if(latch_resp_i) bresp_reg <= (bresp_reg | err_of_transfer_i);
+  if(~aresetn) status <= 1'b0;
+  else if(wr_trans_done_i) status <= 1'b0; 
+  else if(latch_resp_i) status <= (status | err_of_transfer_i);
 end
 //
 //INFO
 //
 always_ff @(posedge aclk, negedge aresetn) begin
 	if(~aresetn) begin
-	  bresp[1:0] <= OKAY;
-	  bid[7:0] <= 8'd0;
-	  bvalid <= 1'b0;
+	  bresp_reg[1:0] <= OKAY;
+	  bid_reg[7:0] <= 8'd0;
+	  new_brsp_vld <= 1'b0;
   	end
 	else if(wr_trans_done_i) begin
-		  bid[7:0] <= sfifo_aw_id[7:0];
-		  bvalid <= 1'b1;
-		  //
-		  if(~wlast_flag) 
-		    bresp[1:0] <= PSLVERR;
-		  else if(~bresp_reg)
-		    bresp[1:0] <= OKAY;
+	  	  bid_reg[7:0] <= sfifo_aw_id[7:0];
+		  new_brsp_vld <= 1'b1;
+		 if(wlast_flag) begin
+		  if(~status)
+		    bresp_reg[1:0] <= OKAY | {err_of_transfer_i, 1'b0};
 		  else if(dec_error_i)
-		    bresp[1:0] <= DECERR;
+		    bresp_reg[1:0] <= DECERR;
 		  else
-		    bresp[1:0] <= PSLVERR;
+		    bresp_reg[1:0] <= PSLVERR;
+    		end//end of if wlast_flag
 	end
-	else if(bready) begin
-	  bresp[1:0] <= OKAY;
-	  bid[7:0] <= 8'd0;
-	  bvalid <= 1'b0;
+	else begin
+	  bresp_reg[1:0] <= OKAY;
+	  bid_reg[7:0] <= 8'd0;
+	  new_brsp_vld <= 1'b0;
 	end
 end
-//
-//
 //
 endmodule: axi_transaction_controller 

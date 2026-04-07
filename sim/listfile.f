@@ -4,6 +4,7 @@
 ../DUT/sfiforeq.sv
 ../DUT/sfifordata.sv 
 ../DUT/sfifowdata.sv 
+../DUT/sfifobresp.sv 
 ../DUT/axi_transaction_controller.sv 
 ../DUT/arbiter.sv 
 ../DUT/counter.sv 

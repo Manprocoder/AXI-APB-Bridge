@@ -87,6 +87,7 @@ module tb;
 
   //functional coverage
   axi_cov_top axi_cov_top();
+  axi_checker_top axi_checker_top();
   //SET virtual interface 
   initial begin
     //context (null or this class), detailed path, field name in detailed path, variable to store in this context) 

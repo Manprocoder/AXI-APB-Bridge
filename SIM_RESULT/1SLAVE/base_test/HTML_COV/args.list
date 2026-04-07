@@ -1,0 +1,15 @@
+-html
+-htmldir
+../SIM_RESULT/1SLAVE/base_test/HTML_COV
+-verbose
+-assert
+-cvg
+-code
+bcesftx
+-source
+-details=abcdefgst
+-binrhs
+-testhitdataAll
+-stmtaltflow
+-testdetails
+../SIM_RESULT/1SLAVE/base_test/base_test_cov.ucdb

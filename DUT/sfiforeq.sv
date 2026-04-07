@@ -142,7 +142,7 @@ always @ (posedge wclk) begin
 end
 //read decoder
 `ifdef OUTPUT_REG
-  always @ (posedge rclk) begin
+  always @ (posedge rclk, negedge rst_n) begin
     if(~rst_n) data_out <= {DATA_WIDTH{1'b0}};
     // else if(sfifo_re) begin
     else data_out[DATA_WIDTH-1:0] <= mem_array[r_pointer[POINTER_WIDTH-1:0]];
@@ -175,7 +175,7 @@ assign  sfifo_empty = (~msb_diff) & lsb_equal;
     wire clr_ov = sfifo_re;
     assign sfifo_ov = ov_reg;
   `endif
-  always @ (posedge wclk) begin
+  always @ (posedge wclk, negedge rst_n) begin
     if (~rst_n) ov_reg <= 1'b0;
     else if (clr_ov) ov_reg <= 1'b0;
     else if (wr & sfifo_full) ov_reg <= 1'b1;
@@ -191,7 +191,7 @@ assign  sfifo_empty = (~msb_diff) & lsb_equal;
     assign sfifo_ud = ud_reg;
     wire clr_ud = sfifo_we;
   `endif
-  always @ (posedge rclk) begin
+  always @ (posedge rclk, negedge rst_n) begin
     if (~rst_n) ud_reg <= 1'b0;
     else if (clr_ud) ud_reg <= 1'b0;
     else if (rd & sfifo_empty) ud_reg <= 1'b1;

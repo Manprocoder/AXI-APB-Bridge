@@ -15,6 +15,7 @@ module arbiter(
 	sfifo_aw_empty_i,
 	sfifo_rd_almost_full_i,
 	sfifo_wd_almost_empty_i,
+	bchannel_rdy_i,
 	//AXI REQ INFO
 	//WRITE
 	  write_burst_addr_i,
@@ -61,6 +62,7 @@ input logic sfifo_aw_empty_i;
 //data
 input logic sfifo_rd_almost_full_i;
 input logic sfifo_wd_almost_empty_i;
+input logic bchannel_rdy_i;
 	//AXI REQ INFO
 	//WRITE
 input logic [31:0] write_burst_addr_i;
@@ -84,7 +86,6 @@ output logic [31:0] transfer_addr_o;
 output logic [31:0] selected_addr_o;
 output logic [7:0] selected_len_o;
 output logic [2:0] selected_size_o;
-//output logic [1:0] selected_burst_o;
 output logic [2:0] selected_prot_o;
 output logic next_transfer_rdy_o;
 output logic wr_trans_done_o;
@@ -99,7 +100,7 @@ typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE} abt_st;
   //
   logic [1:0] nextSel;
   logic [1:0] nextGrant;
-  logic [1:0] current_grant;
+  logic [1:0] now_grant;
   logic rd_req_avail, wr_req_avail;
   logic update;
   logic begin_transfer;
@@ -123,21 +124,21 @@ typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE} abt_st;
   //output assignment
   //***************************************************
 assign transfer_addr_o = addr_reg;
-assign next_transfer_rdy_o = burst_go ? (current_grant[0] ? ~sfifo_rd_almost_full_i : ~sfifo_wd_almost_empty_i) : 1'b0;
-assign selected_prot_o = current_grant[0] ? read_burst_prot_i : write_burst_prot_i;
-assign selected_addr_o = current_grant[0] ? read_burst_addr_i : write_burst_addr_i;
-assign selected_len_o = current_grant[0] ? read_burst_len_i : write_burst_len_i;
-assign selected_size_o = current_grant[0] ? read_burst_size_i : write_burst_size_i;
-assign wr_trans_done_o = current_grant[1] & control[1];
-assign rd_trans_done_o = current_grant[0] & control[1];
-assign write_enable_o = current_grant[1];
+assign next_transfer_rdy_o = burst_go ? (now_grant[0] ? ~sfifo_rd_almost_full_i : ~sfifo_wd_almost_empty_i & bchannel_rdy_i) : 1'b0;
+assign selected_prot_o = now_grant[0] ? read_burst_prot_i : write_burst_prot_i;
+assign selected_addr_o = now_grant[0] ? read_burst_addr_i : write_burst_addr_i;
+assign selected_len_o = now_grant[0] ? read_burst_len_i : write_burst_len_i;
+assign selected_size_o = now_grant[0] ? read_burst_size_i : write_burst_size_i;
+assign wr_trans_done_o = now_grant[1] & control[1];// & bchannel_rdy_i;
+assign rd_trans_done_o = now_grant[0] & control[1];
+assign write_enable_o = now_grant[1];
   //***************************************************
   //internal assignment
   //***************************************************
-assign selected_burst = current_grant[0] ? read_burst_name_i : write_burst_name_i;
+assign selected_burst = now_grant[0] ? read_burst_name_i : write_burst_name_i;
 assign rd_req_avail = ~sfifo_ar_empty_i;
 assign wr_req_avail = ~sfifo_aw_empty_i;
-assign burst_en = new_req_rdy ? (current_grant[0] ? ~sfifo_ar_empty_i : ~sfifo_aw_empty_i) : 1'b0;
+assign burst_en = new_req_rdy ? (now_grant[0] ? ~sfifo_ar_empty_i : ~sfifo_aw_empty_i) : 1'b0;
 //
 //ready to run new request
 //
@@ -198,7 +199,7 @@ end
   //
   //nextSel0
   always_comb begin
-    if(current_grant[0])
+    if(now_grant[0])
 	  nextSel[0] = 1'b1;
 	else if(rd_req_avail)
 	  nextSel[0] = 1'b0;
@@ -207,7 +208,7 @@ end
   end
   //nextSel1
   always_comb begin
-    if(current_grant[1])
+    if(now_grant[1])
 	  nextSel[1] = 1'b1;
 	else if(wr_req_avail)
 	  nextSel[1] = 1'b0;
@@ -221,7 +222,7 @@ end
 	else if(wr_req_avail) //	R1
 	  nextGrant[1] = 1'b1;
 	else
-	  nextGrant[1] = current_grant[1]; //R2
+	  nextGrant[1] = now_grant[1]; //R2
   end
   //nextGrant[0]
   always_comb begin
@@ -230,21 +231,21 @@ end
 	else if(rd_req_avail) //W1
 	  nextGrant[0] = 1'b1;
 	else
-	  nextGrant[0] = current_grant[0]; //W2
+	  nextGrant[0] = now_grant[0]; //W2
   end
 //
-//current_grant
+//now_grant
 //
-assign update = (burst_go ? 1'b0 : (current_grant[0] ? (wr_req_avail & sfifo_ar_empty_i) : (rd_req_avail & sfifo_aw_empty_i)))
+assign update = (burst_go ? 1'b0 : (now_grant[0] ? (wr_req_avail & sfifo_ar_empty_i) : (rd_req_avail & sfifo_aw_empty_i)))
 | control[1];
 //
 always_ff @(posedge aclk, negedge aresetn) begin
 	if(~aresetn)
-		current_grant[1:0] <= 2'b01;
+		now_grant[1:0] <= 2'b01;
 	else if(update)
-		current_grant[1:0] <= nextGrant[1:0];
+		now_grant[1:0] <= nextGrant[1:0];
 	else
-		current_grant[1:0] <= current_grant[1:0];	  
+		now_grant[1:0] <= now_grant[1:0];	  
 end
 //
 //address register
@@ -261,7 +262,6 @@ always_ff@(posedge pclk, negedge preset_n) begin
 			2'b00: addr_reg <= addr_reg;
 			2'b01: addr_reg <= next_addr_for_incr;
 			2'b10: addr_reg <= next_addr_for_wrap;
-			2'b11: addr_reg <= 32'bx;
 		endcase
 	end
 end

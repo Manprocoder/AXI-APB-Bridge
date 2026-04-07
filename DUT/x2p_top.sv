@@ -113,6 +113,7 @@ logic sfifo_ar_empty;
 logic sfifo_aw_empty;
 logic sfifo_rd_almost_full;
 logic sfifo_wd_almost_empty;
+logic bchannel_rdy;
 logic [31:0] wdata_to_apb;
 logic [3:0] wstrb_to_apb;
 logic [31:0] write_burst_addr;
@@ -130,7 +131,6 @@ logic [2:0] read_burst_prot;
 logic [31:0] selected_addr;
 logic [7:0] selected_len;
 logic [2:0] selected_size;
-//logic [1:0] selected_burst;
 logic [2:0] selected_prot;
 logic wr_trans_done;
 logic rd_trans_done;
@@ -222,6 +222,8 @@ logic [4:0] master_ctrl;
   .read_burst_size_o(read_burst_size),
   .read_burst_name_o(read_burst_name),
   .read_burst_prot_o(read_burst_prot),
+ //BCHANNEL
+  .bchannel_rdy_o(bchannel_rdy),
 //WDATA 
   .wdata_to_apb_o(wdata_to_apb),
   .wstrb_to_apb_o(wstrb_to_apb)
@@ -242,6 +244,8 @@ arbiter arbiter_inst(
 	//available status of axi data
 	.sfifo_rd_almost_full_i(sfifo_rd_almost_full),
 	.sfifo_wd_almost_empty_i(sfifo_wd_almost_empty),
+	//
+	.bchannel_rdy_i(bchannel_rdy),
 	//axi request info
 	//write	
   .write_burst_addr_i(write_burst_addr),
@@ -266,7 +270,6 @@ arbiter arbiter_inst(
 	.selected_addr_o(selected_addr),
 	.selected_len_o(selected_len),
 	.selected_size_o(selected_size),
-	//.selected_burst_o(selected_burst),
 	.selected_prot_o(selected_prot),
 	.next_transfer_rdy_o(transfer),
 	.wr_trans_done_o(wr_trans_done),

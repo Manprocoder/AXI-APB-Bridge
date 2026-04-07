@@ -1,0 +1,13 @@
+var g_db_data = [
+{dummy:0},
+{name:'axi_wreq_cg',f:1,type:6,id:3263,tb:'85',h:'84',m:'1',hp:'98.82%',cov:['97.91%','G'],g:'100.00%',gp:['97.91%','G'],lnk:'__HDL_srcfile_14.htm#40',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'},
+{name:'axi_wdata_cg',f:1,type:6,id:3281,tb:'10',h:'10',m:'0',hp:'100.00%',cov:['100.00%','G'],g:'100.00%',gp:['100.00%','G'],lnk:'__HDL_srcfile_14.htm#86',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'},
+{name:'axi_bresp_cg',f:1,type:6,id:3291,tb:'71',h:'71',m:'0',hp:'100.00%',cov:['100.00%','G'],g:'100.00%',gp:['100.00%','G'],lnk:'__HDL_srcfile_14.htm#110',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'},
+{name:'axi_rreq_cg',f:1,type:6,id:3301,tb:'85',h:'83',m:'2',hp:'97.64%',cov:['91.66%','G'],g:'100.00%',gp:['91.66%','G'],lnk:'__HDL_srcfile_14.htm#131',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'},
+{name:'axi_rdata_cg',f:1,type:6,id:3319,tb:'73',h:'73',m:'0',hp:'100.00%',cov:['100.00%','G'],g:'100.00%',gp:['100.00%','G'],lnk:'__HDL_srcfile_14.htm#179',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'},
+{name:'axi_wreq_cg',f:1,type:6,id:3263,tb:'85',h:'84',m:'1',hp:'98.82%',cov:['97.91%','G'],g:'100.00%',gp:['97.91%','G'],lnk:'__HDL_srcfile_14.htm#40',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'},
+{name:'axi_wdata_cg',f:1,type:6,id:3281,tb:'10',h:'10',m:'0',hp:'100.00%',cov:['100.00%','G'],g:'100.00%',gp:['100.00%','G'],lnk:'__HDL_srcfile_14.htm#86',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'},
+{name:'axi_bresp_cg',f:1,type:6,id:3291,tb:'71',h:'71',m:'0',hp:'100.00%',cov:['100.00%','G'],g:'100.00%',gp:['100.00%','G'],lnk:'__HDL_srcfile_14.htm#110',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'},
+{name:'axi_rreq_cg',f:1,type:6,id:3301,tb:'85',h:'83',m:'2',hp:'97.64%',cov:['91.66%','G'],g:'100.00%',gp:['91.66%','G'],lnk:'__HDL_srcfile_14.htm#131',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'},
+{name:'axi_rdata_cg',f:1,type:6,id:3319,tb:'73',h:'73',m:'0',hp:'100.00%',cov:['100.00%','G'],g:'100.00%',gp:['100.00%','G'],lnk:'__HDL_srcfile_14.htm#179',hdlPath:'/tb/axi_cov_top/axi_cov',parent:'3037'}];
+processConsCovergroupsData(g_db_data);

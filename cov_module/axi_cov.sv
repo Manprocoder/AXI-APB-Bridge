@@ -139,12 +139,7 @@ module axi_cov();
             bins value_0 = {1'b0};
             bins value_1 = {1'b1};
         }
-        arid_cp: coverpoint arid iff arvalid && arready;//{
-            //bins low  = {[0:63]};
-            //bins mid  = {[64:127]};
-            //bins high = {[128:191]};
-            //bins top  = {[192:255]};
-        //}
+        arid_cp: coverpoint arid iff arvalid && arready;
         araddr_cp: coverpoint araddr iff arvalid && arready{
             wildcard bins aligned_addr = {32'b00000000_0000000?_????????_??????00};
             wildcard bins unaligned_addr0 = {32'b00000000_0000000?_????????_???????1};
@@ -202,12 +197,7 @@ module axi_cov();
             bins slverr = {2'b10}; // SLVERR response
             bins decerr = {2'b11}; // DECERR response
         }
-        rid_cp: coverpoint rid iff(rvalid && rready);//{
-            //bins low  = {[0:63]};
-            //bins mid  = {[64:127]};
-            //bins high = {[128:191]};
-            //bins top  = {[192:255]};
-        //}
+        rid_cp: coverpoint rid iff(rvalid && rready);
     endgroup
     // ------------------------------------------------------
     // Instances

@@ -5,10 +5,13 @@
 #---------------------------------------------
 # Global setup
 #---------------------------------------------
-# Path to UVM source if compiling manually
+#
+#---enter number of SLAVE 
+#
+puts "Enter number of SLAVE (VALID choices are: 1, 2, 3 and 4):"
+gets stdin choice
+set slave_cnt $choice
 set UVM_HOME "C:/questasim64_10.7c/uvm-1.2"
-set start_slave 1
-set max_slave 1
 set all_ucdb {}
 set total_cov_dir ../total_cov
 set result_dir   ../SIM_RESULT
@@ -17,8 +20,6 @@ set bin_dir ../TRASH
 # List of test cases
 #set test_list {base_test rd_wr_rd_test}
 set test_list {base_test}
-#set test_list {wr_rd_wr_test}
-#set test_list {rd_wr_rd_test}
 #
 # Cleanup old result & coverage directories
 #
@@ -96,7 +97,7 @@ clean_result $result_dir $bin_dir
 #---------------------------------------------
 # Main loop for SLAVE_CNT
 #---------------------------------------------
-for {set slave_cnt $start_slave} {$slave_cnt <= $max_slave} {incr slave_cnt} {
+#for {set slave_cnt $start_slave} {$slave_cnt <= $max_slave} {incr slave_cnt} {
     puts "=================================================="
     puts ">> Running simulation for SLAVE_CNT = $slave_cnt"
     puts "=================================================="
@@ -123,6 +124,7 @@ for {set slave_cnt $start_slave} {$slave_cnt <= $max_slave} {incr slave_cnt} {
       +define+UVM_REGEX_NO_DPI \
       +define+UVM_NO_DPI \
       +define+PRINT_TO_COMPARE_FILE \
+      +define+PRINT_TO_SUM_FILE \
       +define+CLK_CYCLE=10 \
       +define+SLAVE_CNT=$slave_cnt \
       +incdir+$UVM_HOME/src \
@@ -202,7 +204,7 @@ for {set slave_cnt $start_slave} {$slave_cnt <= $max_slave} {incr slave_cnt} {
 
         puts ">>> Completed test: $test_case"
     }
-}
+#}//end of for start_slave -> max slave
 
 #---------------------------------------------
 # Final merged coverage

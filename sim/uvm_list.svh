@@ -6,43 +6,40 @@ parameter AW2 = 32;
 `include "uvm_pkg.sv"
 `include "uvm_macros.svh"
 import uvm_pkg::*;
-`include "../UVM_COMP/OTHER_COMP/interface.sv"
-//
-`include "../UVM_COMP/OTHER_COMP/type_package.sv"
-`include "../UVM_COMP/OTHER_COMP/config_object.svh"
+`include "../UVM_TB/OTHER_COMP/interface.sv"
+`include "../UVM_TB/OTHER_COMP/type_package.sv"
+`include "../UVM_TB/OTHER_COMP/config_object.svh"
 `include "../cov_module/axi_cov.sv"
 `include "../cov_module/axi_cov_top.sv"
+`include "../protocol_checker/axi_checker.sv"
+`include "../protocol_checker/axi_checker_top.sv"
 //
-`include "../UVM_COMP/APB_COMP/apb_seq_item.sv"
-`include "../UVM_COMP/AXI_COMP/axi_seq_item.sv"
-`include "../UVM_COMP/OBJECT_IN_AXI_MON/axi_req_item.sv"
-`include "../UVM_COMP/OBJECT_IN_AXI_MON/axi_data_item.sv"
-`include "../UVM_COMP/OBJECT_IN_AXI_MON/axi_brsp_item.sv"
+`include "../UVM_TB/APB_AGENT/apb_seq_item.sv"
+`include "../UVM_TB/AXI_AGENT/axi_seq_item.sv"
+`include "../UVM_TB/OBJECT_IN_AXI_MON/axi_req_item.sv"
+`include "../UVM_TB/OBJECT_IN_AXI_MON/axi_data_item.sv"
+`include "../UVM_TB/OBJECT_IN_AXI_MON/axi_brsp_item.sv"
 //
-`include "../UVM_COMP/SHARED_ITEM/shared_item.sv"
-`include "../UVM_COMP/AXI_COMP/common_sequence.sv" //write seq and read seq for AXI protocol
-`include "../UVM_COMP/AXI_COMP/reset_sequence.sv" //write seq and read seq for AXI protocol
-`include "../UVM_COMP/AXI_COMP/axi_sequencer.sv"
-`include "../UVM_COMP/AXI_COMP/axi_driver.sv"
-`include "../UVM_COMP/AXI_COMP/axi_monitor.sv"
-`include "../UVM_COMP/AXI_COMP/axi_agent.sv"
-`include "../UVM_COMP/APB_COMP/apb_seq.sv"
-`include "../UVM_COMP/APB_COMP/apb_sequencer.sv"
+`include "../UVM_TB/SHARED_ITEM/shared_item.sv"
+`include "../TEST_CASES/virtual_seq/common_sequence.sv" //write seq and read seq for AXI protocol
+`include "../TEST_CASES/virtual_seq/reset_sequence.sv" //reset seq for AXI protocol
+`include "../UVM_TB/AXI_AGENT/axi_sequencer.sv"
+`include "../UVM_TB/AXI_AGENT/axi_driver.sv"
+`include "../UVM_TB/AXI_AGENT/axi_monitor.sv"
+`include "../UVM_TB/AXI_AGENT/axi_agent.sv"
+`include "../UVM_TB/APB_AGENT/apb_seq.sv"
+`include "../UVM_TB/APB_AGENT/apb_sequencer.sv"
 //
-`include "../UVM_COMP/OTHER_COMP/base_vseq.sv"
+`include "../UVM_TB/OTHER_COMP/base_vseq.sv"
 //
-`include "../UVM_COMP/APB_COMP/apb_driver.sv"
-`include "../UVM_COMP/APB_COMP/apb_monitor.sv"
-`include "../UVM_COMP/APB_COMP/apb_agent.sv"
+`include "../UVM_TB/APB_AGENT/apb_driver.sv"
+`include "../UVM_TB/APB_AGENT/apb_monitor.sv"
+`include "../UVM_TB/APB_AGENT/apb_agent.sv"
 //-------------------------------
-`include "../UVM_COMP/OTHER_COMP/scoreboard.sv"
+`include "../UVM_TB/OTHER_COMP/scoreboard.sv"
 //-----------------------------------TEST CASES --------------------------------------
-`include "../TEST_CASES/SLAVE1/rd_wr_parallel/rd_wr_parallel.sv"
- `include "../TEST_CASES/SLAVE1/rd_wr_rd/rd_wr_rd.sv"
- `include "../TEST_CASES/SLAVE1/wr_rd_wr/wr_rd_wr.sv"
- //`include "../TEST_CASES/SLAVE1/wr_rd_rd_wr/wr_rd_rd_wr.sv"
+`include "../TEST_CASES/virtual_seq/virtual_seq.sv"
 //-------------------------------------------------------------------------------------
-`include "../UVM_COMP/OTHER_COMP/env.sv"
-`include "../UVM_COMP/OTHER_COMP/test.sv"
-`include "../UVM_COMP/OTHER_COMP/test_package.sv"
+`include "../UVM_TB/OTHER_COMP/env.sv"
+`include "../UVM_TB/OTHER_COMP/test.sv"
 
