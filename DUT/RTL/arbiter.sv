@@ -38,10 +38,9 @@ module arbiter(
 	transfer_addr_o,
 	selected_addr_o,
 	selected_len_o,
-	selected_size_o,
-	//selected_burst_o,
 	selected_prot_o,
 	next_transfer_rdy_o,
+	disallowed_trans_o,
 	wr_trans_done_o,
 	rd_trans_done_o,
 	write_enable_o
@@ -85,9 +84,9 @@ input logic burst_done_i;
 output logic [31:0] transfer_addr_o;
 output logic [31:0] selected_addr_o;
 output logic [7:0] selected_len_o;
-output logic [2:0] selected_size_o;
 output logic [2:0] selected_prot_o;
 output logic next_transfer_rdy_o;
+output logic disallowed_trans_o;
 output logic wr_trans_done_o;
 output logic rd_trans_done_o;
 output logic write_enable_o;
@@ -95,7 +94,7 @@ output logic write_enable_o;
 //variables
 //*****************************************************************
 //ABT state machine
-typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE} abt_st;
+typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE, BRSP_FIFO_FULL} abt_st;
   abt_st abt_cs, abt_ns;
   //
   logic [1:0] nextSel;
@@ -109,36 +108,37 @@ typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE} abt_st;
   logic new_req_rdy;
   logic [1:0] control;
   logic [1:0] selected_burst;
+  logic [2:0] selected_size;
   //addr variables
   logic addr_incr_active;
   logic [31:0] addr_reg;
   logic [31:0] next_addr_for_incr;
   logic [31:0] next_addr_for_wrap;
   logic [2:0] bit_num;
-  logic [2:0] bit2Addr;
   logic [3:0] bit3Addr;
   logic [4:0] bit4Addr;
   logic [5:0] bit5Addr;
   logic [6:0] bit6Addr;
+  logic invalid_transfer;
   //***************************************************
   //output assignment
   //***************************************************
 assign transfer_addr_o = addr_reg;
-assign next_transfer_rdy_o = burst_go ? (now_grant[0] ? ~sfifo_rd_almost_full_i : ~sfifo_wd_almost_empty_i & bchannel_rdy_i) : 1'b0;
 assign selected_prot_o = now_grant[0] ? read_burst_prot_i : write_burst_prot_i;
 assign selected_addr_o = now_grant[0] ? read_burst_addr_i : write_burst_addr_i;
 assign selected_len_o = now_grant[0] ? read_burst_len_i : write_burst_len_i;
-assign selected_size_o = now_grant[0] ? read_burst_size_i : write_burst_size_i;
-assign wr_trans_done_o = now_grant[1] & control[1];// & bchannel_rdy_i;
+assign wr_trans_done_o = now_grant[1] & control[1];// 
 assign rd_trans_done_o = now_grant[0] & control[1];
 assign write_enable_o = now_grant[1];
-  //***************************************************
-  //internal assignment
-  //***************************************************
+//***************************************************
+//internal assignment
+//***************************************************
+assign selected_size = now_grant[0] ? read_burst_size_i : write_burst_size_i;
 assign selected_burst = now_grant[0] ? read_burst_name_i : write_burst_name_i;
 assign rd_req_avail = ~sfifo_ar_empty_i;
 assign wr_req_avail = ~sfifo_aw_empty_i;
 assign burst_en = new_req_rdy ? (now_grant[0] ? ~sfifo_ar_empty_i : ~sfifo_aw_empty_i) : 1'b0;
+assign invalid_transfer = ((selected_burst != 2'b01) && (|selected_addr_o[1:0])) | (selected_size != 3'b010); 
 //
 //ready to run new request
 //
@@ -160,14 +160,17 @@ always_ff@(posedge aclk, negedge aresetn) begin
 end
   //
 always_comb begin
-  abt_ns = abt_cs;
+  abt_ns = ABT_IDLE;
   burst_go = 1'b0;
+  begin_transfer = 1'b0;
   control = 2'b0;
+  next_transfer_rdy_o = 1'b0;
   //
   case(abt_cs)
   ABT_IDLE: begin
 	  if(burst_en) begin
 		  abt_ns = ABT_GO;
+		  begin_transfer = 1'b1;
 		  control = 2'b01;
 	  end
 	  else begin
@@ -176,23 +179,47 @@ always_comb begin
 	  end
   end
   ABT_GO: begin
-	if(burst_almost_done_i) abt_ns = ABT_DONE;
+	if(burst_almost_done_i) abt_ns = ABT_DONE;//SET_UP phase
 	else abt_ns = ABT_GO;
 	//
 	burst_go = 1'b1;
+	addr_incr_active = addr_incr_en_i;
+  	next_transfer_rdy_o = now_grant[0] ? ~sfifo_rd_almost_full_i : ~sfifo_wd_almost_empty_i;
   end
   ABT_DONE: begin
-	  if(burst_done_i) begin
-		  abt_ns = ABT_IDLE;
-		  control = 2'b10;
+	  next_transfer_rdy_o = 1'b0;
+	  if(burst_done_i) begin //rd AW_FIFO or AR_FIFO
+		  if(now_grant[0]) begin
+			  abt_ns = ABT_IDLE;
+			  control = 2'b10;
+		  end
+		  else begin
+			  if(bchannel_rdy_i) begin
+				  control = 2'b10;
+				  abt_ns = ABT_IDLE;
+			  end
+			  else abt_ns = BRSP_FIFO_FULL;
+		  end
 	  end
 	  else abt_ns = ABT_DONE;
   end
-  default: begin
-	  abt_ns = abt_cs;
-	  burst_go = 1'b0;
-	  control = 2'b00;
+  BRSP_FIFO_FULL: begin
+	  next_transfer_rdy_o = 1'b0;
+	  //
+	  if(bchannel_rdy_i) begin
+		  control = 2'b10;
+		  abt_ns = ABT_IDLE;
+	  end
+	  else abt_ns = BRSP_FIFO_FULL;
   end
+  //default: begin
+	  //abt_ns = ABT_IDLE;
+	  //begin_transfer = 1'b0;
+	  //addr_incr_active = 1'b0;
+	  //burst_go = 1'b0;
+	  //control = 2'b00;
+	  //next_transfer_rdy_o = 1'b0;
+  //end
   endcase
 end
 
@@ -236,8 +263,8 @@ end
 //
 //now_grant
 //
-assign update = (burst_go ? 1'b0 : (now_grant[0] ? (wr_req_avail & sfifo_ar_empty_i) : (rd_req_avail & sfifo_aw_empty_i)))
-| control[1];
+assign update = (burst_go ? 1'b0 
+: (now_grant[0] ? (wr_req_avail & sfifo_ar_empty_i) : (rd_req_avail & sfifo_aw_empty_i))) | control[1];
 //
 always_ff @(posedge aclk, negedge aresetn) begin
 	if(~aresetn)
@@ -249,19 +276,22 @@ always_ff @(posedge aclk, negedge aresetn) begin
 end
 //
 //address register
-//assign addr_incr_active = control[1] ? addr_incr_en_i : 1'b0;
-assign addr_incr_active = burst_go ? addr_incr_en_i : 1'b0;
 //
 always_ff@(posedge pclk, negedge preset_n) begin
-	if(~preset_n) addr_reg <= 32'd0;
+	if(~preset_n) begin
+		addr_reg <= 32'd0;
+		disallowed_trans_o <= 1'b0;
+	end
 	else if(begin_transfer) begin
-		addr_reg <= {selected_addr_o[31:2], 2'b00};
+		addr_reg <= selected_addr_o[31:0];//, 2'b00};
+		disallowed_trans_o <= invalid_transfer;
 	end
 	else if(addr_incr_active) begin
 		case(selected_burst) 
 			2'b00: addr_reg <= addr_reg;
-			2'b01: addr_reg <= next_addr_for_incr;
+			2'b01: addr_reg <= {next_addr_for_incr[31:2], 2'b00};
 			2'b10: addr_reg <= next_addr_for_wrap;
+			default: addr_reg <= 32'd0;
 		endcase
 	end
 end
@@ -273,34 +303,43 @@ assign next_addr_for_incr[31:0] = addr_reg[31:0] + 3'd4;
 //bit_num
 //
 always_comb begin
+  bit_num[2:0] = 3'b000;
 case(selected_len_o[7:0])
   8'd1:  bit_num[2:0] = 3'b011;
   8'd3:  bit_num[2:0] = 3'b100;
   8'd7:  bit_num[2:0] = 3'b101;
   8'd15: bit_num[2:0] = 3'b110;
-  default: bit_num[2:0] = 3'bx;
+  default: bit_num[2:0] = 3'b000;
 endcase
 end
 //bit3Addr, bit4Addr, bit5Addr, bit6Addr
 always_comb begin
+  bit3Addr[2:0] = 3'd0;
+  //
 if(bit_num[2:0] == 3'b011)
   bit3Addr[2:0] = addr_reg[2:0] + 3'd4;
 else
   bit3Addr[2:0] = 3'd0;
 end
 always_comb begin
+  bit4Addr[3:0] = 4'd0;
+  //
 if(bit_num[2:0] == 3'b100)
   bit4Addr[3:0] = addr_reg[3:0] + 3'd4;
 else
   bit4Addr[3:0] = 4'd0;
 end
 always_comb begin
+  bit5Addr[4:0] = 5'd0;
+  //
 if(bit_num[2:0] == 3'b101)
   bit5Addr[4:0] = addr_reg[4:0] + 3'd4;
 else
   bit5Addr[4:0] = 5'd0;
 end
 always_comb begin
+  bit6Addr[5:0] = 6'd0;
+  //
 if(bit_num[2:0] == 3'b110)
   bit6Addr[5:0] = addr_reg[5:0] + 3'd4;
 else
@@ -308,24 +347,13 @@ else
 end
 //next_addr_for_wrap
 always_comb begin
+  next_addr_for_wrap[31:0] = 32'd0;
 case(bit_num[2:0])
   3'b011: next_addr_for_wrap[31:0] = {addr_reg[31:3], bit3Addr[2:0]};
   3'b100: next_addr_for_wrap[31:0] = {addr_reg[31:4], bit4Addr[3:0]};
   3'b101: next_addr_for_wrap[31:0] = {addr_reg[31:5], bit5Addr[4:0]};
   3'b110: next_addr_for_wrap[31:0] = {addr_reg[31:6], bit6Addr[5:0]};
-  default: next_addr_for_wrap[31:0] = 32'bx;
+  default: next_addr_for_wrap[31:0] = 32'd0;
 endcase
 end
-//
-//
-//
-RiSiEdgeDetector RiSiEdgeDetector_burst_go(
-  .clk_i(pclk),
-  .rstn_i(preset_n),
-  .sign_i(burst_go),
-  .red_o(begin_transfer)  
-  //
-);
-
-//
 endmodule

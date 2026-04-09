@@ -19,14 +19,14 @@
 <a name="9"><q-n>     9  </q-n></a>`ifndef EMPTY_SIGNAL
 <a name="10"><q-n>     10  </q-n></a>  `<q-a>define</q-w> EMPTY_SIGNAL
 <a name="11"><q-n>     11  </q-n></a>`<q-a>endif</q-w>
-<a name="12"><q-n>     12  </q-n></a><q-m>//`ifndef FULL_SIGNAL</q-m>
-<a name="13"><q-n>     13  </q-n></a>  <q-m>//`define FULL_SIGNAL</q-m>
-<a name="14"><q-n>     14  </q-n></a><q-m>//`endif</q-m>
+<a name="12"><q-n>     12  </q-n></a>`ifndef FULL_SIGNAL
+<a name="13"><q-n>     13  </q-n></a>  `<q-a>define</q-w> FULL_SIGNAL
+<a name="14"><q-n>     14  </q-n></a>`<q-a>endif</q-w>
 <a name="15"><q-n>     15  </q-n></a><q-m>//`define OV_SIGNAL</q-m>
 <a name="16"><q-n>     16  </q-n></a><q-m>//`define UD_SIGNAL</q-m>
 <a name="17"><q-n>     17  </q-n></a><q-m>// `define OUTPUT_REG</q-m>
 <a name="18"><q-n>     18  </q-n></a><q-m>//`define TWO_CLOCK</q-m>
-<a name="19"><q-n>     19  </q-n></a> `<q-a>define</q-w> ALMOST_FULL_SIGNAL
+<a name="19"><q-n>     19  </q-n></a><q-m>// `define ALMOST_FULL_SIGNAL</q-m>
 <a name="20"><q-n>     20  </q-n></a><q-m>//`define ALMOST_EMPTY_SIGNAL</q-m>
 <a name="21"><q-n>     21  </q-n></a><q-w>module</q-w> sfifobresp (rst_n, wr, rd,
 <a name="22"><q-n>     22  </q-n></a>                  `<q-a>ifdef</q-w> TWO_CLOCK
@@ -134,92 +134,84 @@
 <a name="124"><q-n>     124  </q-n></a>`<q-a>ifdef</q-w> OUTPUT_REG
 <a name="125"><q-n>     125  </q-n></a>  <q-w>always</q-w> @ (<q-a>posedge</q-w> rclk <q-t>or</q-w> <q-a>negedge</q-w> rst_n) <q-w>begin</q-w>
 <a name="126"><q-n>     126  </q-n></a>    <q-w>if</q-w>(~rst_n) data_out &lt;= {DATA_WIDTH{1'b0}};
-<a name="127"><q-n>     127  </q-n></a>    <q-m>// else if(sfifo_re) begin</q-m>
-<a name="128"><q-n>     128  </q-n></a>    <q-w>else</q-w> data_out[DATA_WIDTH-1:0] &lt;= mem_array[r_pointer[POINTER_WIDTH-1:0]];
-<a name="129"><q-n>     129  </q-n></a>    <q-m>// end</q-m>
-<a name="130"><q-n>     130  </q-n></a>  <q-w>end</q-w>
-<a name="131"><q-n>     131  </q-n></a>`<q-w>else</q-w>
-<a name="132"><q-n>     132  </q-n></a>  <q-w>always</q-w> @ (*) <q-w>begin</q-w>
-<a name="133"><q-n>     133  </q-n></a>    data_out[DATA_WIDTH-1:0]
-<a name="134"><q-n>     134  </q-n></a>    = mem_array[r_pointer[POINTER_WIDTH-1:0]];
-<a name="135"><q-n>     135  </q-n></a>  <q-w>end</q-w>
-<a name="136"><q-n>     136  </q-n></a>`<q-a>endif</q-w>
-<a name="137"><q-n>     137  </q-n></a><q-m>//status signal</q-m>
-<a name="138"><q-n>     138  </q-n></a><q-w>assign</q-w>  msb_diff = w_pointer[POINTER_WIDTH]
-<a name="139"><q-n>     139  </q-n></a>                  ^r_pointer[POINTER_WIDTH];
-<a name="140"><q-n>     140  </q-n></a><q-m>//</q-m>
-<a name="141"><q-n>     141  </q-n></a><q-w>assign</q-w>  lsb_equal = (w_pointer[POINTER_WIDTH-1:0]
-<a name="142"><q-n>     142  </q-n></a>                  == r_pointer[POINTER_WIDTH-1:0]);
-<a name="143"><q-n>     143  </q-n></a><q-m>//</q-m>
-<a name="144"><q-n>     144  </q-n></a><q-w>assign</q-w>  sfifo_full = msb_diff &amp; lsb_equal;
-<a name="145"><q-n>     145  </q-n></a><q-m>//</q-m>
-<a name="146"><q-n>     146  </q-n></a><q-w>assign</q-w>  sfifo_empty = (~msb_diff) &amp; lsb_equal;
-<a name="147"><q-n>     147  </q-n></a><q-m>//</q-m>
-<a name="148"><q-n>     148  </q-n></a><q-m>//Overflow</q-m>
-<a name="149"><q-n>     149  </q-n></a>`<q-a>ifdef</q-w> OV_SIGNAL
-<a name="150"><q-n>     150  </q-n></a>  <q-w>reg</q-w> ov_reg;
-<a name="151"><q-n>     151  </q-n></a>  `<q-a>ifdef</q-w> TWO_CLOCK
-<a name="152"><q-n>     152  </q-n></a>    <q-w>assign</q-w> sfifo_ov = ov_reg &amp; sfifo_full;
-<a name="153"><q-n>     153  </q-n></a>    <q-w>wire</q-w> clr_ov = ~sfifo_full;
-<a name="154"><q-n>     154  </q-n></a>  `<q-w>else</q-w>
-<a name="155"><q-n>     155  </q-n></a>    <q-w>wire</q-w> clr_ov = sfifo_re;
-<a name="156"><q-n>     156  </q-n></a>    <q-w>assign</q-w> sfifo_ov = ov_reg;
-<a name="157"><q-n>     157  </q-n></a>  `<q-a>endif</q-w>
-<a name="158"><q-n>     158  </q-n></a>  <q-w>always</q-w> @ (<q-a>posedge</q-w> wclk <q-t>or</q-w> <q-a>negedge</q-w> rst_n) <q-w>begin</q-w>
-<a name="159"><q-n>     159  </q-n></a>    <q-w>if</q-w> (~rst_n) ov_reg &lt;= 1'b0;
-<a name="160"><q-n>     160  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w> (clr_ov) ov_reg &lt;= 1'b0;
-<a name="161"><q-n>     161  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w> (wr &amp; sfifo_full) ov_reg &lt;= 1'b1;
-<a name="162"><q-n>     162  </q-n></a>  <q-w>end</q-w>
-<a name="163"><q-n>     163  </q-n></a>`<q-a>endif</q-w>
-<a name="164"><q-n>     164  </q-n></a><q-m>//Underflow</q-m>
-<a name="165"><q-n>     165  </q-n></a>`<q-a>ifdef</q-w> UD_SIGNAL
-<a name="166"><q-n>     166  </q-n></a>  <q-w>reg</q-w> ud_reg;
-<a name="167"><q-n>     167  </q-n></a>  `<q-a>ifdef</q-w> TWO_CLOCK
-<a name="168"><q-n>     168  </q-n></a>    <q-w>assign</q-w> sfifo_ud = ud_reg &amp; sfifo_empty;
-<a name="169"><q-n>     169  </q-n></a>    <q-w>wire</q-w> clr_ud = ~sfifo_empty;
-<a name="170"><q-n>     170  </q-n></a>  `<q-w>else</q-w>
-<a name="171"><q-n>     171  </q-n></a>    <q-w>assign</q-w> sfifo_ud = ud_reg;
-<a name="172"><q-n>     172  </q-n></a>    <q-w>wire</q-w> clr_ud = sfifo_we;
-<a name="173"><q-n>     173  </q-n></a>  `<q-a>endif</q-w>
-<a name="174"><q-n>     174  </q-n></a>  <q-w>always</q-w> @ (<q-a>posedge</q-w> rclk <q-t>or</q-w> <q-a>negedge</q-w> rst_n) <q-w>begin</q-w>
-<a name="175"><q-n>     175  </q-n></a>    <q-w>if</q-w> (~rst_n) ud_reg &lt;= 1'b0;
-<a name="176"><q-n>     176  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w> (clr_ud) ud_reg &lt;= 1'b0;
-<a name="177"><q-n>     177  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w> (rd &amp; sfifo_empty) ud_reg &lt;= 1'b1;
-<a name="178"><q-n>     178  </q-n></a>  <q-w>end</q-w>
+<a name="127"><q-n>     127  </q-n></a>    <q-w>else</q-w> data_out[DATA_WIDTH-1:0] &lt;= mem_array[r_pointer[POINTER_WIDTH-1:0]];
+<a name="128"><q-n>     128  </q-n></a>  <q-w>end</q-w>
+<a name="129"><q-n>     129  </q-n></a>`<q-w>else</q-w>
+<a name="130"><q-n>     130  </q-n></a>  <q-w>always</q-w> @ (*) <q-w>begin</q-w>
+<a name="131"><q-n>     131  </q-n></a>    data_out[DATA_WIDTH-1:0] = mem_array[r_pointer[POINTER_WIDTH-1:0]];
+<a name="132"><q-n>     132  </q-n></a>  <q-w>end</q-w>
+<a name="133"><q-n>     133  </q-n></a>`<q-a>endif</q-w>
+<a name="134"><q-n>     134  </q-n></a><q-m>//status signal</q-m>
+<a name="135"><q-n>     135  </q-n></a><q-w>assign</q-w>  msb_diff = w_pointer[POINTER_WIDTH] ^ r_pointer[POINTER_WIDTH];
+<a name="136"><q-n>     136  </q-n></a><q-w>assign</q-w>  lsb_equal = (w_pointer[POINTER_WIDTH-1:0] == r_pointer[POINTER_WIDTH-1:0]);
+<a name="137"><q-n>     137  </q-n></a><q-w>assign</q-w>  sfifo_full = msb_diff &amp; lsb_equal;
+<a name="138"><q-n>     138  </q-n></a><q-w>assign</q-w>  sfifo_empty = (~msb_diff) &amp; lsb_equal;
+<a name="139"><q-n>     139  </q-n></a><q-m>//</q-m>
+<a name="140"><q-n>     140  </q-n></a><q-m>//Overflow</q-m>
+<a name="141"><q-n>     141  </q-n></a>`<q-a>ifdef</q-w> OV_SIGNAL
+<a name="142"><q-n>     142  </q-n></a>  <q-w>reg</q-w> ov_reg;
+<a name="143"><q-n>     143  </q-n></a>  `<q-a>ifdef</q-w> TWO_CLOCK
+<a name="144"><q-n>     144  </q-n></a>    <q-w>assign</q-w> sfifo_ov = ov_reg &amp; sfifo_full;
+<a name="145"><q-n>     145  </q-n></a>    <q-w>wire</q-w> clr_ov = ~sfifo_full;
+<a name="146"><q-n>     146  </q-n></a>  `<q-w>else</q-w>
+<a name="147"><q-n>     147  </q-n></a>    <q-w>wire</q-w> clr_ov = sfifo_re;
+<a name="148"><q-n>     148  </q-n></a>    <q-w>assign</q-w> sfifo_ov = ov_reg;
+<a name="149"><q-n>     149  </q-n></a>  `<q-a>endif</q-w>
+<a name="150"><q-n>     150  </q-n></a>  <q-w>always</q-w> @ (<q-a>posedge</q-w> wclk <q-t>or</q-w> <q-a>negedge</q-w> rst_n) <q-w>begin</q-w>
+<a name="151"><q-n>     151  </q-n></a>    <q-w>if</q-w> (~rst_n) ov_reg &lt;= 1'b0;
+<a name="152"><q-n>     152  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w> (clr_ov) ov_reg &lt;= 1'b0;
+<a name="153"><q-n>     153  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w> (wr &amp; sfifo_full) ov_reg &lt;= 1'b1;
+<a name="154"><q-n>     154  </q-n></a>  <q-w>end</q-w>
+<a name="155"><q-n>     155  </q-n></a>`<q-a>endif</q-w>
+<a name="156"><q-n>     156  </q-n></a><q-m>//Underflow</q-m>
+<a name="157"><q-n>     157  </q-n></a>`<q-a>ifdef</q-w> UD_SIGNAL
+<a name="158"><q-n>     158  </q-n></a>  <q-w>reg</q-w> ud_reg;
+<a name="159"><q-n>     159  </q-n></a>  `<q-a>ifdef</q-w> TWO_CLOCK
+<a name="160"><q-n>     160  </q-n></a>    <q-w>assign</q-w> sfifo_ud = ud_reg &amp; sfifo_empty;
+<a name="161"><q-n>     161  </q-n></a>    <q-w>wire</q-w> clr_ud = ~sfifo_empty;
+<a name="162"><q-n>     162  </q-n></a>  `<q-w>else</q-w>
+<a name="163"><q-n>     163  </q-n></a>    <q-w>assign</q-w> sfifo_ud = ud_reg;
+<a name="164"><q-n>     164  </q-n></a>    <q-w>wire</q-w> clr_ud = sfifo_we;
+<a name="165"><q-n>     165  </q-n></a>  `<q-a>endif</q-w>
+<a name="166"><q-n>     166  </q-n></a>  <q-w>always</q-w> @ (<q-a>posedge</q-w> rclk <q-t>or</q-w> <q-a>negedge</q-w> rst_n) <q-w>begin</q-w>
+<a name="167"><q-n>     167  </q-n></a>    <q-w>if</q-w> (~rst_n) ud_reg &lt;= 1'b0;
+<a name="168"><q-n>     168  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w> (clr_ud) ud_reg &lt;= 1'b0;
+<a name="169"><q-n>     169  </q-n></a>    <q-w>else</q-w> <q-w>if</q-w> (rd &amp; sfifo_empty) ud_reg &lt;= 1'b1;
+<a name="170"><q-n>     170  </q-n></a>  <q-w>end</q-w>
+<a name="171"><q-n>     171  </q-n></a>`<q-a>endif</q-w>
+<a name="172"><q-n>     172  </q-n></a><q-m>//The minus result of two pointers</q-m>
+<a name="173"><q-n>     173  </q-n></a>`<q-a>ifdef</q-w> ALMOST_EMPTY_SIGNAL
+<a name="174"><q-n>     174  </q-n></a>  <q-w>wire</q-w> [POINTER_WIDTH:0] minus_result = w_pointer[POINTER_WIDTH:0] - r_pointer[POINTER_WIDTH:0];
+<a name="175"><q-n>     175  </q-n></a>`<q-w>else</q-w>
+<a name="176"><q-n>     176  </q-n></a>  `<q-a>ifdef</q-w> ALMOST_FULL_SIGNAL
+<a name="177"><q-n>     177  </q-n></a>    <q-w>wire</q-w> [POINTER_WIDTH:0] minus_result = w_pointer[POINTER_WIDTH:0] - r_pointer[POINTER_WIDTH:0];
+<a name="178"><q-n>     178  </q-n></a>  `<q-a>endif</q-w>
 <a name="179"><q-n>     179  </q-n></a>`<q-a>endif</q-w>
-<a name="180"><q-n>     180  </q-n></a><q-m>//The minus result of two pointers</q-m>
-<a name="181"><q-n>     181  </q-n></a>`<q-a>ifdef</q-w> ALMOST_EMPTY_SIGNAL
-<a name="182"><q-n>     182  </q-n></a>  <q-w>wire</q-w> [POINTER_WIDTH:0] minus_result = w_pointer[POINTER_WIDTH:0] - r_pointer[POINTER_WIDTH:0];
-<a name="183"><q-n>     183  </q-n></a>`<q-w>else</q-w>
-<a name="184"><q-n>     184  </q-n></a>  `<q-a>ifdef</q-w> ALMOST_FULL_SIGNAL
-<a name="185"><q-n>     185  </q-n></a>    <q-w>wire</q-w> [POINTER_WIDTH:0] minus_result = w_pointer[POINTER_WIDTH:0] - r_pointer[POINTER_WIDTH:0];
-<a name="186"><q-n>     186  </q-n></a>  `<q-a>endif</q-w>
-<a name="187"><q-n>     187  </q-n></a>`<q-a>endif</q-w>
-<a name="188"><q-n>     188  </q-n></a><q-m>//The low threshold signal</q-m>
-<a name="189"><q-n>     189  </q-n></a><q-m>//`ifdef ALMOST_EMPTY_SIGNAL</q-m>
-<a name="190"><q-n>     190  </q-n></a>  <q-m>//`ifdef SET_LOW_EN</q-m>
-<a name="191"><q-n>     191  </q-n></a>    <q-m>//wire [POINTER_WIDTH:0] low_level = low_th[POINTER_WIDTH:0];</q-m>
-<a name="192"><q-n>     192  </q-n></a>  <q-m>//`else</q-m>
-<a name="193"><q-n>     193  </q-n></a>    <q-m>//wire [POINTER_WIDTH:0] low_level = TH_LEVEL;</q-m>
-<a name="194"><q-n>     194  </q-n></a>  <q-m>//`endif</q-m>
-<a name="195"><q-n>     195  </q-n></a><q-m>//`endif</q-m>
-<a name="196"><q-n>     196  </q-n></a>
-<a name="197"><q-n>     197  </q-n></a>`<q-a>ifdef</q-w> ALMOST_EMPTY_SIGNAL
-<a name="198"><q-n>     198  </q-n></a>  <q-w>assign</q-w> sfifo_almost_empty = (minus_result[POINTER_WIDTH:0] &lt; ALMOST_EMPTY_VALUE);<q-m>//low_level[POINTER_WIDTH:0]);</q-m>
-<a name="199"><q-n>     199  </q-n></a>`<q-a>endif</q-w>
-<a name="200"><q-n>     200  </q-n></a><q-m>////The high threshold signal</q-m>
-<a name="201"><q-n>     201  </q-n></a><q-m>//`ifdef ALMOST_FULL_SIGNAL</q-m>
-<a name="202"><q-n>     202  </q-n></a>  <q-m>//`ifdef SET_HIGH_EN</q-m>
-<a name="203"><q-n>     203  </q-n></a>    <q-m>//wire [POINTER_WIDTH:0] high_level = high_th[POINTER_WIDTH:0];</q-m>
-<a name="204"><q-n>     204  </q-n></a>  <q-m>//`else</q-m>
-<a name="205"><q-n>     205  </q-n></a>    <q-m>//wire [POINTER_WIDTH:0] high_level = TH_LEVEL;</q-m>
-<a name="206"><q-n>     206  </q-n></a>  <q-m>//`endif</q-m>
-<a name="207"><q-n>     207  </q-n></a><q-m>//`endif</q-m>
-<a name="208"><q-n>     208  </q-n></a>
-<a name="209"><q-n>     209  </q-n></a>`<q-a>ifdef</q-w> ALMOST_FULL_SIGNAL
-<a name="210"><q-n>     210  </q-n></a>  <q-w>assign</q-w> sfifo_almost_full = (minus_result[POINTER_WIDTH:0] &gt;= ALMOST_FULL_VALUE);<q-m>//high_level[POINTER_WIDTH:0]);</q-m>
-<a name="211"><q-n>     211  </q-n></a>`<q-a>endif</q-w>
-<a name="212"><q-n>     212  </q-n></a><q-w>endmodule</q-w>: sfifobresp
+<a name="180"><q-n>     180  </q-n></a><q-m>//The low threshold signal</q-m>
+<a name="181"><q-n>     181  </q-n></a><q-m>//`ifdef ALMOST_EMPTY_SIGNAL</q-m>
+<a name="182"><q-n>     182  </q-n></a>  <q-m>//`ifdef SET_LOW_EN</q-m>
+<a name="183"><q-n>     183  </q-n></a>    <q-m>//wire [POINTER_WIDTH:0] low_level = low_th[POINTER_WIDTH:0];</q-m>
+<a name="184"><q-n>     184  </q-n></a>  <q-m>//`else</q-m>
+<a name="185"><q-n>     185  </q-n></a>    <q-m>//wire [POINTER_WIDTH:0] low_level = TH_LEVEL;</q-m>
+<a name="186"><q-n>     186  </q-n></a>  <q-m>//`endif</q-m>
+<a name="187"><q-n>     187  </q-n></a><q-m>//`endif</q-m>
+<a name="188"><q-n>     188  </q-n></a>
+<a name="189"><q-n>     189  </q-n></a>`<q-a>ifdef</q-w> ALMOST_EMPTY_SIGNAL
+<a name="190"><q-n>     190  </q-n></a>  <q-w>assign</q-w> sfifo_almost_empty = (minus_result[POINTER_WIDTH:0] &lt; ALMOST_EMPTY_VALUE);<q-m>//low_level[POINTER_WIDTH:0]);</q-m>
+<a name="191"><q-n>     191  </q-n></a>`<q-a>endif</q-w>
+<a name="192"><q-n>     192  </q-n></a><q-m>////The high threshold signal</q-m>
+<a name="193"><q-n>     193  </q-n></a><q-m>//`ifdef ALMOST_FULL_SIGNAL</q-m>
+<a name="194"><q-n>     194  </q-n></a>  <q-m>//`ifdef SET_HIGH_EN</q-m>
+<a name="195"><q-n>     195  </q-n></a>    <q-m>//wire [POINTER_WIDTH:0] high_level = high_th[POINTER_WIDTH:0];</q-m>
+<a name="196"><q-n>     196  </q-n></a>  <q-m>//`else</q-m>
+<a name="197"><q-n>     197  </q-n></a>    <q-m>//wire [POINTER_WIDTH:0] high_level = TH_LEVEL;</q-m>
+<a name="198"><q-n>     198  </q-n></a>  <q-m>//`endif</q-m>
+<a name="199"><q-n>     199  </q-n></a><q-m>//`endif</q-m>
+<a name="200"><q-n>     200  </q-n></a>
+<a name="201"><q-n>     201  </q-n></a>`<q-a>ifdef</q-w> ALMOST_FULL_SIGNAL
+<a name="202"><q-n>     202  </q-n></a>  <q-w>assign</q-w> sfifo_almost_full = (minus_result[POINTER_WIDTH:0] &gt;= ALMOST_FULL_VALUE);<q-m>//high_level[POINTER_WIDTH:0]);</q-m>
+<a name="203"><q-n>     203  </q-n></a>`<q-a>endif</q-w>
+<a name="204"><q-n>     204  </q-n></a><q-w>endmodule</q-w>: sfifobresp
 </pre>
 </tt>
 

@@ -10,7 +10,7 @@ module apb_master(
 	//
 	transfer_i,
 	enable_i,
-	nonexist_transfer_i,
+	disallowed_trans_i,
 	addr_i,
 	prot_i,
 	grant_to_write_i,
@@ -42,7 +42,7 @@ input logic                    preset_n;
 //
 input logic 			transfer_i;
 input logic [`SLAVE_CNT-1:0]    enable_i;
-input logic 			nonexist_transfer_i;
+input logic 			disallowed_trans_i;
 input logic [31:0]		addr_i;
 input logic [2:0]		prot_i;
 input logic 			grant_to_write_i;
@@ -121,13 +121,18 @@ assign master_ctrl_o = {store_rdata, fetch_wdata, latch_resp, set_up_phase, addr
 	latch_resp = 0;
 	set_up_phase = 0;
 	addr_incr_en = 0;
+	//prev_burst = 1'b0;
 	//
     case(apb_cs[1:0])
 		P_IDLE: begin
 			if(transfer_i) begin
+				//if(prev_burst) addr_incr_en = 1'b1;
+				//else addr_incr_en = 1'b0;
+				//
 				apb_ns[1:0] = SETUP;
 			end
 			else begin
+				//addr_incr_en = 1'b0;
 				apb_ns[1:0] = P_IDLE;
 			end
 		end
@@ -157,9 +162,9 @@ assign master_ctrl_o = {store_rdata, fetch_wdata, latch_resp, set_up_phase, addr
 			if(preadyX) begin
 				//
 				latch_resp = (grant_to_write_i) ? 1'b1 : 1'b0;
-				addr_incr_en = 1'b1;
 				store_rdata = (grant_to_write_i) ? 1'b0 : 1'b1;
 				fetch_wdata = (grant_to_write_i) ? 1'b1 : 1'b0;
+				addr_incr_en = 1'b1;
 				//
 				if(transfer_i) begin
 					apb_ns[1:0] = SETUP;
@@ -201,12 +206,13 @@ assign master_ctrl_o = {store_rdata, fetch_wdata, latch_resp, set_up_phase, addr
 			latch_resp = 0;
 			set_up_phase = 0;
 			addr_incr_en = 0;
+			//prev_burst = 1'b0;
 		end
 	endcase
 end
 //pslverrX, preadyX
-  assign preadyX  = |out_pready[`SLAVE_CNT-1:0] | invalid_psel | nonexist_transfer_i; 
-  assign pslverrX_o = |out_pslverr[`SLAVE_CNT-1:0]| invalid_psel | nonexist_transfer_i; 
+  assign preadyX  = |out_pready[`SLAVE_CNT-1:0] | invalid_psel | disallowed_trans_i; 
+  assign pslverrX_o = |out_pslverr[`SLAVE_CNT-1:0]| invalid_psel | disallowed_trans_i; 
   generate
     genvar i;
 	for (i = 0; i <= `SLAVE_CNT-1; i = i + 1) begin: decPreadyAndPslverr

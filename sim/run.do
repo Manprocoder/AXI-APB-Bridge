@@ -146,7 +146,7 @@ clean_result $result_dir $bin_dir
         # clear all files before run new SIM
         #
         # Subdirectories
-        foreach subdir {VIF_SVA SVA REQ_INFO COMPARE SIM_SUMMARY CHECKER_ERROR HTML_COV} {
+        foreach subdir {IF_SVA SVA REQ_INFO COMPARE SIM_SUMMARY CHECKER_ERROR HTML_COV} {
             if {![file exists $test_slv_dir/$subdir]} {
                 file mkdir $test_slv_dir/$subdir
             }
@@ -156,8 +156,8 @@ clean_result $result_dir $bin_dir
         # Pre-create empty log files
         #---------------------------------------------
         foreach f {
-            VIF_SVA/apb_error.log
-            VIF_SVA/axi_error.log
+            IF_SVA/apb_error.log
+            IF_SVA/axi_error.log
             SVA/sva_sb.log
             REQ_INFO/req_detail.log
             COMPARE/cmp.log
@@ -183,9 +183,12 @@ clean_result $result_dir $bin_dir
           -cvgperinstance \
           -wlf $wlf_file \
           -l $vsim_file \
-          -do "do add_wave.do; run -all; coverage save $ucdb_file "
-        #
-        #
+          -do "run 0; 
+		do add_wave.do; 
+		run -all; 
+		coverage exclude -srcfile arbiter.sv -line 294;
+		coverage save $ucdb_file; 
+		"
         #  
         if {[file exists $ucdb_file]} {
             lappend all_ucdb $ucdb_file

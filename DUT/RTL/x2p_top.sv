@@ -113,6 +113,7 @@ logic sfifo_ar_empty;
 logic sfifo_aw_empty;
 logic sfifo_rd_almost_full;
 logic sfifo_wd_almost_empty;
+logic wlast_to_arbiter;
 logic bchannel_rdy;
 logic [31:0] wdata_to_apb;
 logic [3:0] wstrb_to_apb;
@@ -142,7 +143,7 @@ logic burst_almost_done;
 logic burst_done;
 //DECODER outputs
 logic dec_error;
-logic nonexist_transfer;
+logic disallowed_trans;
 logic [`SLAVE_CNT-1:0] true_psel;
 //APB MASTER outputs
 //---send to AXI transaction controller
@@ -269,9 +270,10 @@ arbiter arbiter_inst(
 	.transfer_addr_o(transfer_addr),
 	.selected_addr_o(selected_addr),
 	.selected_len_o(selected_len),
-	.selected_size_o(selected_size),
+	//.selected_size_o(selected_size),
 	.selected_prot_o(selected_prot),
 	.next_transfer_rdy_o(transfer),
+	.disallowed_trans_o(disallowed_trans),
 	.wr_trans_done_o(wr_trans_done),
 	.rd_trans_done_o(rd_trans_done),
 	.write_enable_o(write_enable)
@@ -296,10 +298,11 @@ counter cnt_inst(
 //
 decoder decoder_inst(
 	.start_addr_i(selected_addr),
-	.size_of_transfer_i(selected_size),
+	.disallowed_trans_i(disallowed_trans),
+	//.size_of_transfer_i(selected_size),
 	//
  	.dec_error_o(dec_error),
-	.nonexist_transfer_o(nonexist_transfer),
+	//.disallowed_trans_o(disallowed_trans),
 	.true_psel_o(true_psel)
 	//
 );
@@ -314,7 +317,7 @@ apb_master apb_mst_inst(
 	//
 	.transfer_i(transfer),
 	.enable_i(true_psel), //psel_in
-	.nonexist_transfer_i(nonexist_transfer),
+	.disallowed_trans_i(disallowed_trans),
 	.addr_i(transfer_addr),
 	.prot_i(selected_prot),
 	.grant_to_write_i(write_enable),

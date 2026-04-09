@@ -15,6 +15,8 @@ class virtual_seq extends base_vseq;
     AxiMasterReadSeq#(DW,AW1) ReadSeq;
     rsp_seq test_rd_rsp_seq;
     rsp_seq test_wr_rsp_seq;
+    unaligned_addr_seq unaligned_wseq, unaligned_rseq;
+    //
     apb_seq #(DW,AW2) ApbSeq;
     //
     int req_cnt = 0;
@@ -36,12 +38,13 @@ class virtual_seq extends base_vseq;
     //main task
     //
     virtual task body();
-	//
         ResetSeq = AxiResetSeq::type_id::create("ResetSeq");
         ReadSeq = AxiMasterReadSeq#(DW,AW1)::type_id::create("ReadSeq");
         WriteSeq = AxiMasterWriteSeq#(DW,AW1)::type_id::create("WriteSeq");
 	test_rd_rsp_seq = rsp_seq::type_id::create("test_rd_rsp_seq");
 	test_wr_rsp_seq = rsp_seq::type_id::create("test_wr_rsp_seq");
+        unaligned_wseq = unaligned_addr_seq::type_id::create("unaligned_wseq");
+        unaligned_rseq = unaligned_addr_seq::type_id::create("unaligned_rseq");
 	//
         ApbSeq = apb_seq#(DW,AW2)::type_id::create("ApbSeq");
 	//
@@ -93,7 +96,7 @@ class virtual_seq extends base_vseq;
                     forever begin
                         A1.axi_vif.one_write_req_done();
                         req_cnt++;
-                        //`uvm_info(get_type_name(), $sformatf("wr_req_done_total = %0d", req_cnt), UVM_LOW)
+                        //`uvm_info(get_type_name(), $sformatf("[SECOND_ATTEMP]wr_req = %0d", req_cnt), UVM_LOW)
 			if(count(WriteSeq.no_test, "[SECOND_ATTEMP]: write_done!")) break;
                     end
                 join
@@ -111,7 +114,7 @@ class virtual_seq extends base_vseq;
                     forever begin
                         A1.axi_vif.one_write_req_done();
                         req_cnt++;
-//      			`uvm_info(get_type_name(), $sformatf("[THIRD_ATTEMP]wr_req[1] = %0d", req_cnt), UVM_LOW)
+//`uvm_info(get_type_name(), $sformatf("[THIRD_ATTEMP]wr_req[1] = %0d", req_cnt), UVM_LOW)
 			if(count(WriteSeq.no_test, "[THIRD_ATTEMP]: write1_done!")) break;
                     end
                 join
@@ -122,7 +125,7 @@ class virtual_seq extends base_vseq;
                     forever begin
                         A2.axi_vif.one_read_req_done();
                         req_cnt++;
- //                      `uvm_info(get_type_name(), $sformatf("[THIRD_ATTEMP]rd_req = %0d", req_cnt), UVM_LOW)
+ 		//`uvm_info(get_type_name(), $sformatf("[THIRD_ATTEMP]rd_req = %0d", req_cnt), UVM_LOW)
   			if(count(ReadSeq.no_test, "[THIRD_ATTEMP]: read_done!")) break;
                     end
                 join
@@ -139,12 +142,14 @@ class virtual_seq extends base_vseq;
                 join
 		`uvm_info(get_type_name(), $sformatf("wr_rd_wr_vseq done!!!"), UVM_LOW);
 		//
-		//4th ATTEMPT --- test PSLVERR, DECERR reponse
+		//4th ATTEMPT --- test PSLVERR, DECERR response
 		//
 		//generates item
-			test_wr_rsp_seq.no_test_slverr = 2;
+			test_wr_rsp_seq.no_test_slverr1 = 50;
+			test_wr_rsp_seq.no_test_slverr2 = 50;
 			test_wr_rsp_seq.no_test_decerr = 2;
-			test_rd_rsp_seq.no_test_slverr = 2;
+			test_rd_rsp_seq.no_test_slverr1 = 50;
+			test_rd_rsp_seq.no_test_slverr2 = 50;
 			test_rd_rsp_seq.no_test_decerr = 2;
 			test_wr_rsp_seq.gen_item();
 			test_rd_rsp_seq.gen_item();
@@ -154,6 +159,20 @@ class virtual_seq extends base_vseq;
 			test_rd_rsp_seq.start(A2);
 		join
 		`uvm_info(get_type_name(), $sformatf("test_response_seq done!!!"), UVM_LOW);
+		//
+		//5th ATTEMPT --- test unaligned address
+		//
+		//generates item
+		unaligned_wseq.total_no_test = 50;
+		unaligned_wseq.gen_item();
+		unaligned_rseq.total_no_test = 50;
+		unaligned_rseq.gen_item();
+		//
+		fork
+			unaligned_wseq.start(A1);
+			unaligned_rseq.start(A2);
+		join
+		`uvm_info(get_type_name(), $sformatf("unaligned_addr_seq done!!!"), UVM_LOW);
 	end//run
 	begin
 		ApbSeq.start(B);

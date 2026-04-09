@@ -156,4 +156,38 @@ module axi_checker();
         endcase 
       end
     end
+    //
+    //
+    //logic [7:0] bid_tmp;
+    //logic [1:0] bresp_tmp;
+    //logic stable;
+    ////
+    //always@(posedge aclk) begin
+	    //if(~aresetn) begin
+		    //bid_tmp <= '0;
+		    //bresp_tmp <= 2'b0;
+		    //stable <= 1'b0;
+	    //end
+	    //else if(bvalid) begin
+		    //if(bready) begin
+			    //bid_tmp <= '0;
+			    //bresp_tmp <= 2'b0;
+			    //stable <= 1'b0;
+	    	    //end
+		    //else begin
+			    //bid_tmp <= bid;
+			    //bresp_tmp <= bresp;
+			    //stable <= 1'b1;
+	    	    //end
+	    //end   
+    //end
+    ////
+    //always@(posedge aclk) begin
+	    //if(stable) begin
+		    //if((bid !== bid_tmp) || (bresp !== bresp_tmp)) begin
+			//$display("[AXI_ERROR][%s][%0t ns] BID or BRESP changed before BREADY is HIGH\n", INST_NAME, $time);
+		    //end
+	    //end
+    //end
+    //
 endmodule

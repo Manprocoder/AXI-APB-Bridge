@@ -20,10 +20,6 @@ class axi_transaction #(DW = 32, AW= 32) extends uvm_sequence_item;
     rand bit [DW-1:0] data [];
     rand bit [3:0] wstrb [];
     bit last [];
-    resp_name bresp;
-    bit [7:0] bid;
-    resp_name rresp [];
-    bit [7:0] rid [];
     //
     //---------RESET CONSTRAINT-----------
     //
@@ -41,7 +37,7 @@ class axi_transaction #(DW = 32, AW= 32) extends uvm_sequence_item;
     //--------THE REST OF SIGNALS CONSTRAINT
     //
     constraint is_valid_c {
-        is_valid dist {1:=8, 0:=2};
+        is_valid dist {1:=7, 0:=3};
     }
     //
     constraint burst_type {
@@ -72,20 +68,16 @@ class axi_transaction #(DW = 32, AW= 32) extends uvm_sequence_item;
         wstrb.size() == len+1;
         //
         foreach (wstrb[i]) {
-            if(addr[1:0] == 2'b00) //aligned address
-                wstrb[i] == 4'hf;
-            else { //unaligned address
-                if(burst == INCR) {
+                if((burst == INCR) && (addr[1:0] != 2'b00)) {
                     if(i==0)
                         wstrb[i] inside {(4'hf << addr[1:0]) & 4'hf};
                     else {
-                        wstrb[i] == 4'hf;
+                        wstrb[i] != 4'h0;
                     }
                 }
                 else {
-                   wstrb[i] == 4'hf; 
+                   wstrb[i] != 4'h0; 
                 }
-            } //end of else of if(addr[1:0] == 2'b00)
         }//end of foreach
     }
     //
@@ -101,7 +93,6 @@ class axi_transaction #(DW = 32, AW= 32) extends uvm_sequence_item;
     }
 
     //
-//((addr % 32'd4096) + ((2**size)*(len+1)) <= 32'd4096); //4kb boundary
     constraint addr_c{
         solve is_valid before addr;
         solve size, len before addr;
@@ -113,18 +104,17 @@ class axi_transaction #(DW = 32, AW= 32) extends uvm_sequence_item;
 	    ((addr >> 12) == ((addr + (2**size)*(len+1)) >> 12));
             //must-aligned address
             if(burst == FIXED || burst == WRAP) {
-                addr[1:0] == 2'b00;
+                addr[1:0] dist {2'b00:=7, 2'b01:=1, 2'b10:=1, 2'b11:=1};
             }
             else {
                 addr[1:0] dist {2'b00:=1, 2'b01:=1, 2'b10:=1, 2'b11:=1};
             }
         }
         else {
-            !(addr inside { [32'h0000_0000 : 32'h0000_0000 + `SLAVE_CNT*4096] });// && addr <= 32'h0001_2000);
+	!(addr inside { [32'h0000_0000 : 32'h0000_0000 + `SLAVE_CNT*4096] });// 
         }
         //
     }
-    //
     //
     //Group(1)
     extern function void set_id(bit [7:0] actual_id);
@@ -180,12 +170,7 @@ endfunction: do_print
 
 function string axi_transaction::convert2string();
     string s;
-
-    /*  chain the convert2string with parent classes  */
     s = super.convert2string();
-
-    /*  list of local properties to be printed:  */
-    //  guide             0---4---8--12--16--20--24--28--32--36--40--44--48--
     s = {s, $sformatf("ID             :   %0d\n", id)};
     s = {s, $sformatf("Addr           : 0x%0h\n", addr)};
     for (int i =0; i< len+1; i++) begin
@@ -194,8 +179,6 @@ function string axi_transaction::convert2string();
     s = {s, $sformatf("Busrt Type     :   %s\n", burst.name())};
     s = {s, $sformatf("Burst Size     :   %0d\n", size)};
     s = {s, $sformatf("Busrt Length   :   %0d\n", len+1)};
-    // s = {s, $sformatf("Busrt Bresp     :   %0b\n", bresp)};
-    // s = {s, $sformatf("Read resp      :   %0b\n", rresp)};
     return s;
 endfunction: convert2string
 
@@ -218,9 +201,7 @@ function void axi_transaction::do_copy(uvm_object rhs);
     foreach(data[i]) begin
         this.data[i]   = rhs_.data[i];
         this.wstrb[i]  = rhs_.wstrb[i];
-        // this.rresp[i]  = rhs_.rresp[i];
     end
-    // this.bresp  = rhs_.bresp;
 endfunction: do_copy
 
 function bit axi_transaction::do_compare(uvm_object rhs, uvm_comparer comparer);
@@ -231,17 +212,14 @@ function bit axi_transaction::do_compare(uvm_object rhs, uvm_comparer comparer);
         return 0;
     end
 
-    /*  chain the compare with parent classes  */
     do_compare = super.do_compare(rhs, comparer);
 
-    /*  list of local properties to be compared:  */
     do_compare &= (
         this.id  == rhs_.id &&
         this.addr == rhs_.addr &&
         this.burst           == rhs_.burst &&
         this.size            == rhs_.size &&
         this.len             == rhs_.len
-        // this.bresp           == rhs_.bresp 
     );
 
     foreach(data[i]) begin
@@ -251,9 +229,4 @@ function bit axi_transaction::do_compare(uvm_object rhs, uvm_comparer comparer);
     foreach(wstrb[i]) begin
         do_compare &= this.wstrb[i] == rhs_.wstrb[i];
     end
-    //
-    // foreach ( rresp[i] ) begin
-        // do_compare &= this.rresp[i] == rhs_.rresp[i];
-    // end
-    
 endfunction: do_compare

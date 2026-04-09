@@ -9,14 +9,14 @@
 `ifndef EMPTY_SIGNAL
   `define EMPTY_SIGNAL
 `endif
-//`ifndef FULL_SIGNAL
-  //`define FULL_SIGNAL
-//`endif
+`ifndef FULL_SIGNAL
+  `define FULL_SIGNAL
+`endif
 //`define OV_SIGNAL
 //`define UD_SIGNAL
 // `define OUTPUT_REG
 //`define TWO_CLOCK
- `define ALMOST_FULL_SIGNAL
+// `define ALMOST_FULL_SIGNAL
 //`define ALMOST_EMPTY_SIGNAL
 module sfifobresp (rst_n, wr, rd,
                   `ifdef TWO_CLOCK
@@ -124,25 +124,17 @@ end
 `ifdef OUTPUT_REG
   always @ (posedge rclk or negedge rst_n) begin
     if(~rst_n) data_out <= {DATA_WIDTH{1'b0}};
-    // else if(sfifo_re) begin
     else data_out[DATA_WIDTH-1:0] <= mem_array[r_pointer[POINTER_WIDTH-1:0]];
-    // end
   end
 `else
   always @ (*) begin
-    data_out[DATA_WIDTH-1:0]
-    = mem_array[r_pointer[POINTER_WIDTH-1:0]];
+    data_out[DATA_WIDTH-1:0] = mem_array[r_pointer[POINTER_WIDTH-1:0]];
   end
 `endif
 //status signal
-assign  msb_diff = w_pointer[POINTER_WIDTH]
-                  ^r_pointer[POINTER_WIDTH];
-//
-assign  lsb_equal = (w_pointer[POINTER_WIDTH-1:0]
-                  == r_pointer[POINTER_WIDTH-1:0]);
-//
+assign  msb_diff = w_pointer[POINTER_WIDTH] ^ r_pointer[POINTER_WIDTH];
+assign  lsb_equal = (w_pointer[POINTER_WIDTH-1:0] == r_pointer[POINTER_WIDTH-1:0]);
 assign  sfifo_full = msb_diff & lsb_equal;
-//
 assign  sfifo_empty = (~msb_diff) & lsb_equal;
 //
 //Overflow

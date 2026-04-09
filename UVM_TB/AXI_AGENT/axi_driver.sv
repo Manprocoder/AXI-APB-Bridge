@@ -25,6 +25,8 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
   //
   int beats = 0;
   int no_trans;
+  int bready_cnt;
+  int low_bready_duration;
 
   // constructor
   function new(string name = "AxiMasterDriver", uvm_component parent = null);
@@ -46,7 +48,6 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
 	if(!uvm_config_db#(int)::get(this, "", "NO_TEST", no_trans)) begin
 		`uvm_fatal(get_type_name(), "NO_TEST is not FOUND")
 	end
-
     //
     put_port = new("put_port", this);
     get_port = new("get_port", this);
@@ -257,14 +258,9 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
   //
   virtual task send_write_data(input REQ tx);
     beats = 0;
-    //
     beats = tx.len + 1;
-    // `uvm_info(get_type_name(), $sformatf("WR_BEATS = %0d", beats), UVM_MEDIUM)
-    //
-    // ensure tx.data[] and tx.wstrb[] are valid and sized appropriately before calling
     fork 
       begin
-        // @(negedge m_drv_vif.aresetn);
         m_drv_vif.wait_FallingEdge_reset();
         // `uvm_info(get_type_name(), $sformatf("FALLING EDGE ARESETN---SendWriteData() TASK!!!"), UVM_MEDIUM);
       end
@@ -292,21 +288,30 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW, AW1));
   //
   //
   virtual task get_bresp();
+    bready_cnt = 0;
+    low_bready_duration = $urandom_range(255, 0);
     fork
       begin
         m_drv_vif.wait_FallingEdge_reset();
-        // @(negedge m_drv_vif.aresetn);
       end
       //
       begin
         @(m_drv_vif.m_drv_cb);
-        m_drv_vif.m_drv_cb.bready <= 1'b1;
+        m_drv_vif.m_drv_cb.bready <= 1'b0;
         @(m_drv_vif.m_drv_cb iff m_drv_vif.m_drv_cb.bvalid);
+	while(1) begin
+		if(bready_cnt == low_bready_duration) break;
+		else begin 
+			bready_cnt++;
+			@(m_drv_vif.m_drv_cb);
+		end
+	end
+        m_drv_vif.m_drv_cb.bready <= 1'b1;
+	@(m_drv_vif.m_drv_cb);
         m_drv_vif.m_drv_cb.bready <= 1'b0;
       end
     join_any
     disable fork;
-    // `uvm_info(get_type_name(), $sformatf("DISABLE FORK_JOIN_ANY---GetBresp() TASK!!!"), UVM_MEDIUM);
   endtask
   //
   //--------------------------------------AXI READ TRANSACTION-----------------------------------------

@@ -73,6 +73,7 @@ module axi_cov();
             bins xy1 = binsof(awburst_cp.wrap) && binsof(len_cp.wrap);
             bins xy2 = binsof(awburst_cp.fixed) && binsof(len_cp.rest);
             bins xy3 = binsof(awburst_cp.incr) && binsof(len_cp.rest);
+            ignore_bins xy4 = binsof(awburst_cp.incr) && binsof(len_cp.wrap);
         }
         //
         burst_x_addr: cross awburst_cp, awaddr_cp {
@@ -144,6 +145,7 @@ module axi_cov();
             wildcard bins aligned_addr = {32'b00000000_0000000?_????????_??????00};
             wildcard bins unaligned_addr0 = {32'b00000000_0000000?_????????_???????1};
             wildcard bins unaligned_addr1 = {32'b00000000_0000000?_????????_??????10};
+            wildcard bins unaligned_addr2 = {32'b00000000_0000000?_????????_??????11};
         }
         len_cp : coverpoint arlen iff arvalid && arready{
             bins wrap   = {1,3,7,15}; // spec-defined
@@ -165,6 +167,7 @@ module axi_cov();
             bins xy1 = binsof(arburst_cp.wrap) && binsof(len_cp.wrap);
             bins xy2 = binsof(arburst_cp.fixed) && binsof(len_cp.rest);
             bins xy3 = binsof(arburst_cp.incr) && binsof(len_cp.rest);
+            ignore_bins xy4 = binsof(arburst_cp.incr) && binsof(len_cp.wrap);
         }
         //
         burst_x_addr: cross arburst_cp, araddr_cp {

@@ -221,20 +221,20 @@ endclocking
     `endif
   end
 //(4)
-  ////DEFINE
-  //property b_stable;
-    //@(posedge aclk) disable iff (!aresetn)
-    	//bvalid && !bready |-> ($stable({bresp, bid}) until_with bready);
-  //endproperty
-  ////DO
-  //assert property (b_stable)
-  //else begin
-    //`ifdef PRINT_TO_VIF_SVA_FILE
-    //$fdisplay(axi_log_file, "[B_STABLE][%0t ns]: BRESP and BID changed before BREADY is HIGH in B channel!!!", $time);
-    //`else
-    //$error("[B_STABLE]: BRESP and BID changed before BREADY is HIGH in B channel!!!");
-    //`endif
-  //end
+  //DEFINE
+  property b_stable;
+    @(posedge aclk) disable iff (!aresetn)
+    	bvalid && !bready |=> ((bid == $past(bid, 1, bvalid)) && (bresp == $past(bresp, 1, bvalid)));
+  endproperty
+  //DO
+  assert property (b_stable)
+  else begin
+    `ifdef PRINT_TO_VIF_SVA_FILE
+    $fdisplay(axi_log_file, "[B_STABLE][%0t ns]: BRESP and BID changed before BREADY is HIGH in B channel!!!", $time);
+    `else
+    $error("[B_STABLE]: BRESP and BID changed before BREADY is HIGH in B channel!!!");
+    `endif
+  end
 
   //**************************************************************************************
   //----------------------------READ SVA HANDLE
