@@ -41,4 +41,21 @@ Scoreboard (derived/child) class:
 + Main Methods: wait_apb_transfer, fetch_valid_req(valid WR/RD request),
   convert_axi_to_compare(axi_content-->axi_transfer), convert_apb_to_compare(apb_content-->apb_transfer), compare_transfer, ...
 
-    
+**SIMULATION RESULT**
+
+Pass/Fail
+
+
+![image alt]()
+
+
+Code Coverage
+
+
+![image alt]()
+
+
+Functional Coverage
+
+
+![image alt]()
