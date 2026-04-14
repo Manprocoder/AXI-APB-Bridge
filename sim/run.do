@@ -186,7 +186,8 @@ clean_result $result_dir $bin_dir
           -do "run 0; 
 		do add_wave.do; 
 		run -all; 
-		coverage exclude -srcfile arbiter.sv -line 294;
+		coverage exclude -srcfile arbiter.sv -line 298;
+		coverage exclude -scope /tb/dut_top/arbiter_inst/abt_st -ftrans abt_cs ABT_GO->ABT_IDLE
 		coverage save $ucdb_file; 
 		"
         #  

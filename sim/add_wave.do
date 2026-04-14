@@ -15,6 +15,7 @@ add wave -noupdate /tb/dut_top/axi_slv_inst/aw_sfifo/wr
 add wave -noupdate /tb/dut_top/axi_slv_inst/aw_sfifo/rd
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/aw_sfifo/data_out
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/aw_sfifo/sfifo_empty
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/aw_sfifo/sfifo_full
 add wave -noupdate -divider -height 23 {AXI WRITE DATA CHANNEL}
 add wave -noupdate /tb/dut_top/wready
 add wave -noupdate /tb/dut_top/wvalid
@@ -34,8 +35,8 @@ add wave -noupdate -hex /tb/dut_top/axi_slv_inst/wd_sfifo/data_out
 add wave -noupdate -divider -height 23 {AXI BCHANNEL FIFO}
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_empty
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_full
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/wr
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/rd
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_we
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_re
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bchannel_sfifo/data_in
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bchannel_sfifo/data_out
 #add wave -noupdate -divider -height 23 {BRESP REGISTER}
@@ -99,10 +100,10 @@ add wave -noupdate -bin /tb/dut_top/arbiter_inst/now_grant
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/next_transfer_rdy_o
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/bchannel_rdy_i
 add wave -noupdate -hex /tb/dut_top/arbiter_inst/next_addr_for_wrap
-add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit3Addr
-add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit4Addr
-add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit5Addr
-add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit6Addr
+#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit3Addr
+#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit4Addr
+#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit5Addr
+#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit6Addr
 add wave -noupdate /tb/dut_top/arbiter_inst/update
 #add wave -noupdate -divider -height 23 {DECODER}
 #add wave -noupdate -hex /tb/dut_top/apb_mst_inst/decoder_inst/true_psel_o

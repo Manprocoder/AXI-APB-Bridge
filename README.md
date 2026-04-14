@@ -2,6 +2,7 @@
 - 
 **Design**
 
+
 AXI4 protocol
 + address bus width = 32 bits, data bus width = 32 bits
 + support all burst: FIXED, INCR, WRAP
@@ -22,7 +23,7 @@ Building UVM testbench to verify DESIGN
 Scoreboard:
 
 Base_scoreboard(parent) class:
-+ Main Attributes: match, mismatch, axi_data_wait_cnt(avoid infinite loop), and others (queues and associate arrays to store req, data and Simulation result report)
++ Main Attributes: total_pass, total_fail, and others (queues and associate arrays to store req, data and Simulation result report)
 + Main Methods(function/task): calculate_next_address, calculate_and_store_address, store_simulation_result, ....
 
 Scoreboard (derived/child) class:

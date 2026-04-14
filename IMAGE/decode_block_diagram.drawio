@@ -1,0 +1,139 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0" version="28.2.5">
+  <diagram name="Page-1" id="wYuB-HOVb4-gg6UsGADg">
+    <mxGraphModel dx="1034" dy="540" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="OMRRZweulz_eL_NucwIz-1" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;&lt;b&gt;DECODER&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="45" width="130" height="295" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-2" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.034;entryY=0.144;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="427" y="79" as="sourcePoint" />
+            <mxPoint x="461.4200000000001" y="78.88" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-3" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;aclk&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="390" y="60" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-4" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.034;entryY=0.144;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="427" y="119.12" as="sourcePoint" />
+            <mxPoint x="461.4200000000001" y="119" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-5" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;aresetn&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="359" y="100" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-6" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-8" target="OMRRZweulz_eL_NucwIz-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="160" as="sourcePoint" />
+            <mxPoint x="460.3599999999999" y="160.41999999999996" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-8" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;AXI rd addr channel&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;interface&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="269" y="173" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-9" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;AXI wr addr channel&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;interface&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="269" y="220" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-10" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.015;entryY=0.661;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-9" target="OMRRZweulz_eL_NucwIz-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="280" as="sourcePoint" />
+            <mxPoint x="550" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-11" value="" style="endArrow=classic;html=1;rounded=0;entryX=-0.003;entryY=0.366;entryDx=0;entryDy=0;entryPerimeter=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-12" target="OMRRZweulz_eL_NucwIz-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="147" as="sourcePoint" />
+            <mxPoint x="374" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-12" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;abtGrant[1:0]&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="326" y="138" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-13" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;AXI wdata channel&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;interface&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="269" y="269" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-14" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.015;entryY=0.826;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-13" target="OMRRZweulz_eL_NucwIz-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="280" as="sourcePoint" />
+            <mxPoint x="550" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-15" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="OMRRZweulz_eL_NucwIz-16">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="590" y="214" as="sourcePoint" />
+            <mxPoint x="630" y="214" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-16" value="&lt;span style=&quot;font-size: 16px;&quot;&gt;APB master outputs&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="612" y="197" width="150" height="33" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-17" value="" style="endArrow=classic;html=1;rounded=0;entryX=1.018;entryY=0.278;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-20">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="628" y="121" as="sourcePoint" />
+            <mxPoint x="590.3399999999999" y="120.84000000000003" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-18" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.988;entryY=0.126;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-19" target="OMRRZweulz_eL_NucwIz-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="630" y="80" as="sourcePoint" />
+            <mxPoint x="740" y="80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-19" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;pclk&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="617" y="67" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-20" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;presetn&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="617" y="106" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-21" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.406;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-22" target="OMRRZweulz_eL_NucwIz-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="630" y="159" as="sourcePoint" />
+            <mxPoint x="688" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-22" value="&lt;span style=&quot;font-size: 16px;&quot;&gt;APB master inputs&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="612" y="148" width="150" height="33" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-23" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.878;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="OMRRZweulz_eL_NucwIz-24">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="590" y="247.84000000000003" as="sourcePoint" />
+            <mxPoint x="630" y="248" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-24" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;DecError&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="612" y="233" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-27" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.787;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-1" target="OMRRZweulz_eL_NucwIz-28">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="500" y="280" as="sourcePoint" />
+            <mxPoint x="630" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-28" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;transCompleted&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="613" y="262" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-29" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.994;exitY=0.86;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-1" target="OMRRZweulz_eL_NucwIz-30">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="590.25" y="309.31999999999994" as="sourcePoint" />
+            <mxPoint x="627" y="309" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-30" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;pselReg&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="612" y="284" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-32" value="" style="endArrow=classic;html=1;rounded=0;exitX=1.006;exitY=0.942;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="OMRRZweulz_eL_NucwIz-1" target="OMRRZweulz_eL_NucwIz-33">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="642" y="390" as="sourcePoint" />
+            <mxPoint x="620" y="323" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OMRRZweulz_eL_NucwIz-33" value="&lt;font style=&quot;font-size: 16px;&quot;&gt;transfer&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="613" y="308" width="70" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

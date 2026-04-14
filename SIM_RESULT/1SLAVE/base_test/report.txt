@@ -15,14 +15,14 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                          103       103         0    100.00
-    Branches                        83        83         0    100.00
+    Stmts                          108       107         1     99.07
+    Branches                        83        82         1     98.79
     FEC Condition Terms              4         4         0    100.00
     FEC Expression Terms            21        21         0    100.00
-    FSMs                                                       91.66
+    FSMs                                                      100.00
         States                       4         4         0    100.00
-        Transitions                  6         5         1     83.33
-    Toggle Bins                    670       660        10     98.50
+        Transitions                  5         5         0    100.00
+    Toggle Bins                    664       662         2     99.69
 
 =================================================================================
 === File: ../DUT/RTL/axi_transaction_controller.sv
@@ -30,10 +30,10 @@ Coverage Report Summary Data by file
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
     Stmts                           28        28         0    100.00
-    Branches                        15        15         0    100.00
+    Branches                        16        16         0    100.00
     FEC Condition Terms              2         2         0    100.00
     FEC Expression Terms            12        12         0    100.00
-    Toggle Bins                    876       876         0    100.00
+    Toggle Bins                    878       878         0    100.00
 
 =================================================================================
 === File: ../DUT/RTL/counter.sv
@@ -70,7 +70,7 @@ Coverage Report Summary Data by file
     ----------------            ------      ----    ------ ---------
     Stmts                           16        16         0    100.00
     Branches                         8         8         0    100.00
-    FEC Expression Terms            11        10         1     90.90
+    FEC Expression Terms            11        11         0    100.00
     Toggle Bins                     84        84         0    100.00
 
 =================================================================================
@@ -108,7 +108,7 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Toggle Bins                   1174      1166         8     99.31
+    Toggle Bins                   1168      1168         0    100.00
 
 =================================================================================
 === File: ../UVM_TB/OTHER_COMP/interface.sv
@@ -163,5 +163,5 @@ TOTAL COVERGROUP COVERAGE: 100.00%  COVERGROUP TYPES: 5
 
 TOTAL ASSERTION COVERAGE: 100.00%  ASSERTIONS: 23
 
-Total Coverage By File (code coverage only, filtered view): 87.94%
+Total Coverage By File (code coverage only, filtered view): 89.48%
 

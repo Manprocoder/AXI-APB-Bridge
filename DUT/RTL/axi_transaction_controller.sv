@@ -51,7 +51,8 @@ module axi_transaction_controller (// AXI protocol
 	write_to_rd_sfifo_i,
 	read_from_wd_sfifo_i,
 	dec_error_i,
-	latch_resp_i,
+	partly_brsp_vld_i,
+	final_brsp_vld_i,
 	//req
 	sfifo_aw_empty_o,
 	sfifo_ar_empty_o,
@@ -127,7 +128,8 @@ input logic err_of_transfer_i;
 input logic write_to_rd_sfifo_i;
 input logic read_from_wd_sfifo_i;
 input logic dec_error_i;
-input logic latch_resp_i;
+input logic partly_brsp_vld_i;
+input logic final_brsp_vld_i;
 	//req
 output logic sfifo_aw_empty_o;
 output logic sfifo_ar_empty_o;
@@ -319,8 +321,8 @@ assign bchannel_rdy_o = ~sfifo_brsp_full;
 //
 always_ff@(posedge aclk, negedge aresetn) begin
   if(~aresetn) status <= 1'b0;
-  else if(wr_trans_done_i) status <= 1'b0; 
-  else if(latch_resp_i) status <= (status | err_of_transfer_i);
+  else if(final_brsp_vld_i) status <= 1'b0; //wr_trans_done_i
+  else if(partly_brsp_vld_i) status <= (status | err_of_transfer_i);
 end
 //
 //INFO
@@ -331,7 +333,7 @@ always_ff @(posedge aclk, negedge aresetn) begin
 	  bid_reg[7:0] <= 8'd0;
 	  new_brsp_vld <= 1'b0;
   	end
-	else if(wr_trans_done_i) begin
+	else if(final_brsp_vld_i) begin
 	  	  bid_reg[7:0] <= sfifo_aw_id[7:0];
 		  new_brsp_vld <= 1'b1;
 		  if(~status)
@@ -341,7 +343,7 @@ always_ff @(posedge aclk, negedge aresetn) begin
 		  else
 		    bresp_reg[1:0] <= PSLVERR;
 	end
-	else begin
+	else if(bchannel_rdy_o)begin
 	  bresp_reg[1:0] <= OKAY;
 	  bid_reg[7:0] <= 8'd0;
 	  new_brsp_vld <= 1'b0;

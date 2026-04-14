@@ -41,6 +41,7 @@ module arbiter(
 	selected_prot_o,
 	next_transfer_rdy_o,
 	disallowed_trans_o,
+	final_brsp_vld_o,
 	wr_trans_done_o,
 	rd_trans_done_o,
 	write_enable_o
@@ -87,6 +88,7 @@ output logic [7:0] selected_len_o;
 output logic [2:0] selected_prot_o;
 output logic next_transfer_rdy_o;
 output logic disallowed_trans_o;
+output logic final_brsp_vld_o;
 output logic wr_trans_done_o;
 output logic rd_trans_done_o;
 output logic write_enable_o;
@@ -115,10 +117,10 @@ typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE, BRSP_FIFO_FULL} abt_st;
   logic [31:0] next_addr_for_incr;
   logic [31:0] next_addr_for_wrap;
   logic [2:0] bit_num;
-  logic [3:0] bit3Addr;
-  logic [4:0] bit4Addr;
-  logic [5:0] bit5Addr;
-  logic [6:0] bit6Addr;
+  logic [2:0] bit3Addr;
+  logic [3:0] bit4Addr;
+  logic [4:0] bit5Addr;
+  logic [5:0] bit6Addr;
   logic invalid_transfer;
   //***************************************************
   //output assignment
@@ -158,13 +160,15 @@ always_ff@(posedge aclk, negedge aresetn) begin
 	if(~aresetn) abt_cs <= ABT_IDLE;
 	else abt_cs <= abt_ns;
 end
-  //
+//
 always_comb begin
   abt_ns = ABT_IDLE;
   burst_go = 1'b0;
   begin_transfer = 1'b0;
   control = 2'b0;
   next_transfer_rdy_o = 1'b0;
+  addr_incr_active = 1'b0;
+  final_brsp_vld_o = 1'b0;
   //
   case(abt_cs)
   ABT_IDLE: begin
@@ -194,11 +198,16 @@ always_comb begin
 			  control = 2'b10;
 		  end
 		  else begin
+		  final_brsp_vld_o = 1'b1;
+		  //
 			  if(bchannel_rdy_i) begin
 				  control = 2'b10;
 				  abt_ns = ABT_IDLE;
 			  end
-			  else abt_ns = BRSP_FIFO_FULL;
+			  else begin
+				  control = 2'b00;
+				  abt_ns = BRSP_FIFO_FULL;
+			  end
 		  end
 	  end
 	  else abt_ns = ABT_DONE;
@@ -210,16 +219,11 @@ always_comb begin
 		  control = 2'b10;
 		  abt_ns = ABT_IDLE;
 	  end
-	  else abt_ns = BRSP_FIFO_FULL;
+	  else begin
+		  control = 2'b00;
+		  abt_ns = BRSP_FIFO_FULL;
+	  end
   end
-  //default: begin
-	  //abt_ns = ABT_IDLE;
-	  //begin_transfer = 1'b0;
-	  //addr_incr_active = 1'b0;
-	  //burst_go = 1'b0;
-	  //control = 2'b00;
-	  //next_transfer_rdy_o = 1'b0;
-  //end
   endcase
 end
 
