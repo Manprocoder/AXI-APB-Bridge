@@ -23,6 +23,10 @@ Details: 5 synchronous FIRST-WORD-FALL-THROUGH fifos: write address channel, rea
 Building UVM testbench to verify DESIGN
 
 
+![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/316fd4450bc64e6ed4eec7c455db80cbfbe6cfe7/IMAGE/uvm.drawio.svg)
+
+
+Main Compopents
 
 2 Agents: AXI master agent and APB slave agent
 
@@ -35,6 +39,6 @@ Base_scoreboard(parent) class:
 Scoreboard (derived/child) class:
 + Main Attributes: axi_content object(contain axi data channel (WR/RD)), apb_content object, common object (store shared signals between 2 protocol to COMPARE---axi_transfer, apb_transfer), ...
 + Main Methods: wait_apb_transfer, fetch_valid_req(valid WR/RD request), convert_axi_to_compare(axi_content-->axi_transfer),
-  convert_apb_to_compare(apb_content-->apb_transfer),...
+  convert_apb_to_compare(apb_content-->apb_transfer), compare_transfer, ...
 
     
