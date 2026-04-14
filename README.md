@@ -1,7 +1,10 @@
 **DESIGN and VERIFICATION AXI-APB bridge **
 - 
 **Design**
+
+
 ![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/81ede17224364421cac17f2e1c3eab0eb8cf6080/IMAGE/AXI_APB_BLOCK_DIAGRAM.drawio.svg)
+
 
 AXI4 protocol
 + address bus width = 32 bits, data bus width = 32 bits
@@ -18,6 +21,8 @@ Details: 5 synchronous FIRST-WORD-FALL-THROUGH fifos: write address channel, rea
 **Verification**
 
 Building UVM testbench to verify DESIGN
+
+
 
 2 Agents: AXI master agent and APB slave agent
 
