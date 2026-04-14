@@ -97,7 +97,6 @@ clean_result $result_dir $bin_dir
 #---------------------------------------------
 # Main loop for SLAVE_CNT
 #---------------------------------------------
-#for {set slave_cnt $start_slave} {$slave_cnt <= $max_slave} {incr slave_cnt} {
     puts "=================================================="
     puts ">> Running simulation for SLAVE_CNT = $slave_cnt"
     puts "=================================================="
@@ -183,8 +182,7 @@ clean_result $result_dir $bin_dir
           -cvgperinstance \
           -wlf $wlf_file \
           -l $vsim_file \
-          -do "run 0; 
-		do add_wave.do; 
+          -do "	do add_wave.do; 
 		run -all; 
 		coverage exclude -srcfile arbiter.sv -line 298;
 		coverage exclude -scope /tb/dut_top/arbiter_inst/abt_st -ftrans abt_cs ABT_GO->ABT_IDLE
@@ -208,48 +206,6 @@ clean_result $result_dir $bin_dir
 
         puts ">>> Completed test: $test_case"
     }
-#}//end of for start_slave -> max slave
-
-#---------------------------------------------
-# Final merged coverage
-#---------------------------------------------
-if {[llength $all_ucdb] > 0} {
-    set merged_ucdb $slv_total_cov_dir/merged_all.ucdb
-    set total_report $slv_total_cov_dir/total_report.txt
-    puts "partial file in all_ucdb: "
-    foreach f $all_ucdb {
-        puts $f
-    }
-    #
-    #try merge coverage and if the process encounter any error, 
-    #it will stop right away and error message stored in result variable
-    #
-    catch {
-        vcover merge $merged_ucdb {*}$all_ucdb
-    } result
-    #
-    #coverage html
-    #
-    if {[file exists $merged_ucdb]} {
-    vcover report -html -htmldir $slv_total_cov_dir/html_merged_all \
-        -verbose -assert -cvg -code bcesftx -source -details=abcdefgst \
-        -binrhs -testhitdataAll -stmtaltflow \
-        -testdetails $merged_ucdb
-    
-    puts ">>> HTML coverage report in: $slv_total_cov_dir/html_merged_all"
-    } else {
-        puts ">>> ERROR: UCDB merge failed, skipping report"
-    }
-    #
-    #print coverage into text file
-    #    
-    vcover report -assert -directive -code bcesftx -codeAll -cvg \
-        -output $total_report $merged_ucdb
-    puts ">>> Merged coverage report generated at: $total_report"
-} else {
-    puts "all_ucdb {} empty"
-}
-
 puts "=================================================="
 puts ">>> All runs completed!"
 puts "=================================================="
