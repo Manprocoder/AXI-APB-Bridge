@@ -5,9 +5,6 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                           75        75         0    100.00
-    Branches                        24        24         0    100.00
-    FEC Expression Terms            10        10         0    100.00
     Toggle Bins                    538       538         0    100.00
 
 =================================================================================
@@ -15,13 +12,6 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                          108       107         1     99.07
-    Branches                        83        82         1     98.79
-    FEC Condition Terms              4         4         0    100.00
-    FEC Expression Terms            21        21         0    100.00
-    FSMs                                                      100.00
-        States                       4         4         0    100.00
-        Transitions                  5         5         0    100.00
     Toggle Bins                    664       662         2     99.69
 
 =================================================================================
@@ -29,10 +19,6 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                           28        28         0    100.00
-    Branches                        16        16         0    100.00
-    FEC Condition Terms              2         2         0    100.00
-    FEC Expression Terms            12        12         0    100.00
     Toggle Bins                    878       878         0    100.00
 
 =================================================================================
@@ -40,9 +26,6 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                            6         6         0    100.00
-    Branches                         9         9         0    100.00
-    FEC Expression Terms             4         4         0    100.00
     Toggle Bins                     44        44         0    100.00
 
 =================================================================================
@@ -50,27 +33,13 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                            2         2         0    100.00
-    Branches                         2         2         0    100.00
-    FEC Expression Terms             3         3         0    100.00
     Toggle Bins                     70        70         0    100.00
-
-=================================================================================
-=== File: ../DUT/RTL/parameter.sv
-=================================================================================
-    Enabled Coverage            Active      Hits    Misses % Covered
-    ----------------            ------      ----    ------ ---------
-    Stmts                            8         0         8      0.00
-    Branches                         9         0         9      0.00
 
 =================================================================================
 === File: ../DUT/RTL/sfifobresp.sv
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                           16        16         0    100.00
-    Branches                         8         8         0    100.00
-    FEC Expression Terms            11        11         0    100.00
     Toggle Bins                     84        84         0    100.00
 
 =================================================================================
@@ -78,9 +47,6 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                           18        18         0    100.00
-    Branches                         8         8         0    100.00
-    FEC Expression Terms            12        12         0    100.00
     Toggle Bins                    228       228         0    100.00
 
 =================================================================================
@@ -88,9 +54,6 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                           16        16         0    100.00
-    Branches                         8         8         0    100.00
-    FEC Expression Terms            11        11         0    100.00
     Toggle Bins                    268       268         0    100.00
 
 =================================================================================
@@ -98,9 +61,6 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                           18        18         0    100.00
-    Branches                         8         8         0    100.00
-    FEC Expression Terms            12        12         0    100.00
     Toggle Bins                    204       204         0    100.00
 
 =================================================================================
@@ -115,7 +75,6 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                           14        14         0    100.00
     Toggle Bins                    648       648         0    100.00
 
 =================================================================================
@@ -123,39 +82,20 @@ Coverage Report Summary Data by file
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                            5         5         0    100.00
     Toggle Bins                    416       416         0    100.00
-
-=================================================================================
-=== File: ../cov_module/axi_cov_top.sv
-=================================================================================
-    Enabled Coverage            Active      Hits    Misses % Covered
-    ----------------            ------      ----    ------ ---------
-    Stmts                           31        31         0    100.00
 
 =================================================================================
 === File: ../protocol_checker/axi_checker.sv
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                           45         5        40     11.11
-    Branches                        70        30        40     42.85
-    FEC Condition Terms             10         5         5     50.00
     Toggle Bins                    416       416         0    100.00
-
-=================================================================================
-=== File: ../protocol_checker/axi_checker_top.sv
-=================================================================================
-    Enabled Coverage            Active      Hits    Misses % Covered
-    ----------------            ------      ----    ------ ---------
-    Stmts                           31        31         0    100.00
 
 =================================================================================
 === File: ./tb.sv
 =================================================================================
     Enabled Coverage            Active      Hits    Misses % Covered
     ----------------            ------      ----    ------ ---------
-    Stmts                            8         8         0    100.00
     Toggle Bins                      2         2         0    100.00
 
 
@@ -163,5 +103,5 @@ TOTAL COVERGROUP COVERAGE: 100.00%  COVERGROUP TYPES: 5
 
 TOTAL ASSERTION COVERAGE: 100.00%  ASSERTIONS: 23
 
-Total Coverage By File (code coverage only, filtered view): 89.48%
+Total Coverage By File (code coverage only, filtered view): 99.96%
 

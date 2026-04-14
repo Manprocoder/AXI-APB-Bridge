@@ -3,7 +3,6 @@
 ../DUT/RTL/axi_transaction_controller.sv
 ../DUT/RTL/counter.sv
 ../DUT/RTL/decoder.sv
-../DUT/RTL/parameter.sv
 ../DUT/RTL/sfifobresp.sv
 ../DUT/RTL/sfifordata.sv
 ../DUT/RTL/sfiforeq.sv

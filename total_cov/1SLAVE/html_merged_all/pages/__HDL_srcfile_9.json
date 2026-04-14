@@ -161,7 +161,7 @@ var g_sourceLines = [
 '	if(~aresetn) abt_cs &lt;= ABT_IDLE;',
 '	else abt_cs &lt;= abt_ns;',
 'end',
-'  //',
+'//',
 'always_comb begin',
 '  abt_ns = ABT_IDLE;',
 '  burst_go = 1\'b0;',
