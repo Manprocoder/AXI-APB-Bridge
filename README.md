@@ -8,6 +8,7 @@ AXI4 protocol
 + support all burst: FIXED, INCR, WRAP
 + ONLY support 4 bytes in each transfer --- ARSIZE/AWSIZE = 3'b010
 + support unaligned address
++ support OKAY, PSLVERR, DECERR response
 
 APB4 protocol
 + address bus width = 32 bits, data bus width = 32 bits
