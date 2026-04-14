@@ -3,7 +3,7 @@
 **Design**
 
 
-![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/81ede17224364421cac17f2e1c3eab0eb8cf6080/IMAGE/AXI_APB_BLOCK_DIAGRAM.drawio.svg)
+![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/ce9f853cb32245b22182c995c7dcecba1dfcabf0/IMAGE/design.png)
 
 
 AXI4 protocol
@@ -23,7 +23,7 @@ Details: 5 synchronous FIRST-WORD-FALL-THROUGH fifos: write address channel, rea
 Building UVM testbench to verify DESIGN
 
 
-![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/316fd4450bc64e6ed4eec7c455db80cbfbe6cfe7/IMAGE/uvm.drawio.svg)
+![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/ce9f853cb32245b22182c995c7dcecba1dfcabf0/IMAGE/tb.png)
 
 
 Main Components
