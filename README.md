@@ -52,10 +52,10 @@ Pass/Fail
 Code Coverage
 
 
-![image alt]()
+![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/1f67d3b01c1cda1de318bc92e9a4e92ea9956cc8/IMAGE/code_cov.png)
 
 
 Functional Coverage
 
 
-![image alt]()
+![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/1f67d3b01c1cda1de318bc92e9a4e92ea9956cc8/IMAGE/func_cov.png)
