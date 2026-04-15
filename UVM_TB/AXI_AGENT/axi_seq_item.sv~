@@ -100,7 +100,8 @@ class axi_transaction #(DW = 32, AW= 32) extends uvm_sequence_item;
         // constrain addr into valid slave ranges
         if(is_valid) {
             //supported valid range of address
-            addr inside { [32'h0000_0000 : 32'h0000_0000 + `SLAVE_CNT*4096] };
+            addr inside { [32'h0000_0000 : 32'h0000_0000 + `SLAVE_CNT*4096] }; //&& 
+	    //((addr >> 12) == ((addr + (2**size)*(len+1)) >> 12));
 	    //
             if(burst == FIXED || burst == WRAP) {
                 addr[1:0] dist {2'b00:=7, 2'b01:=1, 2'b10:=1, 2'b11:=1};

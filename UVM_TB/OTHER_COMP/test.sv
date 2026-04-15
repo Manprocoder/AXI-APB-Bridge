@@ -72,7 +72,6 @@ function void base_test::build_phase(uvm_phase phase);
     //**************************************************************
     //--store env_cfg into uvm_config_db to leverage reusability
     //**************************************************************
-    //uvm_config_db#(env_config)::set(null, "uvm_test_top*", "env_cfg", env_cfg);
     uvm_config_db#(env_config)::set(this, "*", "env_cfg", env_cfg);
     //
     //Create and Store Sim Result Path
@@ -111,15 +110,7 @@ task base_test::run_phase(uvm_phase phase);
     fork
         begin
             init_vseq(vseq);
-            vseq.start(null);//old: "null" argument // current: m_env0.vseqr 
-            //NOTE 1 -- DO NOT use uvm_do_on_with macro (uMacro.svh file):
-            //null means sequence does not tie to specific sequencer
-            //--because vseq is virtual sequence, it only controls actual sequences and does not generate stimulus
-            //--here, I do NOT use VIRTUAL SEQUENCER, so I pass "null" argument
-            //NOTE 2 -- (CRITICAL NOTE):
-            //---passing 'null' argument is not effective if using uvm_do_on_with macro
-            //---it means using virtual sequence MUST entail virtual sequencer 
-            //--simply because we CAN NOT use "null" argument
+            vseq.start(null); 
         end
 	//
         begin

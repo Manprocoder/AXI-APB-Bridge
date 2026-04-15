@@ -31,10 +31,6 @@ task AxiResetSeq::body();
       finish_item(reset_item);
       #10;
     end
-  // wait_for_item_done();
-  // Get the response (optional, based on your implementation)
-  // get_response(axi_rd_trans);
-    // axi_rd_trans.print();
     rst_value_q.delete();
   //
 endtask

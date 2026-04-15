@@ -4,11 +4,7 @@
 module decoder(
 	start_addr_i,
 	disallowed_trans_i,
-//	size_of_transfer_i,
-	//
-	//
  	dec_error_o,
-//	disallowed_trans_i,
 	true_psel_o
 	//
 );

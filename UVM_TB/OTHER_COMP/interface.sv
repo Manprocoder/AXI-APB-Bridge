@@ -208,8 +208,7 @@ endclocking
   //DEFINE
   property b_handshake;
     @(posedge aclk) disable iff (!aresetn)
-    	bvalid |-> first_match(bvalid[*1:$] ##0 bready);
-      //$rose(bvalid) |-> strong(bvalid[*1:$] intersect bready[->1]);
+     bvalid |-> strong(bvalid[*1:$] intersect bready[->1]);
   endproperty
   //DO
   assert property (b_handshake)
@@ -271,25 +270,7 @@ endclocking
     $error("[R_HANDSHAKE]: There is no handshake in R channel!!!");
     `endif
   end
-
-  //2.2
-
-  ////DEFINE
-  //property full_rdata;
-	//@(posedge aclk) disable iff (!aresetn)
-	//start_of_burst(rvalid, rready, rlast) |-> (rvalid & rready)[=1:255] ##1 (rvalid & rlast);
-  //endproperty
-  ////DO
-  //assert property (full_rdata) 
-  //else begin
-    //`ifdef PRINT_TO_VIF_SVA_FILE
-    //$fdisplay(axi_log_file, "[FULL_RDATA][%0t ns]: There is NO complete transaction in R channel!!!", $time);
-    //`else
-    //$error("[FULL_RDATA]: There is no complete transaction in R channel!!!");
-    //`endif
-  //end   
-
-  //
+    //
   //close file
   //
   `ifdef PRINT_TO_VIF_SVA_FILE

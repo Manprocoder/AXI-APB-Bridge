@@ -12,21 +12,14 @@ puts "Enter number of SLAVE (VALID choices are: 1, 2, 3 and 4):"
 gets stdin choice
 set slave_cnt $choice
 set UVM_HOME "C:/questasim64_10.7c/uvm-1.2"
-set all_ucdb {}
-set total_cov_dir ../total_cov
 set result_dir   ../SIM_RESULT
 set bin_dir ../TRASH
 
 # List of test cases
-#set test_list {base_test rd_wr_rd_test}
 set test_list {base_test}
 #
 # Cleanup old result & coverage directories
 #
-if {[file exists $total_cov_dir]} {
-    file delete -force $total_cov_dir
-}
-file mkdir $total_cov_dir
 
 if {![file exists $result_dir]} {
     file mkdir $result_dir
@@ -104,19 +97,12 @@ clean_result $result_dir $bin_dir
     #---------------------------------------------
     # Prepare directories for this run
     #---------------------------------------------
-    set slv_total_cov_dir $total_cov_dir/${slave_cnt}SLAVE
-    if {![file exists $slv_total_cov_dir]} {
-        file mkdir $slv_total_cov_dir
-    }
-    #
     set slv_dir $result_dir/${slave_cnt}SLAVE
     if {![file exists $slv_dir]} {
         file mkdir $slv_dir
     }
-      #+define+PRINT_TO_VIF_SVA_FILE \
-      #+define+PRINT_TO_SVA1_FILE \
     #---------------------------------------------
-    # Compilation (once per slave count)
+    # Compilation
     #---------------------------------------------
     vlog -work work \
       +define+UVM_CMDLINE_NO_DPI \
@@ -131,7 +117,6 @@ clean_result $result_dir $bin_dir
         -timescale 1ns/1ns \
         -l $slv_dir/vlog.log \
         +cover
-
     #---------------------------------------------
     # Run all test cases
     #---------------------------------------------
@@ -189,12 +174,6 @@ clean_result $result_dir $bin_dir
 		coverage save $ucdb_file; 
 		"
         #  
-        if {[file exists $ucdb_file]} {
-            lappend all_ucdb $ucdb_file
-        } else {
-            puts "WARNING: No UCDB generated for $test_case"
-        }
-        #
         # HTML report for this test
         vcover report -html -htmldir $test_slv_dir/HTML_COV \
             -verbose -assert -cvg -code bcesftx -source -details=abcdefgst -binrhs -testhitdataAll -stmtaltflow \

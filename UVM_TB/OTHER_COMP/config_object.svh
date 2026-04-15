@@ -30,7 +30,6 @@ class env_config extends uvm_object;
 	//
     `uvm_object_utils(env_config)
 	//
-	bit scoreboard = 1;
 	axi_agent_config axi_agt_cfg;
 	apb_agent_config apb_agt_cfg;
 	//

@@ -100,15 +100,17 @@ typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE, BRSP_FIFO_FULL} abt_st;
   abt_st abt_cs, abt_ns;
   //
   logic [1:0] nextSel;
-  logic [1:0] nextGrant;
-  logic [1:0] now_grant;
+  logic [1:0] next_grant;
+  logic [1:0] abt_grant;
   logic rd_req_avail, wr_req_avail;
   logic update;
   logic begin_transfer;
-  logic burst_go;
+  logic burst_going;
   logic burst_en;
   logic new_req_rdy;
-  logic [1:0] control;
+  logic burst_start;
+  logic burst_complete;
+//  logic [1:0] control;
   logic [1:0] selected_burst;
   logic [2:0] selected_size;
   //addr variables
@@ -126,30 +128,30 @@ typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE, BRSP_FIFO_FULL} abt_st;
   //output assignment
   //***************************************************
 assign transfer_addr_o = addr_reg;
-assign selected_prot_o = now_grant[0] ? read_burst_prot_i : write_burst_prot_i;
-assign selected_addr_o = now_grant[0] ? read_burst_addr_i : write_burst_addr_i;
-assign selected_len_o = now_grant[0] ? read_burst_len_i : write_burst_len_i;
-assign wr_trans_done_o = now_grant[1] & control[1];// 
-assign rd_trans_done_o = now_grant[0] & control[1];
-assign write_enable_o = now_grant[1];
+assign selected_prot_o = abt_grant[0] ? read_burst_prot_i : write_burst_prot_i;
+assign selected_addr_o = abt_grant[0] ? read_burst_addr_i : write_burst_addr_i;
+assign selected_len_o = abt_grant[0] ? read_burst_len_i : write_burst_len_i;
+assign wr_trans_done_o = abt_grant[1] & burst_complete;// 
+assign rd_trans_done_o = abt_grant[0] & burst_complete;
+assign write_enable_o = abt_grant[1];
 //***************************************************
 //internal assignment
 //***************************************************
-assign selected_size = now_grant[0] ? read_burst_size_i : write_burst_size_i;
-assign selected_burst = now_grant[0] ? read_burst_name_i : write_burst_name_i;
+assign selected_size = abt_grant[0] ? read_burst_size_i : write_burst_size_i;
+assign selected_burst = abt_grant[0] ? read_burst_name_i : write_burst_name_i;
 assign rd_req_avail = ~sfifo_ar_empty_i;
 assign wr_req_avail = ~sfifo_aw_empty_i;
-assign burst_en = new_req_rdy ? (now_grant[0] ? ~sfifo_ar_empty_i : ~sfifo_aw_empty_i) : 1'b0;
+assign burst_en = new_req_rdy ? (abt_grant[0] ? ~sfifo_ar_empty_i : ~sfifo_aw_empty_i) : 1'b0;
 assign invalid_transfer = ((selected_burst != 2'b01) && (|selected_addr_o[1:0])) | (selected_size != 3'b010); 
 //
 //ready to run new request
 //
   always_ff@(posedge aclk, negedge aresetn) begin
     if(~aresetn) new_req_rdy <= 1'b1;
-    else if(control[0]) begin
+    else if(burst_start) begin
       new_req_rdy <= 1'b0;
     end
-    else if(control[1]) begin
+    else if(burst_complete) begin
       new_req_rdy <= 1'b1;
     end 
   end
@@ -163,9 +165,10 @@ end
 //
 always_comb begin
   abt_ns = ABT_IDLE;
-  burst_go = 1'b0;
+  burst_going = 1'b0;
   begin_transfer = 1'b0;
-  control = 2'b0;
+  burst_start = 0;
+  burst_complete = 0;
   next_transfer_rdy_o = 1'b0;
   addr_incr_active = 1'b0;
   final_brsp_vld_o = 1'b0;
@@ -175,37 +178,35 @@ always_comb begin
 	  if(burst_en) begin
 		  abt_ns = ABT_GO;
 		  begin_transfer = 1'b1;
-		  control = 2'b01;
+		  burst_start = 1;
 	  end
 	  else begin
 		  abt_ns = ABT_IDLE;
-		  control = 2'b00;
 	  end
   end
   ABT_GO: begin
 	if(burst_almost_done_i) abt_ns = ABT_DONE;//SET_UP phase
 	else abt_ns = ABT_GO;
 	//
-	burst_go = 1'b1;
+	burst_going = 1'b1;
 	addr_incr_active = addr_incr_en_i;
-  	next_transfer_rdy_o = now_grant[0] ? ~sfifo_rd_almost_full_i : ~sfifo_wd_almost_empty_i;
+  	next_transfer_rdy_o = abt_grant[0] ? ~sfifo_rd_almost_full_i : ~sfifo_wd_almost_empty_i;
   end
   ABT_DONE: begin
 	  next_transfer_rdy_o = 1'b0;
 	  if(burst_done_i) begin //rd AW_FIFO or AR_FIFO
-		  if(now_grant[0]) begin
+		  if(abt_grant[0]) begin
 			  abt_ns = ABT_IDLE;
-			  control = 2'b10;
+			  burst_complete = 1'b1;
 		  end
 		  else begin
 		  final_brsp_vld_o = 1'b1;
 		  //
 			  if(bchannel_rdy_i) begin
-				  control = 2'b10;
+				  burst_complete = 1'b1;
 				  abt_ns = ABT_IDLE;
 			  end
 			  else begin
-				  control = 2'b00;
 				  abt_ns = BRSP_FIFO_FULL;
 			  end
 		  end
@@ -216,11 +217,10 @@ always_comb begin
 	  next_transfer_rdy_o = 1'b0;
 	  //
 	  if(bchannel_rdy_i) begin
-		  control = 2'b10;
+		  burst_complete = 1'b1;
 		  abt_ns = ABT_IDLE;
 	  end
 	  else begin
-		  control = 2'b00;
 		  abt_ns = BRSP_FIFO_FULL;
 	  end
   end
@@ -230,7 +230,7 @@ end
   //
   //nextSel0
   always_comb begin
-    if(now_grant[0])
+    if(abt_grant[0])
 	  nextSel[0] = 1'b1;
 	else if(rd_req_avail)
 	  nextSel[0] = 1'b0;
@@ -239,44 +239,44 @@ end
   end
   //nextSel1
   always_comb begin
-    if(now_grant[1])
+    if(abt_grant[1])
 	  nextSel[1] = 1'b1;
 	else if(wr_req_avail)
 	  nextSel[1] = 1'b0;
 	else
 	  nextSel[1] = 1'b1;
   end
-  //nextGrant[1]
+  //next_grant[1]
   always_comb begin
     if(~nextSel[0])
-	  nextGrant[1] = 1'b0;
+	  next_grant[1] = 1'b0;
 	else if(wr_req_avail) //	R1
-	  nextGrant[1] = 1'b1;
+	  next_grant[1] = 1'b1;
 	else
-	  nextGrant[1] = now_grant[1]; //R2
+	  next_grant[1] = abt_grant[1]; //R2
   end
-  //nextGrant[0]
+  //next_grant[0]
   always_comb begin
     if(~nextSel[1])
-	  nextGrant[0] = 1'b0;
+	  next_grant[0] = 1'b0;
 	else if(rd_req_avail) //W1
-	  nextGrant[0] = 1'b1;
+	  next_grant[0] = 1'b1;
 	else
-	  nextGrant[0] = now_grant[0]; //W2
+	  next_grant[0] = abt_grant[0]; //W2
   end
 //
-//now_grant
+//abt_grant
 //
-assign update = (burst_go ? 1'b0 
-: (now_grant[0] ? (wr_req_avail & sfifo_ar_empty_i) : (rd_req_avail & sfifo_aw_empty_i))) | control[1];
+assign update = (burst_going ? 1'b0 
+: (abt_grant[0] ? (wr_req_avail & sfifo_ar_empty_i) : (rd_req_avail & sfifo_aw_empty_i))) | burst_complete;
 //
 always_ff @(posedge aclk, negedge aresetn) begin
 	if(~aresetn)
-		now_grant[1:0] <= 2'b01;
+		abt_grant[1:0] <= 2'b01;
 	else if(update)
-		now_grant[1:0] <= nextGrant[1:0];
+		abt_grant[1:0] <= next_grant[1:0];
 	else
-		now_grant[1:0] <= now_grant[1:0];	  
+		abt_grant[1:0] <= abt_grant[1:0];	  
 end
 //
 //address register

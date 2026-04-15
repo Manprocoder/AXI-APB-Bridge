@@ -95,8 +95,8 @@ add wave -noupdate -bin /tb/dut_top/arbiter_inst/addr_incr_en_i
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/addr_incr_active
 add wave -noupdate -hex /tb/dut_top/arbiter_inst/addr_reg
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/nextSel
-add wave -noupdate -bin /tb/dut_top/arbiter_inst/nextGrant
-add wave -noupdate -bin /tb/dut_top/arbiter_inst/now_grant
+add wave -noupdate -bin /tb/dut_top/arbiter_inst/next_grant
+add wave -noupdate -bin /tb/dut_top/arbiter_inst/abt_grant
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/next_transfer_rdy_o
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/bchannel_rdy_i
 add wave -noupdate -hex /tb/dut_top/arbiter_inst/next_addr_for_wrap
