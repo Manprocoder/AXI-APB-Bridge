@@ -1,0 +1,39 @@
+
+module axi_checker_top;
+  //Define the interface hierarchy
+  `define axi_if dut_top
+  //Checker connection
+  axi_checker axi_checker();
+    assign axi_checker.aclk    = `axi_if.aclk;
+    assign axi_checker.aresetn = `axi_if.aresetn;
+    assign axi_checker.awvalid = `axi_if.awvalid;
+    assign axi_checker.awready = `axi_if.awready;
+    assign axi_checker.awid    = `axi_if.awid;
+    assign axi_checker.awaddr  = `axi_if.awaddr;
+    assign axi_checker.awlen   = `axi_if.awlen;
+    assign axi_checker.awsize  = `axi_if.awsize;
+    assign axi_checker.awburst = `axi_if.awburst;
+    assign axi_checker.wvalid  = `axi_if.wvalid;
+    assign axi_checker.wdata   = `axi_if.wdata;
+    assign axi_checker.wstrb   = `axi_if.wstrb;
+    assign axi_checker.wlast   = `axi_if.wlast;
+    assign axi_checker.wready  = `axi_if.wready;
+    assign axi_checker.bready  = `axi_if.bready;
+    assign axi_checker.bvalid  = `axi_if.bvalid;
+    assign axi_checker.bresp  = `axi_if.bresp;
+    assign axi_checker.bid  = `axi_if.bid;
+    assign axi_checker.arvalid = `axi_if.arvalid;
+    assign axi_checker.arready = `axi_if.arready;
+    assign axi_checker.arid    = `axi_if.arid;
+    assign axi_checker.araddr  = `axi_if.araddr;
+    assign axi_checker.arlen   = `axi_if.arlen;
+    assign axi_checker.arsize  = `axi_if.arsize;
+    assign axi_checker.arburst = `axi_if.arburst;
+    assign axi_checker.rvalid  = `axi_if.rvalid;
+    assign axi_checker.rdata   = `axi_if.rdata;
+    assign axi_checker.rlast   = `axi_if.rlast;
+    assign axi_checker.rready  = `axi_if.rready;
+    assign axi_checker.rresp  = `axi_if.rresp;
+    assign axi_checker.rid  = `axi_if.rid;
+endmodule
+ 

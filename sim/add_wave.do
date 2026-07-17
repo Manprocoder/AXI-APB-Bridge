@@ -1,8 +1,8 @@
 onerror {resume}
-quietly WaveActivateNextPane {} 0
+#quietly waveactivatenextpane {} 0
 add wave -noupdate /tb/dut_top/aclk
 add wave -noupdate /tb/dut_top/aresetn
-#add wave -noupdate -divider -height 23 {AXI WRITE ADDR CHANNEL}
+#add wave -noupdate -divider -height 23 {axi write addr channel}
 #add wave -noupdate /tb/dut_top/awvalid
 #add wave -noupdate /tb/dut_top/awready
 #add wave -noupdate -unsigned /tb/dut_top/awid
@@ -10,21 +10,21 @@ add wave -noupdate /tb/dut_top/aresetn
 #add wave -noupdate /tb/dut_top/awlen
 #add wave -noupdate /tb/dut_top/awsize
 #add wave -noupdate /tb/dut_top/awburst
-add wave -noupdate -divider -height 23 {AXI WRITE ADDR FIFO}
+add wave -noupdate -divider -height 23 {axi write addr fifo}
 add wave -noupdate /tb/dut_top/axi_slv_inst/aw_sfifo/wr
 add wave -noupdate /tb/dut_top/axi_slv_inst/aw_sfifo/rd
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/aw_sfifo/data_out
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/aw_sfifo/sfifo_empty
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/aw_sfifo/sfifo_full
-add wave -noupdate -divider -height 23 {AXI WRITE DATA CHANNEL}
+add wave -noupdate -divider -height 23 {axi write data channel}
 add wave -noupdate /tb/dut_top/wready
 add wave -noupdate /tb/dut_top/wvalid
 add wave -noupdate /tb/dut_top/wstrb
 add wave -noupdate /tb/dut_top/wlast
 add wave -noupdate -hex /tb/dut_top/wdata
-add wave -noupdate -divider -height 23 {AXI VARIABLES}
+add wave -noupdate -divider -height 23 {axi variables}
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/read_from_wd_sfifo_i
-add wave -noupdate -divider -height 23 {WDATA FIFO}
+add wave -noupdate -divider -height 23 {wdata fifo}
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_wd_we
 add wave -noupdate -unsigned /tb/dut_top/axi_slv_inst/wd_sfifo/w_pointer
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_wd_full
@@ -32,26 +32,26 @@ add wave -noupdate -hex /tb/dut_top/axi_slv_inst/wd_sfifo/data_in
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_wd_re
 add wave -noupdate -unsigned /tb/dut_top/axi_slv_inst/wd_sfifo/r_pointer
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/wd_sfifo/data_out
-add wave -noupdate -divider -height 23 {AXI BCHANNEL FIFO}
+add wave -noupdate -divider -height 23 {axi bchannel fifo}
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_empty
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_full
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_we
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_re
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bchannel_sfifo/data_in
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bchannel_sfifo/data_out
-#add wave -noupdate -divider -height 23 {BRESP REGISTER}
+#add wave -noupdate -divider -height 23 {bresp register}
 #add wave -noupdate -bin /tb/dut_top/axi_slv_inst/wr_trans_done_i
 #add wave -noupdate -bin /tb/dut_top/axi_slv_inst/new_brsp_vld
 #add wave -noupdate -bin /tb/dut_top/axi_slv_inst/err_of_transfer_i
 #add wave -noupdate -bin /tb/dut_top/axi_slv_inst/status
 #add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bresp_reg
 #add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bid_reg
-#add wave -noupdate -divider -height 23 {AXI WRITE RESP CHANNEL}
+#add wave -noupdate -divider -height 23 {axi write resp channel}
 #add wave -noupdate /tb/dut_top/bready
 #add wave -noupdate /tb/dut_top/bvalid
 #add wave -noupdate /tb/dut_top/bresp
 #add wave -noupdate /tb/dut_top/bid
-#add wave -noupdate -divider -height 23 {AXI READ ADDR CHANNEL}
+#add wave -noupdate -divider -height 23 {axi read addr channel}
 #add wave -noupdate /tb/dut_top/aclk
 #add wave -noupdate /tb/dut_top/aresetn
 #add wave -noupdate /tb/dut_top/arvalid
@@ -61,29 +61,29 @@ add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bchannel_sfifo/data_out
 #add wave -noupdate /tb/dut_top/arlen
 #add wave -noupdate /tb/dut_top/arsize
 #add wave -noupdate /tb/dut_top/arburst
-add wave -noupdate -divider -height 23 {AXI READ ADDR FIFO}
+add wave -noupdate -divider -height 23 {axi read addr fifo}
 add wave -noupdate /tb/dut_top/axi_slv_inst/ar_sfifo/wr
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/ar_sfifo/data_in
 add wave -noupdate /tb/dut_top/axi_slv_inst/ar_sfifo/rd
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/ar_sfifo/data_out
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/ar_sfifo/sfifo_empty
-add wave -noupdate -divider -height 23 {AXI READ DATA CHANNEL}
+add wave -noupdate -divider -height 23 {axi read data channel}
 add wave -noupdate /tb/dut_top/rready
 add wave -noupdate /tb/dut_top/rvalid
 add wave -noupdate /tb/dut_top/rlast
 add wave -noupdate -hex /tb/dut_top/rdata
 add wave -noupdate -unsigned /tb/dut_top/rid
 add wave -noupdate /tb/dut_top/rresp
-add wave -noupdate -divider -height 23 {AXI CLOCK}
+add wave -noupdate -divider -height 23 {axi clock}
 add wave -noupdate /tb/dut_top/axi_slv_inst/aclk
-add wave -noupdate -divider -height 23 {RDATA FIFO}
+add wave -noupdate -divider -height 23 {rdata fifo}
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_we
 add wave -noupdate -bin /tb/dut_top/sfifo_rd_almost_full
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/rd_sfifo/data_in
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_re
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_empty
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/rd_sfifo/data_out
-add wave -noupdate -divider -height 23 {ARBITER}
+add wave -noupdate -divider -height 23 {arbiter}
 add wave -noupdate -hex /tb/dut_top/arbiter_inst/abt_cs
 add wave -noupdate -hex /tb/dut_top/arbiter_inst/abt_ns
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/new_req_rdy
@@ -94,29 +94,29 @@ add wave -noupdate -bin /tb/dut_top/arbiter_inst/selected_burst
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/addr_incr_en_i
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/addr_incr_active
 add wave -noupdate -hex /tb/dut_top/arbiter_inst/addr_reg
-add wave -noupdate -bin /tb/dut_top/arbiter_inst/nextSel
+add wave -noupdate -bin /tb/dut_top/arbiter_inst/next_sel
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/next_grant
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/abt_grant
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/next_transfer_rdy_o
 add wave -noupdate -bin /tb/dut_top/arbiter_inst/bchannel_rdy_i
 add wave -noupdate -hex /tb/dut_top/arbiter_inst/next_addr_for_wrap
-#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit3Addr
-#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit4Addr
-#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit5Addr
-#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit6Addr
+#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit3addr
+#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit4addr
+#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit5addr
+#add wave -noupdate -bin /tb/dut_top/arbiter_inst/bit6addr
 add wave -noupdate /tb/dut_top/arbiter_inst/update
-#add wave -noupdate -divider -height 23 {DECODER}
+#add wave -noupdate -divider -height 23 {decoder}
 #add wave -noupdate -hex /tb/dut_top/apb_mst_inst/decoder_inst/true_psel_o
 #add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/false_psel_o
 #add wave -noupdate -bin /tb/dut_top/apb_mst_inst/decoder_inst/dec_error_o
-add wave -noupdate -divider -height 23 {COUNTER}
+add wave -noupdate -divider -height 23 {counter}
 add wave -noupdate -unsigned /tb/dut_top/cnt_inst/transfer_cnt
 add wave -noupdate -bin /tb/dut_top/cnt_inst/burst_almost_done_o
 add wave -noupdate -bin /tb/dut_top/cnt_inst/burst_done_o
-add wave -noupdate -divider -height 23 {TRANSACTION_ID}
+add wave -noupdate -divider -height 23 {transaction_id}
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/sfifo_ar_id
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/sfifo_aw_id
-add wave -noupdate -divider -height 23 {APB INTERNALS}
+add wave -noupdate -divider -height 23 {apb internals}
 add wave -noupdate -hex /tb/dut_top/apb_mst_inst/apb_cs
 add wave -noupdate -hex /tb/dut_top/apb_mst_inst/apb_ns
 add wave -noupdate -bin /tb/dut_top/apb_mst_inst/transfer_i
@@ -126,7 +126,7 @@ add wave -noupdate -bin /tb/dut_top/apb_mst_inst/out_pslverr
 add wave -noupdate -bin /tb/dut_top/apb_mst_inst/invalid_psel
 add wave -noupdate -bin /tb/dut_top/apb_mst_inst/disallowed_trans_i
 add wave -noupdate -bin /tb/dut_top/apb_mst_inst/pslverrX_o
-add wave -noupdate -divider -height 23 {APB INTERFACE}
+add wave -noupdate -divider -height 23 {apb interface}
 add wave -noupdate /tb/dut_top/pclk
 add wave -noupdate /tb/dut_top/preset_n
 add wave -noupdate -bin /tb/dut_top/apb_mst_inst/psel
@@ -138,8 +138,8 @@ add wave -noupdate /tb/dut_top/apb_mst_inst/pstrb
 add wave -noupdate /tb/dut_top/apb_mst_inst/prdata
 add wave -noupdate -bin /tb/dut_top/apb_mst_inst/pready
 add wave -noupdate -bin /tb/dut_top/apb_mst_inst/pslverr
-TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {925 ns} 0}
+#treeupdate [setdefaulttree]
+#waverestorecursors {{cursor 1} {925 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 218
 configure wave -valuecolwidth 145
@@ -155,4 +155,5 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ns} {1050 ns}
+#waverestorezoom {0 ns} {1050 ns}
+
