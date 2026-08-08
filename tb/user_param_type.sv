@@ -11,7 +11,8 @@
 //
     parameter int APB_BASE_END_ADDR_QUEUE_WIDTH = 8;
     parameter TIME_OUT_BOUNDARY = 100;
-    parameter APB_TIMEOUT = 5000;
+    parameter AXI_REQ_TIMEOUT = 5*(10**7);
+    parameter APB_TIMEOUT = 5*(10**9);
     parameter logic [31:0] START_ADDR = 32'h0000_0000;
     //
     //

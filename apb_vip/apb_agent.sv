@@ -9,7 +9,7 @@ class apb_agent extends uvm_agent;
     //
     apb_driver apb_drv_h;
     apb_monitor apb_mon_h;
-    ApbSequencer s_seqr0;
+    apb_sequencer s_seqr_h;
     //
     apb_agent_config apb_cfg_h;
     //
@@ -35,7 +35,7 @@ function void apb_agent::build_phase(uvm_phase phase);
     //
     //if(apb_cfg_h.active == UVM_ACTIVE) begin
         //apb_drv_h = apb_driver::type_id::create("apb_drv_h", this);
-        s_seqr0 = ApbSequencer::type_id::create("s_seqr0", this);
+        s_seqr_h = apb_sequencer::type_id::create("s_seqr_h", this);
     //end
     //
     apb_drv_h.drv_cfg = apb_cfg_h; // assign config object
@@ -44,5 +44,5 @@ endfunction
 
 function void apb_agent::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-        apb_drv_h.seq_item_port.connect(s_seqr0.seq_item_export);
+        apb_drv_h.seq_item_port.connect(s_seqr_h.seq_item_export);
 endfunction

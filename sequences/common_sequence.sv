@@ -15,28 +15,30 @@ import axi_pkg::*;
 //this class takes responsibility for generating stimulus
 typedef axi_transaction#(DW1,AW1) axi_item;
 //
-class stimulus_generator extends uvm_sequence#(axi_item); 
+virtual class stimulus_generator extends uvm_sequence#(axi_item); 
 	`uvm_object_utils(stimulus_generator)
 	//
 	mailbox #(axi_item) mb;
 	axi_item trans_h;
-	int total_no_test;
-        bit reconfigure_id;
+	int no_test;
+    bit reconfigure_id;
 	//
-	function new(string name = "stimulus_generator");
+	function new(string name = "sti_gen");
 		super.new(name);
 	endfunction
 	//
 	virtual function void gen_item();
-		mb = new(total_no_test);
+		mb = new(no_test);
 		//mb = new();
-		repeat(total_no_test) begin
+		repeat(no_test) begin
 			trans_h = axi_item::type_id::create("axi_item");
 			assert(trans_h.randomize())
 			else `uvm_error(get_type_name(), "randomize axi_item FAILED")
 			if(!mb.try_put(trans_h)) `uvm_error(get_type_name, "try_put item into mb FAIL!!!");
 		end
 	endfunction
+    //
+    pure virtual task body();
 	//
 endclass
 //**********************************************************************************
@@ -49,7 +51,6 @@ endclass
 class AxiMasterWriteSeq #(DW1, AW1) extends stimulus_generator;
     //register UVM factory
     `uvm_object_param_utils(AxiMasterWriteSeq#(DW1, AW1))
-    int no_test;
     // Constructor
     function new (string name = "AxiMasterWriteSeq");
         super.new(name);
@@ -64,11 +65,11 @@ endclass
 //-- body()
 //
 task AxiMasterWriteSeq::body();
-`uvm_info(get_type_name(), $sformatf("WRITE no_test = %0d", no_test), UVM_LOW);
+`uvm_info(get_name(), $sformatf("WRITE no_test = %0d", no_test), UVM_LOW);
     repeat(no_test) begin
       // wait_for_grant();
       //send_request(trans_h); //must pair wait_for_grant()
-              trans_h = axi_item::type_id::create("axi_w_trans");
+          trans_h = axi_item::type_id::create("axi_w_trans");
 
        if(mb.try_get(trans_h)) begin
 	      //send item to sequencer
@@ -77,7 +78,7 @@ task AxiMasterWriteSeq::body();
 	      finish_item(trans_h);
       end
       else begin
-		`uvm_fatal(get_type_name(), $sformatf("wr_stimulus not available!!!"))
+		`uvm_fatal(get_name(), $sformatf("wr_stimulus not available!!!"))
       end
     end
 endtask
@@ -88,7 +89,6 @@ class AxiMasterReadSeq#(DW1,AW1) extends stimulus_generator;
   `uvm_object_param_utils(AxiMasterReadSeq#(DW1,AW1))
   //
     logic [7:0] r_id;
-    int no_test;
     //
     function new(string name = "read transaction");
         super.new(name);
@@ -100,7 +100,7 @@ endclass
 //
 task AxiMasterReadSeq::body();
 	r_id = 0;
-	`uvm_info(get_type_name(), $sformatf("RD no_test = %0d", no_test), UVM_LOW);
+	`uvm_info(get_name(), $sformatf("RD no_test = %0d", no_test), UVM_LOW);
 	repeat(no_test) begin
 	      //r_mb.get(tmp);
 	      //trans_h.copy(tmp); 
@@ -122,7 +122,7 @@ task AxiMasterReadSeq::body();
 		      r_id++;
       	      end
 	      else begin
-		`uvm_fatal(get_type_name(), $sformatf("rd_stimulus unavailable!!!"))
+		`uvm_fatal(get_name(), $sformatf("rd_stimulus unavailable!!!"))
 	      end
 	end
 endtask
@@ -132,8 +132,8 @@ endtask
 class rsp_seq extends stimulus_generator;
 	`uvm_object_utils(rsp_seq)
 	//
-	int no_test_slverr1;	
-	int no_test_slverr2;	
+	int no_test_unsupported_size;	
+	int no_test_disallowed_addr;	
 	int no_test_decerr;	
 	//
 	function new (string name = "response seq");
@@ -143,7 +143,7 @@ class rsp_seq extends stimulus_generator;
  	function void gen_item();
 		mb = new();
 		//disallowed size
-		repeat(no_test_slverr1) begin
+		repeat(no_test_unsupported_size) begin
 			trans_h = axi_item::type_id::create("axi_item");
 			assert(trans_h.randomize() with {
 				trans_h.size != 3'b010;
@@ -154,7 +154,7 @@ class rsp_seq extends stimulus_generator;
 			if(!mb.try_put(trans_h)) `uvm_error(get_type_name, "try_put item into mb FAIL!!!");
 		end
 		//unaligned addr for WRAP, FIXED 
-		repeat(no_test_slverr2) begin
+		repeat(no_test_disallowed_addr) begin
 			trans_h = axi_item::type_id::create("axi_item");
 			assert(trans_h.randomize() with {
 				trans_h.size == 3'b010;
@@ -181,7 +181,7 @@ class rsp_seq extends stimulus_generator;
 	endfunction
 	//
 	virtual task body();
-		repeat(no_test_slverr1 + no_test_slverr2 + no_test_decerr) begin
+		repeat(no_test_unsupported_size + no_test_disallowed_addr + no_test_decerr) begin
 		      trans_h = axi_item::type_id::create("axi_trans");
 		      if(mb.try_get(trans_h)) begin
 			      //send item to sequencer
@@ -207,9 +207,9 @@ class unaligned_addr_seq extends stimulus_generator;
 	endfunction
 	//
 	function void gen_item();
-		mb = new(total_no_test);
+		mb = new(no_test);
 		//
-		repeat(total_no_test) begin
+		repeat(no_test) begin
 			trans_h = axi_item::type_id::create("axi_item");
 			assert(trans_h.randomize() with {
 				trans_h.size == 3'b010;
@@ -223,7 +223,7 @@ class unaligned_addr_seq extends stimulus_generator;
 	endfunction
 	//
 	virtual task body();
-		repeat(total_no_test) begin
+		repeat(no_test) begin
 		      trans_h = axi_item::type_id::create("axi_trans");
 		      if(mb.try_get(trans_h)) begin
 			      //send item to sequencer

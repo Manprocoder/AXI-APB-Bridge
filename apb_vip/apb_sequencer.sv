@@ -1,13 +1,13 @@
 //
 //
 //
-class ApbSequencer extends uvm_sequencer#(apb_seq_item#(DW2,AW2));
+class apb_sequencer extends uvm_sequencer#(apb_seq_item#(DW2,AW2));
   //Register to Factory
-	`uvm_component_utils(ApbSequencer)
+	`uvm_component_utils(apb_sequencer)
   //
   // TO_DO: component must have variable "parent"
   // object must not have veriable "parent" (refer to class cVSequence) 
-	function new (string name = "ApbSequencer", uvm_component parent = null);
+	function new (string name = "apb_sequencer", uvm_component parent = null);
 		super.new(name,parent);
     //Add more code if any
 	endfunction

@@ -211,9 +211,9 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
             if(w_trans_fifo.is_full()) begin
                 `uvm_info(get_type_name(), "WR trans TLM FIFO is FULL!!!", UVM_LOW)
             end
-            else begin
+            //else begin
                 put_port.put(wtx0);
-            end
+            //end
                 //
                 seq_item_port.item_done();
             `uvm_info(get_type_name(), $sformatf("[Drive Write Request] done!!!"), UVM_MEDIUM);
@@ -221,7 +221,7 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
         end//end of GET_WR_REQUEST
         //
         forever begin: SEND_WDATA
-          `uvm_info(get_type_name(), $sformatf("WAITING RISING EDGE ARESETN---SendWriteData() TASK!!!"), UVM_HIGH);
+          `uvm_info(get_name(), $sformatf("WAIT RISI_EDGE_of_ARESETN---SendWriteData!!!"), UVM_HIGH);
           drv_cfg.vif.wait_RisingEdge_reset();
           while(drv_cfg.vif.aresetn_value() == 1'b1) begin
             get_port.get(wtx1);
@@ -281,7 +281,7 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
            `uvm_info(get_type_name(), $sformatf("after clocking block"), UVM_HIGH);
 	  //tx.print();
           drv_cfg.vif.m_drv_cb.awvalid <= 1;
-          drv_cfg.vif.m_drv_cb.awid    <= tx.id;
+          drv_cfg.vif.m_drv_cb.awid    <= {tx.slv_idx, 8'd0, tx.id};
           drv_cfg.vif.m_drv_cb.awaddr  <= tx.addr;
           drv_cfg.vif.m_drv_cb.awlen   <= tx.len;
           drv_cfg.vif.m_drv_cb.awsize  <= tx.size;
@@ -323,7 +323,7 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
       end
     join_any
     disable fork;
-   `uvm_info(get_type_name(), $sformatf("W_TRANS[%0d]:DISABLE FORK_JOIN_ANY---SendWriteData() TASK!!!", tx.id), UVM_HIGH);
+   `uvm_info(get_type_name(), $sformatf("W_TRANS[%0d]SendWriteData DONE!!!", tx.id), UVM_HIGH);
   endtask
   //
   //
@@ -367,7 +367,7 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
       begin: IN_SEND_RD_ADDR
         @(drv_cfg.vif.m_drv_cb);
         drv_cfg.vif.m_drv_cb.arvalid <= 1;
-        drv_cfg.vif.m_drv_cb.arid    <= tx.id;
+        drv_cfg.vif.m_drv_cb.arid    <= {tx.slv_idx, 8'd0, tx.id};
         drv_cfg.vif.m_drv_cb.araddr  <= tx.addr;
         drv_cfg.vif.m_drv_cb.arlen   <= tx.len;
         drv_cfg.vif.m_drv_cb.arsize  <= tx.size;
@@ -404,6 +404,6 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
     //
     join_any
     disable fork;
-    `uvm_info(get_type_name(), $sformatf("DISABLE FORK_JOIN_ANY---GetReadData() TASK!!!"), UVM_HIGH);
+    `uvm_info(get_type_name(), $sformatf("[DONE]GetReadData!!!"), UVM_HIGH);
   endtask
 

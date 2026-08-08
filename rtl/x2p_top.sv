@@ -1,8 +1,10 @@
 //========================================================================
-//Project Name: AXI4-APB4 Bridge
+//Project: Design and Verify AXI_to_APB Bridge
+//========================================================================
 //File name: x2p_top.sv
+//Author: Nguyen Ngoc Man
+//========================================================================
 //Description: AXI-APB Bridge Design complied to AXI4 and APB4 protocol
-//Design Engineer: Nguyen Ngoc Man
 //========================================================================
 module x2p_top(aclk,
 	       aresetn,

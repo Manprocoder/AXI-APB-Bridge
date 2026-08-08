@@ -2,12 +2,11 @@
 //--Project: AXI_TO_APB IP
 //--File: axi_seq_item.sv
 //--Author: Nguyen Ngoc Man
-//--Description: APB agent 
+//--Description:  
 //===========================================================================
-//uvm object
 class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
-    typedef axi_transaction#(DW, AW) this_type_t;
-    `uvm_object_param_utils(axi_transaction#(DW, AW))
+    typedef axi_transaction#(DW, AW) this_item;
+    `uvm_object_param_utils(this_item)
     //
     rand bit is_valid;
     //
@@ -16,12 +15,7 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
     rand bit [2:0] rst_low_delay;
     rand bit [7:0] rst_high_delay;
     //
-    //rand logic [7:0] id; //
-    //rand logic [AW-1:0] addr;
-    //rand bit [7:0] len;
-    //rand bit [2:0] size;// = 3'b010; //word
     rand bit [2:0] prot;
-    //rand burst_name burst;
     rand bit [DW-1:0] data_arr [];
     rand bit [3:0] wstrb [];
     //
@@ -105,7 +99,7 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
         if(is_valid) {
             //supported valid range of address
             addr inside { [32'h0000_0000 : 32'h0000_0000 + `SLAVE_CNT*4096] };
-	    //
+            //
             if(burst == FIXED || burst == WRAP) {
                 addr[1:0] dist {2'b00:=7, 2'b01:=1, 2'b10:=1, 2'b11:=1};
             }
@@ -114,9 +108,15 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
             }
         }
         else {
-		!(addr inside { [32'h0000_0000 : 32'h0000_0000 + `SLAVE_CNT*4096] });// 
+            !(addr inside { [32'h0000_0000 : 32'h0000_0000 + `SLAVE_CNT*4096] });// 
         }
         //
+    }
+    //
+    constraint slv_idx_c{
+        solve addr before slv_idx;
+        //
+        slv_idx == {(addr>>12) & 32'h0000_000f};
     }
     //
     //Group(1)
@@ -158,6 +158,7 @@ endfunction
 //Group(2)
 function void axi_transaction::do_print(uvm_printer printer);
     //super.do_print(printer);
+    printer.print_field("SLV_IDX", slv_idx, $bits(slv_idx), UVM_UNSIGNED);
     printer.print_field("ID", id, $bits(id), UVM_UNSIGNED);
     printer.print_field("Addr", addr, $bits(addr), UVM_HEX);
     //
@@ -172,7 +173,7 @@ endfunction: do_print
 
 function string axi_transaction::convert2string();
     string s;
-    //s = super.convert2string();
+    s = {s, $sformatf("SLV_IDX        :   %0d\n", slv_idx)};
     s = {s, $sformatf("ID             :   %0d\n", id)};
     s = {s, $sformatf("Addr           : 0x%0h\n", addr)};
     for (int i =0; i< len+1; i++) begin
@@ -185,7 +186,7 @@ function string axi_transaction::convert2string();
 endfunction: convert2string
 
 function void axi_transaction::do_copy(uvm_object rhs);
-    this_type_t rhs_;
+    this_item rhs_;
     //
     if (!$cast(rhs_, rhs)) begin
         `uvm_error({this.get_name(), ".do_copy()"}, "Cast failed!");
@@ -194,6 +195,7 @@ function void axi_transaction::do_copy(uvm_object rhs);
     //chain the copy with parent classes
     //super.do_copy(rhs);
     //list of local properties to be copied
+    this.slv_idx = rhs_.slv_idx;
     this.id     = rhs_.id;
     this.addr   = rhs_.addr;
     this.len    = rhs_.len;
@@ -207,7 +209,7 @@ function void axi_transaction::do_copy(uvm_object rhs);
 endfunction: do_copy
 
 function bit axi_transaction::do_compare(uvm_object rhs, uvm_comparer comparer);
-    this_type_t rhs_;
+    this_item rhs_;
 
     if (!$cast(rhs_, rhs)) begin
         `uvm_error({this.get_name(), ".do_compare()"}, "Cast failed!");

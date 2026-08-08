@@ -6,7 +6,8 @@ parameter X2P_SFIFO_AR_DATA_WIDTH = 56;
 parameter X2P_SFIFO_WD_DATA_WIDTH = 37;
 parameter X2P_SFIFO_RD_DATA_WIDTH = 43;
 parameter X2P_SFIFO_BCHANNEL_WIDTH = 10;
-parameter POINTER_WIDTH           = 4;
+parameter REQ_POINTER_WIDTH        = 4;
+parameter DATA_POINTER_WIDTH       = 8;
 //Error
 parameter OKAY                    = 2'b00;
 parameter DECERR                  = 2'b11;
@@ -20,7 +21,9 @@ parameter A_START_SLAVE2  = 32'h0000_2000;
 parameter A_END_SLAVE2    = 32'h0000_2FFF;
 parameter A_START_SLAVE3  = 32'h0000_3000;
 parameter A_END_SLAVE3    = 32'h0000_3FFF;
+//
 //calculate bytes in transfer
+//
 function logic [7:0] bytes_in_transfer;
 	input logic [2:0] size;
 begin

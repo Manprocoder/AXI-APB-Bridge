@@ -188,14 +188,14 @@ output logic [3:0] wstrb_to_apb_o;
   logic [7:0] bid_reg;
   logic new_brsp_vld;
   //
-  parameter logic [POINTER_WIDTH:0] ALMOST_FULL_VALUE = 2**POINTER_WIDTH - 1'b1;
-  parameter logic [POINTER_WIDTH:0] ALMOST_EMPTY_VALUE = 1;
+  parameter logic [DATA_POINTER_WIDTH:0] ALMOST_FULL_VALUE = 2**DATA_POINTER_WIDTH - 3'd4;
+  parameter logic [DATA_POINTER_WIDTH:0] ALMOST_EMPTY_VALUE = 1;
 //*******************************************************************
 //X2P_SFIFO_AR
 //*******************************************************************
   sfiforeq #(
-	.DATA_WIDTH(X2P_SFIFO_AR_DATA_WIDTH),
-       	.POINTER_WIDTH(POINTER_WIDTH)
+        .DATA_WIDTH(X2P_SFIFO_AR_DATA_WIDTH),
+       	.POINTER_WIDTH(REQ_POINTER_WIDTH)
   ) ar_sfifo (
   .clk(aclk),
   .rst_n(aresetn),
@@ -216,7 +216,7 @@ output logic [3:0] wstrb_to_apb_o;
   //X2P_SFIFO_RD
   //*******************************************************************
   sfifordata #(
-	.DATA_WIDTH(X2P_SFIFO_RD_DATA_WIDTH), .POINTER_WIDTH(POINTER_WIDTH),
+	.DATA_WIDTH(X2P_SFIFO_RD_DATA_WIDTH), .POINTER_WIDTH(DATA_POINTER_WIDTH),
 	.ALMOST_FULL_VALUE(ALMOST_FULL_VALUE), .ALMOST_EMPTY_VALUE(ALMOST_EMPTY_VALUE)
 ) rd_sfifo(
   .clk(aclk),
@@ -235,12 +235,15 @@ output logic [3:0] wstrb_to_apb_o;
   //RD_CH
   //resp_of_rdata
   always_comb begin
-    if(~err_of_transfer_i)
+    if(~err_of_transfer_i) begin
 	  resp_of_rdata = OKAY;
-	else if(dec_error_i)
+    end
+	else if(dec_error_i) begin
 	  resp_of_rdata = DECERR;
-	else
+    end
+	else begin
 	  resp_of_rdata = PSLVERR;
+    end
   end
   //rlast
   always_comb begin
@@ -254,7 +257,7 @@ output logic [3:0] wstrb_to_apb_o;
   //*******************************************************************
   sfiforeq #(
 	  .DATA_WIDTH(X2P_SFIFO_AW_DATA_WIDTH),
-	  .POINTER_WIDTH(POINTER_WIDTH)
+	  .POINTER_WIDTH(REQ_POINTER_WIDTH)
 ) aw_sfifo(
   .clk(aclk),
   .rst_n(aresetn),
@@ -274,7 +277,7 @@ output logic [3:0] wstrb_to_apb_o;
   //X2P_SFIFO_WD
   //*******************************************************************
   sfifowdata #(
-	.DATA_WIDTH(X2P_SFIFO_WD_DATA_WIDTH), .POINTER_WIDTH(POINTER_WIDTH),
+	.DATA_WIDTH(X2P_SFIFO_WD_DATA_WIDTH), .POINTER_WIDTH(DATA_POINTER_WIDTH),
 	.ALMOST_FULL_VALUE(ALMOST_FULL_VALUE), .ALMOST_EMPTY_VALUE(ALMOST_EMPTY_VALUE)
   ) wd_sfifo(
   .clk(aclk),
@@ -298,7 +301,7 @@ assign sfifo_wd_re = read_from_wd_sfifo_i;
 //*******************************************************************
   sfifobresp #(
 	.DATA_WIDTH(X2P_SFIFO_BCHANNEL_WIDTH), 
-	.POINTER_WIDTH(POINTER_WIDTH),
+	.POINTER_WIDTH(REQ_POINTER_WIDTH),
 	.ALMOST_FULL_VALUE(ALMOST_FULL_VALUE), 
 	.ALMOST_EMPTY_VALUE(ALMOST_EMPTY_VALUE)
   ) bchannel_sfifo(

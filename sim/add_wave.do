@@ -2,14 +2,14 @@ onerror {resume}
 #quietly waveactivatenextpane {} 0
 add wave -noupdate /tb/dut_top/aclk
 add wave -noupdate /tb/dut_top/aresetn
-#add wave -noupdate -divider -height 23 {axi write addr channel}
-#add wave -noupdate /tb/dut_top/awvalid
-#add wave -noupdate /tb/dut_top/awready
-#add wave -noupdate -unsigned /tb/dut_top/awid
-#add wave -noupdate -hex /tb/dut_top/awaddr
-#add wave -noupdate /tb/dut_top/awlen
-#add wave -noupdate /tb/dut_top/awsize
-#add wave -noupdate /tb/dut_top/awburst
+add wave -noupdate -divider -height 23 {axi write addr channel}
+add wave -noupdate /tb/dut_top/awvalid
+add wave -noupdate /tb/dut_top/awready
+add wave -noupdate -unsigned /tb/dut_top/awid
+add wave -noupdate -hex /tb/dut_top/awaddr
+add wave -noupdate /tb/dut_top/awlen
+add wave -noupdate /tb/dut_top/awsize
+add wave -noupdate /tb/dut_top/awburst
 add wave -noupdate -divider -height 23 {axi write addr fifo}
 add wave -noupdate /tb/dut_top/axi_slv_inst/aw_sfifo/wr
 add wave -noupdate /tb/dut_top/axi_slv_inst/aw_sfifo/rd

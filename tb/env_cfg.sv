@@ -10,8 +10,9 @@ class env_config extends uvm_object;
 	//
 	bit scb;
 	bit fc;
+	int no_apb_agt = `SLAVE_CNT;
 	//
 	function new(string name = "env_config");
-		super.new();
+		super.new(name);
 	endfunction
 endclass

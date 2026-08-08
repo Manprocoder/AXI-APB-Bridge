@@ -9,11 +9,18 @@
 ##
 #
 TB_NAME     ?=tb
-TESTNAME    ?=base_test
-VERBOSITY   ?=UVM_MEDIUM
+TESTNAME    ?=
+VERBOSITY   ?=
 RUNARG      ?=
 SEED        ?=1
 COVERAGE    ?=
+#
+#----------------INFORMATION FOR DEBUG
+#
+PRINT_AXI_WREQ_EN ?= 
+PRINT_AXI_RREQ_EN ?= 
+PRINT_AXI_WDATA_EN ?= 
+PRINT_APB_TRANS_EN ?= 
 # =============================================================
 # Directory Variables 
 # =============================================================
@@ -28,6 +35,7 @@ ifeq ($(strip $(SEED)),random)
 endif
 
 #====================ASSISTANT VLOG, VSIM COMMAND===========================
+#--1: coverage
 ifeq ($(COVERAGE),1)
 VCOVER = +cover
 
@@ -35,8 +43,17 @@ VSIM_COV_OPT = \
     -coverage \
     -coveranalysis \
     -cvgperinstance
-
-DO_CMD = "log -r /*; onfinish stop; run -all; coverage save $(TESTNAME)_$(SEED).ucdb; quit -f; "
+#----------------------------------------------------------------------------
+#--------read data fifo depth is 256, max length is 256 => full never occurs
+#----------------------------------------------------------------------------
+DO_CMD = "log -r /*; onfinish stop; run -all; \
+coverage exclude -srcfile ../rtl/sfifordata.sv -line 110 -code e; \
+coverage exclude -srcfile ../rtl/sfifordata.sv -line 167 -code e; \
+coverage exclude -srcfile ../rtl/sfifordata.sv -line 167 -code t; \
+coverage exclude -srcfile ../rtl/sfifordata.sv -line 169 -code e; \
+coverage exclude -srcfile ../rtl/sfifordata.sv -line 245 -code e; \
+coverage exclude -srcfile ../rtl/sfifordata.sv -line 245 -code t; \
+coverage save $(TESTNAME)_$(SEED).ucdb; quit -f;" 
 
 else
 VCOVER =
@@ -46,6 +63,33 @@ VSIM_COV_OPT =
 DO_CMD = "log -r /*; run -all;"
 
 endif
+#--2: print information for debug 
+#--2.1
+ifeq ($(PRINT_AXI_WREQ_EN),1)
+DO_PRINT_WREQ = +define+PRINT_AXI_WREQ
+else 
+DO_PRINT_WREQ = 
+endif
+
+#--2.2
+ifeq ($(PRINT_AXI_RREQ_EN),1)
+DO_PRINT_RREQ = +define+PRINT_AXI_RREQ
+else 
+DO_PRINT_RREQ = 
+endif
+
+#--2.3
+ifeq ($(PRINT_AXI_WDATA_EN),1)
+DO_PRINT_WDATA = +define+PRINT_AXI_WDATA
+else 
+DO_PRINT_WDATA = 
+endif
+#--2.4
+ifeq ($(PRINT_APB_TRANS_EN),1)
+DO_PRINT_APB = +define+PRINT_APB_TRANS
+else 
+DO_PRINT_APB = 
+endif
 ##=========================================================================
 
 VLOG = vlog \
@@ -53,6 +97,10 @@ VLOG = vlog \
        +define+UVM_NO_DPI \
        +define+SLAVE_CNT=$(NO_SLAVE) \
        +define+CLK_CYCLE=20 \
+       $(DO_PRINT_WREQ) \
+       $(DO_PRINT_RREQ) \
+       $(DO_PRINT_WDATA) \
+       $(DO_PRINT_APB) \
        -mfcu \
        -suppress 2181,2186\
        +acc=rmb \
@@ -91,12 +139,6 @@ run:
 	ln -sf ./$(LOG_DIR)/${TESTNAME}_${SEED}.log run.log
 	mv ${TESTNAME}_${SEED}_vlog.log ./$(LOG_DIR)
 	ln -sf ./$(LOG_DIR)/${TESTNAME}_${SEED}_vlog.log vlog.log
-#ifeq ($(COVERAGE),1)
-	#ls -la $(TESTNAME)_$(SEED).ucdb
-	#mv ${TESTNAME}_${SEED}.ucdb ./$(COV_DIR)
-	#ln -sf ./$(COV_DIR)/${TESTNAME}_${SEED}.ucdb cov.ucdb
-#endif
-
 
 cov_report: 
 	vcover report \

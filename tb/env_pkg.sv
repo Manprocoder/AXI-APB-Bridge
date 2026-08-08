@@ -7,7 +7,7 @@
 package env_pkg;
 	import uvm_pkg::*;
 	`include "uvm_macros.svh"
-	`include "type_param_pkg.sv"
+	`include "user_param_type.sv"
 	`include "env_cfg.sv"
 	`include "shared_item.sv"
 	`include "axi_apb_scoreboard.sv"

@@ -3,7 +3,7 @@
 **Design**
 
 
-![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/ce9f853cb32245b22182c995c7dcecba1dfcabf0/IMAGE/design.png)
+![AXI_2_APB Block Diagram](/IMAGE/AXI_APB_BD.png)
 
 
 AXI4 protocol
@@ -23,7 +23,7 @@ Details: 5 synchronous FIRST-WORD-FALL-THROUGH fifos: write address channel, rea
 Building UVM testbench to verify DESIGN
 
 
-![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/ce9f853cb32245b22182c995c7dcecba1dfcabf0/IMAGE/tb.png)
+![UVM_TB](/IMAGE/AXI_APB_TB.png)
 
 
 Main Components
@@ -32,21 +32,14 @@ Main Components
 
 Scoreboard:
 
-Base_scoreboard(parent) class:
-+ Main Attributes: total_pass, total_fail, and others (queues and associate arrays to store req, data and Simulation result report)
-+ Main Methods(function/task): calculate_next_address, calculate_and_store_address, store_simulation_result, ....
-
-Scoreboard (derived/child) class:
-+ Main Attributes: axi_content object(contain axi data channel (WR/RD)), apb_content object, common object (store shared signals between 2 protocol to COMPARE---axi_transfer, apb_transfer), ...
-+ Main Methods: wait_apb_transfer, fetch_valid_req(valid WR/RD request),
-  convert_axi_to_compare(axi_content-->axi_transfer), convert_apb_to_compare(apb_content-->apb_transfer), compare_transfer, ...
+![AXI_APB_SCB](/IMAGE/AXI_APB_SCB.png)
 
 **SIMULATION RESULT**
 
 Pass/Fail
 
 
-![image alt](https://github.com/Manprocoder/AXI-APB-Bridge/blob/208b60109e18c5902f13565287fbbddf519daead/IMAGE/sim_res.png)
+![SIM_RESULT](/IMAGE/sim_result.png)
 
 
 Code Coverage

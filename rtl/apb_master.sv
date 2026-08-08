@@ -1,4 +1,11 @@
-//
+//========================================================
+//--Project: Design and Verify AXI_APB bridge
+//========================================================
+//--File name: apb_master.sv
+//--Author: Nguyen Ngoc Man
+//========================================================
+//--Description: 
+//========================================================
 //
 `define PSEL_REGISTER
 //
@@ -155,7 +162,7 @@ assign master_ctrl_o = {store_rdata, fetch_wdata, latch_resp, set_up_phase, addr
 			store_rdata = 0;
 			fetch_wdata = 0;
 			latch_resp = 0;
-		        set_up_phase = 1'b1;
+            set_up_phase = 1'b1;
 			addr_incr_en = 0;
 		end
 		ACCESS: begin

@@ -14,6 +14,7 @@ class axi_req_item extends axi_data_item;
     rand logic [7:0] len;
     rand logic [2:0] size;
     rand burst_name burst;
+    rand logic [15:0] slv_idx;
     //constructor
     function new(string name = "axi_req_item");
       super.new(name);
@@ -28,7 +29,9 @@ class axi_req_item extends axi_data_item;
             return;
         end
         //
-        super.do_copy(item);
+        //super.do_copy(item);
+        this.slv_idx = item.slv_idx;
+        this.id = item.id;
         this.addr = item.addr;
         this.len = item.len;
         this.size = item.size;
@@ -56,23 +59,27 @@ class axi_req_item extends axi_data_item;
     //-----------------------------------------------------------
     virtual function string convert2string();
         string s;
-        s = super.convert2string();
+        //s = super.convert2string();
         //
-        s = {s, $sformatf("addr: 0x%08h -- len: %0d -- size: %0d -- burst: %s -- \n", addr, len, size, burst.name())};
+        s = {s, $sformatf("slv_idx: %0d -- id: %0d -- addr: 0x%08h -- len: %0d -- size: %0d -- burst: %s -- \n", slv_idx, id, addr, len, size, burst.name())};
         //
         return s;
     endfunction
         //
 virtual function void do_print(uvm_printer printer);
-	super.do_print(printer);
-	printer.print_field("ADDR", addr, $bits(addr), UVM_HEX);
+	//super.do_print(printer);
+	printer.print_field("SLV_IDX", slv_idx, $bits(slv_idx), UVM_UNSIGNED);
+	printer.print_field("ID", id, $bits(id), UVM_UNSIGNED);
+	printer.print_generic("ADDR", "", $bits(addr), $sformatf("0x%8h", addr));
 	printer.print_field("LEN", len, $bits(len), UVM_HEX);
 	printer.print_field("SIZE", size, $bits(size), UVM_HEX);
 	printer.print_generic("BURST", "BURST_NAME", $bits(burst), burst.name()); 
 endfunction
 //
 virtual function void clear();
-    super.clear();
+    //super.clear();
+    this.slv_idx = 0;
+    this.id = 0;
 	this.addr = 0;
 	this.len = 0;
 	this.size = 0;

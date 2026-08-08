@@ -1,11 +1,16 @@
-//
-//
-//
-  //overall operation mechanism
-  //(R1) granting read --write waits -> grant write for next time
-  //(R2) granting read --ONLY read waits OR no request -> ... read ...
-  //(W1) granting write --read waits -> ... read ...
-  //(W2) granting write--ONLY write waits OR no request -> ... write ...
+//===========================================================================
+//--Project: Design and Verify AXI_TO_APB IP
+//===========================================================================
+//--File: arbiter.sv
+//--Author: Nguyen Ngoc Man
+//===========================================================================
+//--Description: 
+//overall operation mechanism
+//(R1) granting read --write waits -> grant write for next time
+//(R2) granting read --ONLY read waits OR no request -> ... read ...
+//(W1) granting write --read waits -> ... read ...
+//(W2) granting write--ONLY write waits OR no request -> ... write ...
+//===========================================================================
 module arbiter(
 	aclk,
 	aresetn,

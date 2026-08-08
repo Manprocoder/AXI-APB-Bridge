@@ -117,29 +117,39 @@ assign sfifo_we = wr & (~sfifo_full);
   wire wclk = clk;
 `endif
 always @ (posedge wclk or negedge rst_n) begin
-  if (~rst_n) w_pointer <= {POINTER_WIDTH+1{1'b0}};
-  else if (sfifo_we) w_pointer <= w_pointer+1'b1;
+  if (~rst_n) begin
+      w_pointer <= {POINTER_WIDTH+1{1'b0}};
+  end
+  else if (sfifo_we) begin
+       w_pointer <= w_pointer+1'b1;
+   end
 end
 //read pointer
 assign sfifo_re = rd & (~sfifo_empty);
 //
 always @ (posedge rclk or negedge rst_n) begin
-  if (~rst_n) r_pointer <= {POINTER_WIDTH+1{1'b0}};
-  else if (sfifo_re) r_pointer <= r_pointer + 1'b1;
+  if (~rst_n) begin
+      r_pointer <= {POINTER_WIDTH+1{1'b0}};
+  end
+  else if (sfifo_re) begin
+       r_pointer <= r_pointer + 1'b1;
+   end
 end
 //memory array and write decoder
 always @ (posedge wclk) begin
-  if (sfifo_we)
-    mem_array[w_pointer[POINTER_WIDTH-1:0]]
-             <= data_in[DATA_WIDTH-1:0];
+  if (sfifo_we) begin
+    mem_array[w_pointer[POINTER_WIDTH-1:0]] <= data_in[DATA_WIDTH-1:0];
+end
 end
 //read decoder
 `ifdef OUTPUT_REG
   always @ (posedge rclk or negedge rst_n) begin
-    if(~rst_n) data_out <= {DATA_WIDTH{1'b0}};
-    // else if(sfifo_re) begin
-    else data_out[DATA_WIDTH-1:0] <= mem_array[r_pointer[POINTER_WIDTH-1:0]];
-    // end
+    if(~rst_n) begin
+         data_out <= {DATA_WIDTH{1'b0}};
+     end
+    else begin
+        data_out[DATA_WIDTH-1:0] <= mem_array[r_pointer[POINTER_WIDTH-1:0]];
+    end
   end
 `else
   always @ (*) begin
@@ -169,9 +179,15 @@ assign  sfifo_empty = (~msb_diff) & lsb_equal;
     assign sfifo_ov = ov_reg;
   `endif
   always @ (posedge wclk or negedge rst_n) begin
-    if (~rst_n) ov_reg <= 1'b0;
-    else if (clr_ov) ov_reg <= 1'b0;
-    else if (wr & sfifo_full) ov_reg <= 1'b1;
+    if (~rst_n) begin
+        ov_reg <= 1'b0;
+    end
+    else if (clr_ov) begin
+       ov_reg <= 1'b0;
+    end
+    else if (wr & sfifo_full) begin
+         ov_reg <= 1'b1;
+     end
   end
 `endif
 //Underflow
@@ -185,9 +201,15 @@ assign  sfifo_empty = (~msb_diff) & lsb_equal;
     wire clr_ud = sfifo_we;
   `endif
   always @ (posedge rclk or negedge rst_n) begin
-    if (~rst_n) ud_reg <= 1'b0;
-    else if (clr_ud) ud_reg <= 1'b0;
-    else if (rd & sfifo_empty) ud_reg <= 1'b1;
+    if (~rst_n) begin
+         ud_reg <= 1'b0;
+    end
+    else if (clr_ud) begin
+        ud_reg <= 1'b0;
+    end
+    else if (rd & sfifo_empty) begin
+        ud_reg <= 1'b1;
+    end
   end
 `endif
 //The minus result of two pointers

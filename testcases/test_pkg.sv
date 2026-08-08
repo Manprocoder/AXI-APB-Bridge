@@ -7,5 +7,6 @@
 package test_pkg;
 	import uvm_pkg::*;
 	`include "uvm_macros.svh"
-	`include "./test.sv"
+	`include "base_test.sv"
+	`include "random_test.sv"
 endpackage
