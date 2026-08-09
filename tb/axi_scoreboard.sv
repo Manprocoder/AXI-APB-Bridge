@@ -9,7 +9,8 @@
 typedef logic [07:0] id_of_burst;
 typedef logic [15:0] slv_idx;
 typedef axi_data_item data_q[$]; 
-typedef resp_name resp_q[$]; //write response
+typedef brsp_info brsp_q[$]; //response and address
+typedef resp_name act_brsp_q[$]; //only response
 typedef result_info result_q[$];
 typedef axi_req_item req_q [$];
 //
@@ -41,8 +42,8 @@ virtual class axi_scoreboard extends uvm_scoreboard;
     protected axi_data_item axi_wdata_q [$];
     protected data_q axi_rdata_arr [id_of_burst]; //each id_of_burst maps to an individual queue
     //bresp associative array
-    protected resp_q actual_bresp_array [id_of_burst];
-    protected resp_q expected_bresp_array [id_of_burst];
+    protected act_brsp_q act_bresp_array [id_of_burst];
+    protected brsp_q exp_bresp_array [id_of_burst];
     //--APB slaves
     slv_idx apb_slv_idx;
     //
@@ -78,7 +79,7 @@ extern virtual function void parse_request();
 extern virtual function logic [31:0] calculate_next_addr(input int i);
 extern virtual function void store_simulation_result(input resp_name status);
 extern virtual function void display_sim_res();
-extern virtual function void Store_Expected_Bresp(input resp_name rsp);
+extern virtual function void Store_Expected_Bresp(input brsp_info rsp);
 extern virtual function void display_rsp_report();
 //===========================================================================
 //--------------------------------END of METHODs
@@ -99,8 +100,8 @@ function void axi_scoreboard::flush_data();
 endfunction
 //
 function void axi_scoreboard::flush_resp();
-    actual_bresp_array.delete();
-    expected_bresp_array.delete();
+    act_bresp_array.delete();
+    exp_bresp_array.delete();
 endfunction
 //
 function void axi_scoreboard::flush_sim_result();
@@ -343,78 +344,83 @@ function void axi_scoreboard::display_sim_res();
     `uvm_info(get_name(),"===================================================",UVM_LOW);
 endfunction
 //
-function void axi_scoreboard::Store_Expected_Bresp(input resp_name rsp);
+function void axi_scoreboard::Store_Expected_Bresp(input brsp_info rsp);
 //
-resp_q expected_bresp_q = {};
+brsp_q exp_brsp_q = {};
 begin
-   if(expected_bresp_array.exists(raw_req.id)) begin
-	   expected_bresp_q = expected_bresp_array[raw_req.id];
-	   expected_bresp_q.push_back(rsp);
-	   expected_bresp_array[raw_req.id] = expected_bresp_q;
+   if(exp_bresp_array.exists(raw_req.id)) begin
+	   exp_brsp_q = exp_bresp_array[raw_req.id];
+	   exp_brsp_q.push_back(rsp);
+	   exp_bresp_array[raw_req.id] = exp_brsp_q;
    end
    else begin
-	   expected_bresp_q.push_back(rsp);
-	   expected_bresp_array[raw_req.id] = expected_bresp_q;
+	   exp_brsp_q.push_back(rsp);
+	   exp_bresp_array[raw_req.id] = exp_brsp_q;
    end	   
 end
 endfunction
 
 //
 function void axi_scoreboard::display_rsp_report();
-    resp_name expected_bresp, actual_bresp;
-    resp_q expected_tmp_q, actual_tmp_q;
+    resp_name exp_bresp, act_bresp;
+    brsp_q exp_tmp_q;
+    act_brsp_q act_tmp_q;
     int pass_cnt = 0;
     int fail_cnt = 0;
     id_of_burst id;
     `uvm_info(get_type_name(),"================== BCHANNEL REPORT =================", UVM_LOW);
 
-    if(expected_bresp_array.num() > 0 && actual_bresp_array.num() > 0) begin
+    if(exp_bresp_array.num() > 0 && act_bresp_array.num() > 0) begin
 	id = 0;
 	for(int i = 0; i < 256; i++) begin
-	if(expected_bresp_array.exists(id)) begin //existence
-		if(actual_bresp_array.exists(id)) begin
-			actual_tmp_q = {};
-			actual_tmp_q = actual_bresp_array[id];
-			expected_tmp_q = {};
-			expected_tmp_q = expected_bresp_array[id];
+	if(exp_bresp_array.exists(id)) begin //existence
+		if(act_bresp_array.exists(id)) begin
+			act_tmp_q = {};
+			act_tmp_q = act_bresp_array[id];
+			exp_tmp_q = {};
+			exp_tmp_q = exp_bresp_array[id];
 			//do compare
-			foreach(actual_tmp_q[i]) begin
-				actual_bresp = actual_tmp_q[i]; 
-				expected_bresp = expected_tmp_q[i]; 
-				`uvm_info(get_name(),
-				$sformatf("[BCHANNEL]: actual_bid=%0d---expected_bid=%0d", id, id), UVM_LOW);
+			foreach(act_tmp_q[i]) begin
+				act_bresp = act_tmp_q[i]; 
+				exp_bresp = exp_tmp_q[i].brsp; 
 				//
-				if(actual_bresp == expected_bresp) begin
-				`uvm_info(get_name(),
-				$sformatf("[--------][PASS]: actual_bresp=%s___expected_bresp=%s",
-			       	actual_bresp.name(), expected_bresp.name()), UVM_LOW); 
-				pass_cnt++;
+				if(act_bresp == exp_bresp) begin
+                    `uvm_info(get_name(),
+                    $sformatf("[BCHANNEL][PASS]: act_bresp=%s___exp_bresp=%s",
+                        act_bresp.name(), exp_bresp.name()), UVM_LOW); 
+                    pass_cnt++;
 				end
 				else begin
-				`uvm_info(get_name(),
-				$sformatf("[--------][FAIL]: actual_bresp=%s___expected_bresp=%s",
-			       	actual_bresp.name(), expected_bresp.name()), UVM_LOW); 
-				fail_cnt++;
+                    `uvm_info(get_name(),
+                    $sformatf("[BCHANNEL][FAIL]: act_bresp=%s___exp_bresp=%s",
+                        act_bresp.name(), exp_bresp.name()), UVM_LOW); 
+                    fail_cnt++;
 				end
-				actual_bresp = resp_name'(2'b00);
-				expected_bresp = resp_name'(2'b00);
+                //print id
+				`uvm_info(get_name(),
+				$sformatf("[--------][BID_]: act_bid=%0d---exp_bid=%0d", id, id), UVM_LOW);
+                //print address
+				`uvm_info(get_name(), $sformatf("[--------][ADDR]: 0x%8h", exp_tmp_q[i].start_addr), UVM_LOW); 
+                //clear brsp and prepare new comparison
+				act_bresp = resp_name'(2'b00);
+				exp_bresp = resp_name'(2'b00);
 			end
 		end
 		else begin
-		    `uvm_info(get_type_name(),$sformatf("id = %0d does not appear in actual array", id), UVM_LOW);
+		    `uvm_info(get_type_name(),$sformatf("id = %0d does not appear in act array", id), UVM_LOW);
 		end
 	end//end of existence
 	id++;
 	end//end of for	
     end
     else begin
-	    if(expected_bresp_array.num() == 0) begin
-		    `uvm_info(get_type_name(),"EMPTY expected_bresp_array", UVM_LOW);
+	    if(exp_bresp_array.num() == 0) begin
+		    `uvm_info(get_type_name(),"EMPTY exp_bresp_array", UVM_LOW);
 	    end
-	    if(actual_bresp_array.num() == 0) begin
-		    `uvm_info(get_type_name(),"EMPTY actual_bresp_array", UVM_LOW);
+	    if(act_bresp_array.num() == 0) begin
+		    `uvm_info(get_type_name(),"EMPTY act_bresp_array", UVM_LOW);
 	    end
     end
     //
-    `uvm_info(get_type_name(), $sformatf("WRITE_RSP CHECK: %0d(PASS)___%0d(FAIL)", pass_cnt, fail_cnt), UVM_LOW)
+    `uvm_info(get_type_name(), $sformatf("WRITE_RSP RESULT: %0d(PASS)___%0d(FAIL)", pass_cnt, fail_cnt), UVM_LOW)
 endfunction

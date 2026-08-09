@@ -38,3 +38,8 @@
         int case_mismatches;
     //
     } result_info;
+    //
+    typedef struct packed {
+        logic [31:0] start_addr;
+        resp_name brsp;
+    } brsp_info;

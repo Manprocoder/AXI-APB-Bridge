@@ -1,7 +1,11 @@
 //===================================================================================
-// File name: x2p_core.sv
-// Project  : X2P
-// Function : IP core design of AXI to APB bridge
+//--Project  : Design and Verify AXI_APB bridge 
+//===================================================================================
+//--File name: x2p_core.sv
+//--Author: Nguyen Ngoc Man
+//===================================================================================
+//--Description : axi_slave sub module 
+//+ This module communicates to AXI master
 //===================================================================================
 module axi_transaction_controller (// AXI protocol
     aclk,
@@ -188,7 +192,7 @@ output logic [3:0] wstrb_to_apb_o;
   logic [7:0] bid_reg;
   logic new_brsp_vld;
   //
-  parameter logic [DATA_POINTER_WIDTH:0] ALMOST_FULL_VALUE = 2**DATA_POINTER_WIDTH - 3'd4;
+  parameter logic [DATA_POINTER_WIDTH:0] ALMOST_FULL_VALUE = 2**DATA_POINTER_WIDTH - 1'b1;
   parameter logic [DATA_POINTER_WIDTH:0] ALMOST_EMPTY_VALUE = 1;
 //*******************************************************************
 //X2P_SFIFO_AR
@@ -323,9 +327,15 @@ assign bchannel_rdy_o = ~sfifo_brsp_full;
 //bresp register
 //
 always_ff@(posedge aclk, negedge aresetn) begin
-  if(~aresetn) status <= 1'b0;
-  else if(final_brsp_vld_i) status <= 1'b0; //wr_trans_done_i
-  else if(partly_brsp_vld_i) status <= (status | err_of_transfer_i);
+  if(~aresetn) begin
+      status <= 1'b0;
+  end
+  else if(final_brsp_vld_i) begin
+      status <= 1'b0; //wr_trans_done_i
+  end
+  else if(partly_brsp_vld_i) begin
+      status <= (status | err_of_transfer_i);
+  end
 end
 //
 //INFO
@@ -339,12 +349,15 @@ always_ff @(posedge aclk, negedge aresetn) begin
 	else if(final_brsp_vld_i) begin
 	  	  bid_reg[7:0] <= sfifo_aw_id[7:0];
 		  new_brsp_vld <= 1'b1;
-		  if(~status)
-		    bresp_reg[1:0] <= OKAY | {err_of_transfer_i, 1'b0};
-		  else if(dec_error_i)
+		  if(dec_error_i) begin
 		    bresp_reg[1:0] <= DECERR;
-		  else
+          end
+		  else if(~status) begin
+		    bresp_reg[1:0] <= OKAY | {err_of_transfer_i, 1'b0};
+          end
+		  else begin
 		    bresp_reg[1:0] <= PSLVERR;
+          end
 	end
 	else if(bchannel_rdy_o)begin
 	  bresp_reg[1:0] <= OKAY;

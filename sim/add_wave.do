@@ -39,18 +39,19 @@ add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_we
 add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bchannel_sfifo/sfifo_re
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bchannel_sfifo/data_in
 add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bchannel_sfifo/data_out
-#add wave -noupdate -divider -height 23 {bresp register}
-#add wave -noupdate -bin /tb/dut_top/axi_slv_inst/wr_trans_done_i
-#add wave -noupdate -bin /tb/dut_top/axi_slv_inst/new_brsp_vld
-#add wave -noupdate -bin /tb/dut_top/axi_slv_inst/err_of_transfer_i
-#add wave -noupdate -bin /tb/dut_top/axi_slv_inst/status
-#add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bresp_reg
-#add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bid_reg
-#add wave -noupdate -divider -height 23 {axi write resp channel}
-#add wave -noupdate /tb/dut_top/bready
-#add wave -noupdate /tb/dut_top/bvalid
-#add wave -noupdate /tb/dut_top/bresp
-#add wave -noupdate /tb/dut_top/bid
+add wave -noupdate -divider -height 23 {bresp register}
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/wr_trans_done_i
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/new_brsp_vld
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/err_of_transfer_i
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/status
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/dec_error_i
+add wave -noupdate -bin /tb/dut_top/axi_slv_inst/bresp_reg
+add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bid_reg
+add wave -noupdate -divider -height 23 {axi write resp channel}
+add wave -noupdate /tb/dut_top/bready
+add wave -noupdate /tb/dut_top/bvalid
+add wave -noupdate /tb/dut_top/bresp
+add wave -noupdate /tb/dut_top/bid
 #add wave -noupdate -divider -height 23 {axi read addr channel}
 #add wave -noupdate /tb/dut_top/aclk
 #add wave -noupdate /tb/dut_top/aresetn
@@ -61,28 +62,28 @@ add wave -noupdate -hex /tb/dut_top/axi_slv_inst/bchannel_sfifo/data_out
 #add wave -noupdate /tb/dut_top/arlen
 #add wave -noupdate /tb/dut_top/arsize
 #add wave -noupdate /tb/dut_top/arburst
-add wave -noupdate -divider -height 23 {axi read addr fifo}
-add wave -noupdate /tb/dut_top/axi_slv_inst/ar_sfifo/wr
-add wave -noupdate -hex /tb/dut_top/axi_slv_inst/ar_sfifo/data_in
-add wave -noupdate /tb/dut_top/axi_slv_inst/ar_sfifo/rd
-add wave -noupdate -hex /tb/dut_top/axi_slv_inst/ar_sfifo/data_out
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/ar_sfifo/sfifo_empty
-add wave -noupdate -divider -height 23 {axi read data channel}
-add wave -noupdate /tb/dut_top/rready
-add wave -noupdate /tb/dut_top/rvalid
-add wave -noupdate /tb/dut_top/rlast
-add wave -noupdate -hex /tb/dut_top/rdata
-add wave -noupdate -unsigned /tb/dut_top/rid
-add wave -noupdate /tb/dut_top/rresp
-add wave -noupdate -divider -height 23 {axi clock}
-add wave -noupdate /tb/dut_top/axi_slv_inst/aclk
-add wave -noupdate -divider -height 23 {rdata fifo}
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_we
-add wave -noupdate -bin /tb/dut_top/sfifo_rd_almost_full
-add wave -noupdate -hex /tb/dut_top/axi_slv_inst/rd_sfifo/data_in
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_re
-add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_empty
-add wave -noupdate -hex /tb/dut_top/axi_slv_inst/rd_sfifo/data_out
+#add wave -noupdate -divider -height 23 {axi read addr fifo}
+#add wave -noupdate /tb/dut_top/axi_slv_inst/ar_sfifo/wr
+#add wave -noupdate -hex /tb/dut_top/axi_slv_inst/ar_sfifo/data_in
+#add wave -noupdate /tb/dut_top/axi_slv_inst/ar_sfifo/rd
+#add wave -noupdate -hex /tb/dut_top/axi_slv_inst/ar_sfifo/data_out
+#add wave -noupdate -bin /tb/dut_top/axi_slv_inst/ar_sfifo/sfifo_empty
+#add wave -noupdate -divider -height 23 {axi read data channel}
+#add wave -noupdate /tb/dut_top/rready
+#add wave -noupdate /tb/dut_top/rvalid
+#add wave -noupdate /tb/dut_top/rlast
+#add wave -noupdate -hex /tb/dut_top/rdata
+#add wave -noupdate -unsigned /tb/dut_top/rid
+#add wave -noupdate /tb/dut_top/rresp
+#add wave -noupdate -divider -height 23 {axi clock}
+#add wave -noupdate /tb/dut_top/axi_slv_inst/aclk
+#add wave -noupdate -divider -height 23 {rdata fifo}
+#add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_we
+#add wave -noupdate -bin /tb/dut_top/sfifo_rd_almost_full
+#add wave -noupdate -hex /tb/dut_top/axi_slv_inst/rd_sfifo/data_in
+#add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_re
+#add wave -noupdate -bin /tb/dut_top/axi_slv_inst/sfifo_rd_empty
+#add wave -noupdate -hex /tb/dut_top/axi_slv_inst/rd_sfifo/data_out
 add wave -noupdate -divider -height 23 {arbiter}
 add wave -noupdate -hex /tb/dut_top/arbiter_inst/abt_cs
 add wave -noupdate -hex /tb/dut_top/arbiter_inst/abt_ns

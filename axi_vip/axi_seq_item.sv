@@ -19,6 +19,7 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
     rand bit [DW-1:0] data_arr [];
     rand bit [3:0] wstrb [];
     //
+    //
     //---------RESET CONSTRAINT-----------
     //
     constraint reset_c {
@@ -39,7 +40,12 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
     }
     //
     constraint burst_type {
-	    burst inside {FIXED, INCR, WRAP};
+        if(long_low_rready == 1'b1) {
+            burst == INCR;
+        }
+        else {
+            burst inside {FIXED, INCR, WRAP};
+        }
     }
     //
     constraint data_arr_array {
@@ -86,9 +92,14 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
         if (burst == WRAP || burst == FIXED)
             len inside {1,3,7,15};
         else { 
-		len inside {[0:255]};
-        }
-    }
+            if(long_low_rready == 1'b1) {
+                len == 255;
+            }
+            else {
+                len inside {[0:255]};
+            }
+        }//end of WRAP || FIXED
+    }//end of len_c
 
     //
     constraint addr_c{
@@ -113,11 +124,17 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
         //
     }
     //
-    constraint slv_idx_c{
-        solve addr before slv_idx;
-        //
-        slv_idx == {(addr>>12) & 32'h0000_000f};
+    constraint long_low_rready_c{
+        long_low_rready dist {1'b0:=8, 1'b1:=2};
     }
+    //
+    //constraint slv_idx_c{
+        //solve addr before slv_idx;
+        ////
+        //slv_idx == {(addr>>12) & 32'h0000_000f};
+    //}
+    //
+
     //
     //Group(1)
     extern function void set_id(bit [7:0] actual_id);
@@ -158,16 +175,17 @@ endfunction
 //Group(2)
 function void axi_transaction::do_print(uvm_printer printer);
     //super.do_print(printer);
-    printer.print_field("SLV_IDX", slv_idx, $bits(slv_idx), UVM_UNSIGNED);
+//    printer.print_field("SLV_IDX", slv_idx, $bits(slv_idx), UVM_UNSIGNED);
     printer.print_field("ID", id, $bits(id), UVM_UNSIGNED);
     printer.print_field("Addr", addr, $bits(addr), UVM_HEX);
     //
     printer.print_generic("Burst Length", "BEATS IN TOTAL", $bits(len), $sformatf("%0d beat", len+1));
     printer.print_generic("Burst Size", "SIZE IN BEAT", $bits(size), $sformatf("%0d byte", 2**size));
-    printer.print_generic("Burst Name", "BURST NAME", $bits(burst), burst.name()); 
+    printer.print_field("LOW_RREADY_EN", long_low_rready, $bits(long_low_rready), UVM_BIN);    printer.print_generic("Burst Name", "BURST NAME", $bits(burst), burst.name()); 
     for (int i = 0; i < len+1; i++) begin : DATA_PRINT
         printer.print_generic("Data-Wstrb", "", "-1", $sformatf("Data[%0d] = %0h --- wstrb[%0d] = %0b", i, data_arr[i], i, wstrb[i]));
     end
+
   //
 endfunction: do_print
 

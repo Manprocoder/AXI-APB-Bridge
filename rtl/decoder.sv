@@ -1,6 +1,12 @@
-//
-//
-//
+//===================================================================================
+//-- Project  : Design and Verify AXI_APB bridge 
+//===================================================================================
+//-- File name: decoder.sv
+//--Author: Nguyen Ngoc Man
+//===================================================================================
+//-- Description:
+//+ This module detects invalid address and unsupported transaction  
+//===================================================================================
 module decoder(
 	start_addr_i,
 	disallowed_trans_i,
@@ -13,10 +19,7 @@ import parameter_pkg::*;
 //PORTS
 input logic [31:0] start_addr_i;
 input logic disallowed_trans_i;
-//input logic [2:0] size_of_transfer_i;
-//
 output logic dec_error_o;
-//output logic disallowed_trans_i;
 output logic [`SLAVE_CNT-1:0] true_psel_o;
 //
 //psel for APB slave 

@@ -15,6 +15,7 @@ class axi_req_item extends axi_data_item;
     rand logic [2:0] size;
     rand burst_name burst;
     rand logic [15:0] slv_idx;
+    rand bit long_low_rready; //RREADY is LOW for a long time if this signal is 1
     //constructor
     function new(string name = "axi_req_item");
       super.new(name);
@@ -68,12 +69,13 @@ class axi_req_item extends axi_data_item;
         //
 virtual function void do_print(uvm_printer printer);
 	//super.do_print(printer);
-	printer.print_field("SLV_IDX", slv_idx, $bits(slv_idx), UVM_UNSIGNED);
+//	printer.print_field("SLV_IDX", slv_idx, $bits(slv_idx), UVM_UNSIGNED);
 	printer.print_field("ID", id, $bits(id), UVM_UNSIGNED);
 	printer.print_generic("ADDR", "", $bits(addr), $sformatf("0x%8h", addr));
 	printer.print_field("LEN", len, $bits(len), UVM_HEX);
 	printer.print_field("SIZE", size, $bits(size), UVM_HEX);
 	printer.print_generic("BURST", "BURST_NAME", $bits(burst), burst.name()); 
+	printer.print_field("LOW_RREADY_EN", long_low_rready, $bits(long_low_rready), UVM_BIN); 
 endfunction
 //
 virtual function void clear();

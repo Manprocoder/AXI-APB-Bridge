@@ -58,8 +58,8 @@ class axi_brsp_item extends uvm_sequence_item;
         //
 virtual function void do_print(uvm_printer printer);
 //	super.do_print(printer);
-	printer.print_field("ID", id, $bits(id), UVM_HEX);
-	printer.print_generic("RESP", "RESP_NAME", $bits(resp), resp.name()); 
+	printer.print_field("BID", id, $bits(id), UVM_HEX);
+	printer.print_generic("BRESP", "", $bits(resp), resp.name()); 
 endfunction
 //
 virtual function void clear();

@@ -1,3 +1,11 @@
+//===========================================================================
+//--Project: Design and Verify AXI to APB IP
+//===========================================================================
+//--File: axi_cov.sv
+//--Author: Nguyen Ngoc Man
+//===========================================================================
+//--Description:  
+//===========================================================================
 module axi_cov();
     logic aclk;
     logic aresetn;
@@ -156,7 +164,7 @@ module axi_cov();
             bins fixed = {2'b00};
             bins incr  = {2'b01};
             bins wrap  = {2'b10};
-            ignore_bins reserved = {2'b11};
+            illegal_bins reserved = {2'b11};
         }
         //
         //cross coverage

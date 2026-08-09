@@ -13,9 +13,7 @@
 `uvm_analysis_imp_decl(_AxiWrRequest)
 `uvm_analysis_imp_decl(_AxiWData) 
 `uvm_analysis_imp_decl(_AxiBresp) 
-//`uvm_analysis_imp_decl(_Presetn)    
-//`uvm_analysis_imp_decl(_Pseltb)    
-//`uvm_analysis_imp_decl(_ApbContent)  
+//
 typedef apb_seq_item#(DW2, AW2) apb_item;
 //
 class axi_apb_scoreboard extends axi_scoreboard;
@@ -29,10 +27,6 @@ class axi_apb_scoreboard extends axi_scoreboard;
     uvm_analysis_imp_AxiWrRequest #(axi_req_item, axi_apb_scoreboard) aimp_AxiWrRequest;
     uvm_analysis_imp_AxiWData #(axi_data_item, axi_apb_scoreboard) aimp_AxiWData;
     uvm_analysis_imp_AxiBresp #(axi_brsp_item, axi_apb_scoreboard) aimp_AxiBresp;
-    //APB Monitor imp ports
-    //uvm_analysis_imp_Presetn #(logic, axi_apb_scoreboard) aimp_Presetn;
-    //uvm_analysis_imp_Pseltb #(logic [`SLAVE_CNT-1:0], axi_apb_scoreboard) aimp_Pseltb;
-    //uvm_analysis_imp_ApbContent #(apb_item, axi_apb_scoreboard) aimp_ApbContent;
     //--------------------------------------
     //data members
     //---------------------------------------
@@ -89,9 +83,6 @@ class axi_apb_scoreboard extends axi_scoreboard;
         aimp_AxiWData = new ("aimp_AxiWData", this);
         aimp_AxiBresp = new ("aimp_AxiBresp", this);
         //APB
-        //aimp_Presetn = new ("aimp_Presetn", this);
-        //aimp_ApbContent = new ("aimp_ApbContent", this);
-        //aimp_Pseltb = new ("aimp_Pseltb", this);
         //
         apb_tmp_h = apb_item::type_id::create("apb_scb_tmp");
         clr_member();
@@ -152,9 +143,6 @@ extern virtual function void write_AxiRData(axi_data_item rd_content);
 extern virtual function void write_AxiWrRequest(axi_req_item wr_req);
 extern virtual function void write_AxiWData(axi_data_item wr_content);
 extern virtual function void write_AxiBresp(axi_brsp_item B_channel);
-//extern virtual function void write_Presetn(logic preset_n);
-//extern virtual function void write_ApbContent(apb_item ApbContent);
-//extern virtual function void write_Pseltb(logic [`SLAVE_CNT-1:0] psel_tb);
 //other methods
 extern virtual function void convert_axi_to_compare(axi_data_item axi_item);
 extern virtual function void convert_apb_to_compare(apb_item apb_trans);
@@ -196,24 +184,11 @@ endfunction
     //
     function void axi_apb_scoreboard::write_AxiRdRequest(axi_req_item rd_req);
         rd_req_q.push_back(rd_req);
-        //req_q tmp_q = {};
-        //rd_req.print();
-        //
-        //if(rd_req_arr.exists(rd_req.slv_idx) == 1'b1) begin
-            //tmp_q = rd_req_arr[rd_req.slv_idx];
-            //tmp_q.push_back(rd_req);
-            //rd_req_arr[rd_req.slv_idx] = tmp_q;
-        //end
-        //else begin
-            //tmp_q.push_back(rd_req);
-            //rd_req_arr[rd_req.slv_idx] = tmp_q;
-        //end
     endfunction
     //(3)
     //put rdata_item into associative array with queue element
     //
     function void axi_apb_scoreboard::write_AxiRData(axi_data_item rd_content);
-	//    rd_content.print();
 	    data_q axi_rdata_q = {};
 	if(axi_rdata_arr.exists(rd_content.id)) begin
 		axi_rdata_q = axi_rdata_arr[rd_content.id];
@@ -231,18 +206,6 @@ endfunction
     //(4)
     function void axi_apb_scoreboard::write_AxiWrRequest(axi_req_item wr_req);
 		wr_req_q.push_back(wr_req);
-        //req_q tmp_q = {};
-        //
-        //if(wr_req_arr.exists(wr_req.slv_idx) == 1'b1) begin
-            //tmp_q = wr_req_arr[wr_req.slv_idx];
-            //tmp_q.push_back(wr_req);
-            //wr_req_arr[wr_req.slv_idx] = tmp_q;
-        //end
-        //else begin
-            //tmp_q.push_back(wr_req);
-            //wr_req_arr[wr_req.slv_idx] = tmp_q;
-        //end
-        //
     endfunction
     //(5)
     function void axi_apb_scoreboard::write_AxiWData(axi_data_item wr_content);
@@ -250,48 +213,22 @@ endfunction
     endfunction
     //(6)
     function void axi_apb_scoreboard::write_AxiBresp(axi_brsp_item B_channel);
-	   resp_q actual_bresp_q = {};
+	   act_brsp_q ab_q = {};
 	    //
-	if(actual_bresp_array.exists(B_channel.id)) begin
-		actual_bresp_q = actual_bresp_array[B_channel.id];
-		actual_bresp_q.push_back(B_channel.resp);
-		actual_bresp_array[B_channel.id] = actual_bresp_q;
+	if(act_bresp_array.exists(B_channel.id)) begin
+		ab_q = act_bresp_array[B_channel.id];
+		ab_q.push_back(B_channel.resp);
+		act_bresp_array[B_channel.id] = ab_q;
 		`uvm_info(get_name(), 
-		$sformatf("[EXISTING]Push Actual BRESP into actual_bresp_arr[%0d]", B_channel.id), UVM_HIGH);
+		$sformatf("[EXISTING]Push Actual BRESP into act_bresp_arr[%0d]", B_channel.id), UVM_HIGH);
 	end
 	else begin
-		actual_bresp_q.push_back(B_channel.resp);
-		actual_bresp_array[B_channel.id] = actual_bresp_q;
+		ab_q.push_back(B_channel.resp);
+		act_bresp_array[B_channel.id] = ab_q;
 		`uvm_info(get_name(), 
-		$sformatf("[NEW]Push Actual BRESP into actual_bresp_arr[%0d]", B_channel.id), UVM_HIGH);
+		$sformatf("[NEW]Push Actual BRESP into act_bresp_arr[%0d]", B_channel.id), UVM_HIGH);
 	end
     endfunction
-    //
-    //----APB Protocol
-    //(1)
-    //function void axi_apb_scoreboard::write_Presetn(logic preset_n);
-        //if(~preset_n) begin
-		   //apb_rst_flag = 1'b1;
-		   //clr_member();
-		   //`uvm_info(get_type_name(), $sformatf("[%0t ns] preset_n signal is acting", $time), UVM_MEDIUM)
-	//end
-        //else begin
-		   //apb_rst_flag = 1'b0;
-        //end
-    //endfunction
-    //
-    //(2)
-    //function void axi_apb_scoreboard::write_ApbContent(apb_item ApbContent);
-        //apb_trans_fifo[apb_slv_idx].push_back(ApbContent);
-    //endfunction
-    //
-    //(3)
-    //function void axi_apb_scoreboard::write_Pseltb(logic [`SLAVE_CNT-1:0] psel_tb);
-        //if ($countones(psel_tb) > 1) begin
-		   //`uvm_error(get_type_name(),
-            //$sformatf("[PSEL_ACTIVE_ERROR][%0t ns] multiple APB psel are active at the same time!!!", $time))
-        //end
-    //endfunction
     //-------------------------------------------------------------------------------
     //-------------------------END OF WRITE FUNCTION IMPLEMENTATION
     //-------------------------------------------------------------------------------
@@ -421,6 +358,7 @@ task axi_apb_scoreboard:: Fetch_Valid_Req(input bit wr_en);
     //
     bit queue_not_empty;
     bit error_case;
+    brsp_info brsp_h;
     //req_q wr_req_q = {};
     //req_q rd_req_q = {};
     //
@@ -460,9 +398,11 @@ task axi_apb_scoreboard:: Fetch_Valid_Req(input bit wr_en);
                     //
                     if(wr_en == 1'b1) begin
                         `uvm_info(get_type_name(), "Write Req", UVM_HIGH)
-                        cur_rsp = DECERR;
-                        Store_Expected_Bresp(cur_rsp); //decerr
+                        brsp_h.brsp = DECERR;
+                        brsp_h.start_addr = raw_req.addr;
+                        Store_Expected_Bresp(brsp_h); //decerr
                     end
+                    cur_rsp = DECERR;//used as a store_simulation_result argument
                     Pop_unvalid_data();
                 end
                 else if(error_case == 1'b1) begin
@@ -472,9 +412,11 @@ task axi_apb_scoreboard:: Fetch_Valid_Req(input bit wr_en);
                      (wr_en == 1'b1) ? "WRITE" : "READ_", raw_req.id[7:0], raw_req.addr))
                     //`uvm_info(get_type_name(), "Unvalid request (size is not 4 bytes)", UVM_LOW)
                     if(wr_en == 1'b1) begin
-                        cur_rsp = PSLVERR;
-                        Store_Expected_Bresp(cur_rsp);//pslverr
+                        brsp_h.brsp = PSLVERR;
+                        brsp_h.start_addr = raw_req.addr;
+                        Store_Expected_Bresp(brsp_h);//pslverr
                     end
+                    cur_rsp = PSLVERR;//used as a store_simulation_result argument
                     Pop_unvalid_data();
                 end
                 else begin
@@ -530,9 +472,9 @@ endtask
                 //
                 if(last_beat == 1'b1) begin
                     `uvm_info(get_type_name(), "[INVALID LAST_DATA]: REMOVED FROM QUEUE!!!", UVM_MEDIUM)
-                    if(~wr_en) begin
-                        cur_rsp = axi_content.resp;
-                    end
+                    //if(~wr_en) begin
+                        //cur_rsp = axi_content.resp;
+                    //end
                     store_simulation_result(cur_rsp); 
                     break; //exit while(1) 
                 end
@@ -562,6 +504,7 @@ task axi_apb_scoreboard::Do_Comparison(input bit wr_en);
 	int transfer_index = 0;
     int fifo_idx;
 	resp_name bresp = resp_name'(2'b00);
+    brsp_info bi_h;
 	data_q axi_rdata_tmp_q = {};
         //
 	begin: COMPARE_BLOCK 
@@ -617,9 +560,9 @@ task axi_apb_scoreboard::Do_Comparison(input bit wr_en);
 		    //
 		    if(last_beat == 1'b1) begin
 			    if(wr_en == 1'b1) begin
-		            //raw_req.print();
-                    //`uvm_info(get_type_name(), $sformatf("BRESP: %s", bresp.name()), UVM_LOW)
-                    Store_Expected_Bresp(bresp);
+                    bi_h.brsp = bresp;
+                    bi_h.start_addr = raw_req.addr;
+                    Store_Expected_Bresp(bi_h);
                     axi_content.resp = bresp;
 			    end
                 `uvm_info(get_type_name(),

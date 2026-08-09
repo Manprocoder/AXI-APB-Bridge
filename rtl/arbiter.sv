@@ -168,6 +168,7 @@ always_ff@(posedge aclk, negedge aresetn) begin
 	else abt_cs <= abt_ns;
 end
 //
+//typedef enum logic [1:0] {ABT_IDLE, ABT_GO, ABT_DONE, BRSP_FIFO_FULL} abt_st;
 always_comb begin
   abt_ns = ABT_IDLE;
   burst_going = 1'b0;

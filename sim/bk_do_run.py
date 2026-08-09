@@ -13,14 +13,13 @@ import os
 import subprocess
 import sys
 import webbrowser
-#====================================================================
-#-------------Print Information Class (AXI, APB info in Monitor)
-#====================================================================
+#
+#
+#
 class Print_info_for_debug:
     PRINT_AXI_WREQ_EN = 0
     PRINT_AXI_RREQ_EN = 0
     PRINT_AXI_WDATA_EN = 0
-    PRINT_AXI_BRSP_EN = 0
     PRINT_APB_TRANS_EN = 0
 #
 #--------------------PRINT INFO FOR DEBUG-----------------------
@@ -50,9 +49,6 @@ class Print_info_for_debug:
         self.PRINT_AXI_WDATA_EN = self._ask_yes_no(
             "Print AXI Write Data? [1/0]: ", self.PRINT_AXI_WDATA_EN
         )
-        self.PRINT_AXI_BRSP_EN = self._ask_yes_no(
-            "Print AXI Write Response? [1/0]: ", self.PRINT_AXI_BRSP_EN
-        )
         self.PRINT_APB_TRANS_EN = self._ask_yes_no(
             "Print APB Transaction? [1/0]: ", self.PRINT_APB_TRANS_EN
         )
@@ -60,15 +56,18 @@ class Print_info_for_debug:
         print(f"PRINT_AXI_WREQ_EN  = {self.PRINT_AXI_WREQ_EN}")
         print(f"PRINT_AXI_RREQ_EN  = {self.PRINT_AXI_RREQ_EN}")
         print(f"PRINT_AXI_WDATA_EN = {self.PRINT_AXI_WDATA_EN}")
-        print(f"PRINT_AXI_BRSP_EN = {self.PRINT_AXI_BRSP_EN}")
         print(f"PRINT_APB_TRANS_EN = {self.PRINT_APB_TRANS_EN}")
         print(f"=====================================================================================")
 #
 #
 #
-class SimulationRunner(Print_info_for_debug):
+class SimulationRunner:
     DEFAULT_SLAVE_CNT = 1
     DEFAULT_COVERAGE = 0
+    PRINT_AXI_WREQ_EN = 0
+    PRINT_AXI_RREQ_EN = 0
+    PRINT_AXI_WDATA_EN = 0
+    PRINT_APB_TRANS_EN = 0
     COV_DIR = "coverage"
     HTML_DIR = "html_cov"
 
@@ -84,20 +83,9 @@ class SimulationRunner(Print_info_for_debug):
 
 
     def run_make(self, target: str, slave_cnt: int, gen_cov: int, name_of_test: str, verbosity_level: str) -> None:
-        make_vars = {
-            "NO_SLAVE": slave_cnt,
-            "COVERAGE": gen_cov,
-            "COV_DIR": self.COV_DIR,
-            "HTML_DIR": self.HTML_DIR,
-            "TESTNAME": name_of_test,
-            "VERBOSITY": verbosity_level,
-            "PRINT_AXI_WREQ_EN": self.PRINT_AXI_WREQ_EN,
-            "PRINT_AXI_RREQ_EN": self.PRINT_AXI_RREQ_EN,
-            "PRINT_AXI_WDATA_EN": self.PRINT_AXI_WDATA_EN,
-            "PRINT_AXI_BRSP_EN": self.PRINT_AXI_BRSP_EN,
-            "PRINT_APB_TRANS_EN": self.PRINT_APB_TRANS_EN,
-        }
-        cmd = ["make", target] + [f"{k}={v}" for k, v in make_vars.items()]
+        cmd = ["make", target, f"NO_SLAVE={slave_cnt}", f"COVERAGE={gen_cov}", f"COV_DIR={self.COV_DIR}", f"HTML_DIR={self.HTML_DIR}", f"TESTNAME={name_of_test}", f"VERBOSITY={verbosity_level}", f"PRINT_AXI_WREQ_EN={self.PRINT_AXI_WREQ_EN}", f"PRINT_AXI_RREQ_EN={self.PRINT_AXI_RREQ_EN}", f"PRINT_AXI_WDATA_EN={self.PRINT_AXI_WDATA_EN}", f"PRINT_APB_TRANS_EN={self.PRINT_APB_TRANS_EN}"]
+
+        print(f"\n$ {' '.join(cmd)}")
 
         subprocess.run(
             cmd,
@@ -105,10 +93,42 @@ class SimulationRunner(Print_info_for_debug):
             check=True,
         )
 #===================================================================================================
-#----------------------------Print information for debugging (inherited from Print_info_for_debug)
+#----------------------------Print information for debugging
 #===================================================================================================
-    # print_or_not(), _ask_yes_no(), and ask_print_info_for_debug() are now
-    # inherited from Print_info_for_debug instead of being duplicated here.
+    def print_or_not(self) -> int:
+        return self._ask_yes_no("Print debug info(AXI write/read request, AXI write data, APB transaction in Monitor)? [1/0]: ", 0)
+#
+#
+#
+    def _ask_yes_no(self, prompt: str, default: int) -> int:
+        ans = input(prompt).strip().lower()
+        if not ans:
+            return default
+        return 1 if ans in ("1", "y", "yes") else 0
+
+    def ask_print_info_for_debug(self) -> None:
+
+        if self.print_or_not() == 0:
+            return
+#
+        self.PRINT_AXI_WREQ_EN = self._ask_yes_no(
+            "Print AXI Write Request? [1/0]: ", self.PRINT_AXI_WREQ_EN
+        )
+        self.PRINT_AXI_RREQ_EN = self._ask_yes_no(
+            "Print AXI Read Request? [1/0]: ", self.PRINT_AXI_RREQ_EN
+        )
+        self.PRINT_AXI_WDATA_EN = self._ask_yes_no(
+            "Print AXI Write Data? [1/0]: ", self.PRINT_AXI_WDATA_EN
+        )
+        self.PRINT_APB_TRANS_EN = self._ask_yes_no(
+            "Print APB Transaction? [1/0]: ", self.PRINT_APB_TRANS_EN
+        )
+        print(f"=====================================================================================")
+        print(f"PRINT_AXI_WREQ_EN  = {self.PRINT_AXI_WREQ_EN}")
+        print(f"PRINT_AXI_RREQ_EN  = {self.PRINT_AXI_RREQ_EN}")
+        print(f"PRINT_AXI_WDATA_EN = {self.PRINT_AXI_WDATA_EN}")
+        print(f"PRINT_APB_TRANS_EN = {self.PRINT_APB_TRANS_EN}")
+        print(f"=====================================================================================")
 #
 
     def ask_slave_count(self) -> int:
@@ -240,7 +260,9 @@ class SimulationRunner(Print_info_for_debug):
 #--------------------------MAIN METHOD----------------------------------
 #============================================================================
 def main():
+    #info_h = Print_info_for_debug() 
     runner_h = SimulationRunner()
+    #info_h.ask_print_info_for_debug()
     runner_h.run()
 #============================================================================
 #--------------------------MASTER of PROGRAM---------------------------------

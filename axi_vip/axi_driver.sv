@@ -14,10 +14,17 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW1, AW1));
   axi_agent_config drv_cfg;
   //--2: Ports
   uvm_seq_item_pull_port#(REQ, RSP) seq_item_port2, seq_item_port3;
+  //--2.1: port for w_trans_fifo
   uvm_blocking_put_port#(REQ) put_port;
   uvm_blocking_get_port#(REQ) get_port;
+  //--2.2: port for rready_fifo
+  uvm_blocking_put_port#(bit) rrdy_put_port;
+  uvm_blocking_get_port#(bit) rrdy_get_port;
   //--3: Fifo
+  //--3.1: fifo for write
   uvm_tlm_fifo#(REQ) w_trans_fifo;
+  //--3.2: fifo for read
+  uvm_tlm_fifo#(bit) rready_fifo;
   int no_trans; //ACTUAL size of w_trans_fifo, which is retrieved from uvm_config_db
   //--4: request handles
   REQ wtx0, wtx1;
@@ -26,6 +33,7 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW1, AW1));
   //--5: others
   //--5.1:  Local control signals (kept for readability; driver logic manages them)
   logic RREADY;
+  bit low_rready_en;
   //--5.2: reset-related variables
   bit [2:0] rst_low_cnt;
   bit [7:0] rst_high_cnt;
@@ -56,7 +64,8 @@ class AxiMasterDriver extends uvm_driver#(axi_transaction#(DW1, AW1));
   extern virtual task send_write_data(input REQ tx);
   extern virtual task get_bresp();
   extern virtual task send_read_address(input REQ tx);
-  extern virtual task get_read_data();
+  extern virtual task get_read_data(input bit low_rready_enable);
+  extern virtual task wait_clk_for_low_rready(input int times);
 
 endclass: AxiMasterDriver
   //================================================================
@@ -81,19 +90,29 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
 	if(!uvm_config_db#(int)::get(this, "", "NO_TEST", no_trans)) begin
 		`uvm_fatal(get_type_name(), "NO_TEST is not FOUND")
 	end
-    //
+    //For write transaction
     put_port = new("put_port", this);
     get_port = new("get_port", this);
     w_trans_fifo = new("w_trans_tlm_fifo", this, no_trans);
+    //
+    //For read transaction
+    rrdy_put_port = new("rrdy_put_port", this);
+    rrdy_get_port = new("rrdy_get_port", this);
+    rready_fifo = new("rready_tlm_fifo", this, no_trans);
   endfunction
   //
   function void AxiMasterDriver::connect_phase(uvm_phase phase);
+    //For write transaction
 	  put_port.connect(w_trans_fifo.put_export);
 	  get_port.connect(w_trans_fifo.get_export);
+    //For read transaction
+	  rrdy_put_port.connect(rready_fifo.put_export);
+	  rrdy_get_port.connect(rready_fifo.get_export);
   endfunction
   //
   task AxiMasterDriver::run_phase(uvm_phase phase);
     super.run_phase(phase);
+    reset_members();
     if(drv_cfg.active == UVM_ACTIVE) begin
       fork
         Drive_Reset();
@@ -175,6 +194,7 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
   //
   task AxiMasterDriver::reset_members();
       w_trans_fifo.flush();
+      rready_fifo.flush();
       reset_wr_req_signals();
       reset_rd_req_signals();
       reset_wr_dat_signals();
@@ -211,11 +231,9 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
             if(w_trans_fifo.is_full()) begin
                 `uvm_info(get_type_name(), "WR trans TLM FIFO is FULL!!!", UVM_LOW)
             end
-            //else begin
-                put_port.put(wtx0);
-            //end
+            put_port.put(wtx0);
                 //
-                seq_item_port.item_done();
+            seq_item_port.item_done();
             `uvm_info(get_type_name(), $sformatf("[Drive Write Request] done!!!"), UVM_MEDIUM);
           end //end of while
         end//end of GET_WR_REQUEST
@@ -253,6 +271,12 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
             `uvm_info(get_name(), $sformatf("[START]Master_Read_Driver"), UVM_MEDIUM);
             seq_item_port2.get_next_item(rtx);
             send_read_address(rtx);
+            //
+            if(rready_fifo.is_full()) begin
+                `uvm_info(get_name(), "RREADY TLM FIFO is FULL!!!", UVM_LOW)
+            end
+            rrdy_put_port.put(rtx.long_low_rready);
+            //
             seq_item_port2.item_done();
             `uvm_info(get_name(), $sformatf("[DONE]Master_Read_Driver"), UVM_MEDIUM);
             // `uvm_info(get_name(), $sformatf("Master_Read_Driver: transaction done (id=%0d)", rtx.id), UVM_MEDIUM);
@@ -263,7 +287,8 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
           drv_cfg.vif.wait_RisingEdge_reset();
          //#(`CLK_CYCLE);
           while(drv_cfg.vif.aresetn_value() == 1'b1) begin
-            get_read_data();
+            rrdy_get_port.get(low_rready_en);
+            get_read_data(low_rready_en);
           end
         end//end of GET_RD_DATA
       join_none
@@ -383,27 +408,49 @@ function AxiMasterDriver::new(string name = "AxiMasterDriver", uvm_component par
      `uvm_info(get_name(), $sformatf("send_read_address: AR accepted (id=%0d)", tx.id), UVM_HIGH);
   endtask
 
-  task AxiMasterDriver::get_read_data();
+  task AxiMasterDriver::get_read_data(input bit low_rready_enable);
     fork
     begin: DETECT_RST_IN_GET_RDATA
       drv_cfg.vif.wait_FallingEdge_reset();
-      `uvm_info(get_type_name(), $sformatf("FALLING EDGE ARESETN---GetReadData() TASK!!!"), UVM_HIGH);
+      `uvm_info(get_name(), $sformatf("FALLING EDGE ARESETN---GetReadData() TASK!!!"), UVM_HIGH);
     end 
     //
     begin: IN_GET_RDATA
+      bit internal_en = 1'b1;
       forever begin
-        @(drv_cfg.vif.m_drv_cb);
-        RREADY = $urandom_range(1'b0, 1'b1);
-        `uvm_info(get_type_name(), $sformatf("RREADY = %0b", RREADY), UVM_HIGH)
-        drv_cfg.vif.m_drv_cb.rready <= RREADY;
+        if(low_rready_enable == 1'b1 && internal_en == 1'b1) begin
+            wait_clk_for_low_rready(3);
+            internal_en = 1'b0;
+        end
+        else begin
+            @(drv_cfg.vif.m_drv_cb);
+            RREADY = $urandom_range(1'b0, 1'b1);
+            `uvm_info(get_name(), $sformatf("RREADY = %0b", RREADY), UVM_HIGH)
+            drv_cfg.vif.m_drv_cb.rready <= RREADY;
+        end
         //consistently wait rvalid == 1'b1 event each clock 
         //CRITICAL NOTE: be careful to handle this event, if event never occurs, program will be stuck forever HERE
         @(drv_cfg.vif.m_drv_cb iff drv_cfg.vif.m_drv_cb.rvalid);
+        if(drv_cfg.vif.m_drv_cb.rlast && (RREADY == 1'b1)) begin
+            break;
+        end
       end
-    end
+    end: IN_GET_RDATA
     //
     join_any
     disable fork;
-    `uvm_info(get_type_name(), $sformatf("[DONE]GetReadData!!!"), UVM_HIGH);
+    `uvm_info(get_name(), $sformatf("[DONE]GetReadData!!!"), UVM_HIGH);
+  endtask
+  //
+  task AxiMasterDriver::wait_clk_for_low_rready(input int times);
+    `uvm_info(get_name(), "[CHECK_POINT] LOW-LEVEL RREADY start", UVM_LOW)
+    @(drv_cfg.vif.m_drv_cb);
+    drv_cfg.vif.m_drv_cb.rready <= 1'b0;
+    //512: means 256 transfer * 2 cycles (APB)
+     repeat(512*times) begin
+        @(drv_cfg.vif.m_drv_cb);
+     end
+    @(drv_cfg.vif.m_drv_cb);
+    drv_cfg.vif.m_drv_cb.rready <= 1'b1;
   endtask
 

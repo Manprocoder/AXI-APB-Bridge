@@ -219,7 +219,7 @@ assign master_ctrl_o = {store_rdata, fetch_wdata, latch_resp, set_up_phase, addr
 end
 //pslverrX, preadyX
   assign preadyX  = |out_pready[`SLAVE_CNT-1:0] | invalid_psel | disallowed_trans_i; 
-  assign pslverrX_o = |out_pslverr[`SLAVE_CNT-1:0]| invalid_psel | disallowed_trans_i; 
+  assign pslverrX_o = |out_pslverr[`SLAVE_CNT-1:0] | disallowed_trans_i;// invalid_psel | disallowed_trans_i; 
   generate
     genvar i;
 	for (i = 0; i <= `SLAVE_CNT-1; i = i + 1) begin: decPreadyAndPslverr

@@ -301,10 +301,7 @@ counter cnt_inst(
 decoder decoder_inst(
 	.start_addr_i(selected_addr),
 	.disallowed_trans_i(disallowed_trans),
-	//.size_of_transfer_i(selected_size),
-	//
  	.dec_error_o(dec_error),
-	//.disallowed_trans_o(disallowed_trans),
 	.true_psel_o(true_psel)
 	//
 );

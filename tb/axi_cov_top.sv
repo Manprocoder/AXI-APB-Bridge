@@ -1,3 +1,11 @@
+//===========================================================================
+//--Project: Design and Verify AXI to APB IP
+//===========================================================================
+//--File: axi_cov_top.sv
+//--Author: Nguyen Ngoc Man
+//===========================================================================
+//--Description: this is top-level of axi_cov submodule and it does signal assignment 
+//===========================================================================
 module axi_cov_top;
   //Define the interface hierarchy
   `define axi_if dut_top

@@ -1,7 +1,9 @@
 //======================================================
 //--Project: Design and Verify AXI_to_APB bridge
+//======================================================
 //--File: axi_if.sv
 //--Author: Nguyen Ngoc Man
+//======================================================
 //--Description: AXI4 virtual interface
 //======================================================
 interface axi_intf(input logic aclk);
@@ -86,12 +88,10 @@ endclocking
   //--obviously bvalid && bready -> false
   //
   task one_write_req_done();
-    // @(posedge aclk iff bvalid && bready);
     @(m_mon_cb iff m_mon_cb.bvalid && m_mon_cb.bready);
   endtask
   //
   task one_read_req_done();
-    // @(posedge aclk iff (rvalid & rlast & rready));
     @(m_mon_cb iff (m_mon_cb.rvalid && m_mon_cb.rlast && m_mon_cb.rready)); 
   endtask
   //****************************************************************************************************

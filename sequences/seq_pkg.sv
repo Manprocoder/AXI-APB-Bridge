@@ -1,7 +1,9 @@
 //===========================================================================
-//--Project: AXI_TO_APB IP
+//--Project: Design and Verify AXI_TO_APB IP
+//===========================================================================
 //--File: seq_pkg.sv
 //--Author: Nguyen Ngoc Man
+//===========================================================================
 //--Description: AXI, APB sequences for verification 
 //===========================================================================
 package seq_pkg;
@@ -10,5 +12,6 @@ package seq_pkg;
 	`include "./base_vseq.sv"
 	`include "./common_sequence.sv"
 	`include "./reset_sequence.sv"
+    `include "./rdata_almost_full_seq.sv"
 	`include "./virtual_seq.sv"
 endpackage

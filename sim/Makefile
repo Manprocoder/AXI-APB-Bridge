@@ -1,7 +1,9 @@
 #===========================================================================
 #--Project: AXI to APB IP
+#===========================================================================
 #--File: Makefile 
 #--Author: Nguyen Ngoc Man
+#===========================================================================
 #--Description: 
 #===========================================================================
 # Example run string: make TESTNAME={name_of_testcase} {optional}
@@ -20,6 +22,7 @@ COVERAGE    ?=
 PRINT_AXI_WREQ_EN ?= 
 PRINT_AXI_RREQ_EN ?= 
 PRINT_AXI_WDATA_EN ?= 
+PRINT_AXI_BRSP_EN ?= 
 PRINT_APB_TRANS_EN ?= 
 # =============================================================
 # Directory Variables 
@@ -48,11 +51,12 @@ VSIM_COV_OPT = \
 #----------------------------------------------------------------------------
 DO_CMD = "log -r /*; onfinish stop; run -all; \
 coverage exclude -srcfile ../rtl/sfifordata.sv -line 110 -code e; \
-coverage exclude -srcfile ../rtl/sfifordata.sv -line 167 -code e; \
-coverage exclude -srcfile ../rtl/sfifordata.sv -line 167 -code t; \
+coverage exclude -srcfile ../rtl/sfifordata.sv -line 167 -code et; \
 coverage exclude -srcfile ../rtl/sfifordata.sv -line 169 -code e; \
-coverage exclude -srcfile ../rtl/sfifordata.sv -line 245 -code e; \
-coverage exclude -srcfile ../rtl/sfifordata.sv -line 245 -code t; \
+coverage exclude -srcfile ../rtl/sfifordata.sv -line 245 -code et; \
+coverage exclude -srcfile ../rtl/arbiter.sv -line 304 -code bes; \
+coverage exclude -scope /tb/dut_top/arbiter_inst/abt_st -ftrans abt_cs ABT_GO->ABT_IDLE; \
+coverage exclude -togglenode abt_ns -du arbiter; \
 coverage save $(TESTNAME)_$(SEED).ucdb; quit -f;" 
 
 else
@@ -84,6 +88,13 @@ DO_PRINT_WDATA = +define+PRINT_AXI_WDATA
 else 
 DO_PRINT_WDATA = 
 endif
+
+#--2.4
+ifeq ($(PRINT_AXI_BRSP_EN), 1)
+DO_PRINT_BRSP = +define+PRINT_BRESP_CHANNEL
+else 
+DO_PRINT_BRSP = 
+endif
 #--2.4
 ifeq ($(PRINT_APB_TRANS_EN),1)
 DO_PRINT_APB = +define+PRINT_APB_TRANS
@@ -100,6 +111,7 @@ VLOG = vlog \
        $(DO_PRINT_WREQ) \
        $(DO_PRINT_RREQ) \
        $(DO_PRINT_WDATA) \
+       $(DO_PRINT_BRSP) \
        $(DO_PRINT_APB) \
        -mfcu \
        -suppress 2181,2186\

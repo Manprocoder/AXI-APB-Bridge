@@ -63,6 +63,7 @@ task random_test::run_phase(uvm_phase phase);
     vseq.no_disallowed_addr = 100; //unaligned addr for WRAP, FIXED (error)
     vseq.no_dec_err = 20;
     vseq.no_unaligned_addr = 100;
+    vseq.no_rdata_almost_full = 1;
     //
     `uvm_info(get_name(), "Start run phase!!!", UVM_LOW)
     //
@@ -91,7 +92,8 @@ endtask
 //
 function void random_test::report_phase(uvm_phase phase);
         int total_trans = vseq.no_rd_wr_para + vseq.no_rd_wr_rd + vseq.no_wr_rd_wr + vseq.no_unsupported_size + 
-        vseq.no_disallowed_addr + vseq.no_dec_err + vseq.no_unaligned_addr;
+        vseq.no_disallowed_addr + vseq.no_dec_err + vseq.no_unaligned_addr
+    + vseq.no_rdata_almost_full;
         `uvm_info(get_name(), "==================================================", UVM_LOW);
         `uvm_info(get_name(), "================RANDOM TEST REPORT================", UVM_LOW);
         `uvm_info(get_name(), "==================================================", UVM_LOW);

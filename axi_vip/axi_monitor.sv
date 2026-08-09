@@ -19,23 +19,13 @@ class AxiMasterMonitor extends uvm_monitor;
   mailbox #(axi_data_item) WrDataCovMbox;
   mailbox #(axi_brsp_item) BChannelCovMbox;
   //
-  string sim_result_path;
-  int chk_error_file;
-  string INST_NAME;
   //SCOREBOARD
   logic axi_mon_resetn;
-  //axi_brsp_item brsp_h;
-  //axi_data_item wdata_h, rdata_h;    //new object only contains needed details to compare
   axi_req_item wreq_h, rreq_h;
   axi_data_item wdata_h, rdata_h;
   axi_brsp_item brsp_h;
   //-- port to connect sb and fc
   uvm_analysis_port #(logic) AxiResetn_toScoreBoard;
-  //uvm_analysis_port #(axi_req_item) AxiRdAddr_toScoreBoard;
-  //uvm_analysis_port #(axi_data_item) AxiRData_toScoreBoard;
-  //uvm_analysis_port #(axi_req_item) AxiWrAddr_toScoreBoard;
-  //uvm_analysis_port #(axi_data_item) AxiWData_toScoreBoard;
-  //uvm_analysis_port #(axi_brsp_item) AxiBresp_toScoreBoard;
   uvm_analysis_port #(axi_req_item) AxiRdAddr_toScoreBoard;
   uvm_analysis_port #(axi_data_item) AxiRData_toScoreBoard;
   uvm_analysis_port #(axi_req_item) AxiWrAddr_toScoreBoard;
@@ -55,8 +45,6 @@ class AxiMasterMonitor extends uvm_monitor;
   extern task collect_WriteData();
   extern task collect_WriteResp();
   extern task Reset_All_Queue();
-  //extern task check_protocol();
-  //extern virtual function void report_phase(uvm_phase phase);
   //
   //
 endclass
@@ -222,13 +210,17 @@ task AxiMasterMonitor::collect_WriteData();
 endtask
 //
 task AxiMasterMonitor::collect_WriteResp();
-  while(1) begin
+  forever begin
     @(mon_cfg.vif.m_mon_cb iff mon_cfg.vif.m_mon_cb.bvalid && mon_cfg.vif.m_mon_cb.bready);
     brsp_h = axi_brsp_item::type_id::create("brsp_h");
     brsp_h.resp = resp_name'(mon_cfg.vif.m_mon_cb.bresp);
     brsp_h.id = mon_cfg.vif.m_mon_cb.bid;
     //
     AxiBresp_toScoreBoard.write(brsp_h);
+  `ifdef PRINT_BRESP_CHANNEL
+  `uvm_info(get_name(), $sformatf("[BID_%0d]Send AXI BRESP to scb", brsp_h.id), UVM_LOW)
+   brsp_h.print();
+  `endif
     //
   end
 endtask

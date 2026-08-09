@@ -1,14 +1,16 @@
-//-----------------------------------------------------------------------
+//==================================================================================
 //--Project: Design and Verify AXI-APB 
-//--Author: Nguyen Ngoc Man
+//==================================================================================
 //--filename: virtual_seq.sv
+//--Author: Nguyen Ngoc Man
+//==================================================================================
 //--Description:
 //virtual sequence (Reset Sequence, Axi Master Read, Axi Master Write, Apb Slave)
 //+ test reset
 //+ test main operation of IP with 3 cases: (1)wr_rd parallel, (2)wr->rd->wr, (3)rd->
 //wr->rd
 //+ test SLVERR, DECERR response
-//----------------------------------------------------------------
+//==================================================================================
 import axi_pkg::*;
 import apb_pkg::*;
 class virtual_seq extends base_vseq;
@@ -24,6 +26,7 @@ class virtual_seq extends base_vseq;
     rsp_seq test_rd_rsp_seq;
     rsp_seq test_wr_rsp_seq;
     unaligned_addr_seq unaligned_wseq, unaligned_rseq;
+    rdata_almost_full_seq rd_af_seq_h;
     //
 	//--2: APB sequences' handles
     apb_seq apb_seq_h[];
@@ -38,6 +41,7 @@ class virtual_seq extends base_vseq;
     int no_disallowed_addr;
     int no_dec_err;
     int no_unaligned_addr;
+    int no_rdata_almost_full;
 
     //register to factory
     `uvm_object_utils(virtual_seq)
@@ -70,6 +74,7 @@ class virtual_seq extends base_vseq;
         test_wr_rsp_seq = rsp_seq::type_id::create("test_wr_rsp_seq");
         unaligned_wseq = unaligned_addr_seq::type_id::create("unaligned_wseq");
         unaligned_rseq = unaligned_addr_seq::type_id::create("unaligned_rseq");
+        rd_af_seq_h = rdata_almost_full_seq::type_id::create("rd_af_seq_h");
         `uvm_info(get_name(), "virtual sequence start", UVM_LOW)
         //
         if(env_h == null) begin
@@ -101,6 +106,17 @@ class virtual_seq extends base_vseq;
 	//
     fork: START_SIM
 	    begin:AXI_RUN 
+		//
+		//6th ATTEMPT --- test rdata almost full signal 
+		//
+		//generates item
+		rd_af_seq_h.no_test = no_rdata_almost_full;
+		rd_af_seq_h.gen_item();
+		//
+		`uvm_info(get_name(), "[CHECK_POINT]rdata_almost_full_seq start!!!", UVM_LOW);
+        rd_af_seq_h.start(A2);
+		`uvm_info(get_name(), "[CHECK_POINT]rdata_almost_full_seq done!!!", UVM_LOW);
+        //
 	    fork: ATTEMPT_1ST
 		    WriteSeq.start(A1);
 		    ReadSeq.start(A2);  
@@ -218,6 +234,13 @@ class virtual_seq extends base_vseq;
 		fork
 			unaligned_wseq.start(A1);
 			unaligned_rseq.start(A2);
+            //forever begin
+                //A2.axi_vif.one_read_req_done();
+                //req_cnt++;
+                //if(count(unaligned_rseq.no_test, "[DONE]Read_Sequence for unaligned address")) begin
+                    //break;
+                //end
+            //end
 		join
 		`uvm_info(get_name(), "[CHECK_POINT]unaligned_addr_seq done!!!", UVM_LOW);
 	end: AXI_RUN
