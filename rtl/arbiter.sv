@@ -15,7 +15,7 @@ module arbiter(
 	aclk,
 	aresetn,
 	pclk,
-	preset_n,
+	presetn,
 	sfifo_ar_empty_i,
 	sfifo_aw_empty_i,
 	sfifo_rd_almost_full_i,
@@ -60,7 +60,7 @@ import parameter_pkg::*;
 input logic aclk;
 input logic aresetn;
 input logic pclk;
-input logic preset_n;
+input logic presetn;
 //req
 input logic sfifo_ar_empty_i;
 input logic sfifo_aw_empty_i;
@@ -287,8 +287,8 @@ end
 //
 //address register
 //
-always_ff@(posedge pclk, negedge preset_n) begin
-	if(~preset_n) begin
+always_ff@(posedge pclk, negedge presetn) begin
+	if(~presetn) begin
 		addr_reg <= 32'd0;
 		disallowed_trans_o <= 1'b0;
 	end

@@ -23,6 +23,7 @@ PRINT_AXI_WREQ_EN ?=
 PRINT_AXI_RREQ_EN ?= 
 PRINT_AXI_WDATA_EN ?= 
 PRINT_AXI_BRSP_EN ?= 
+PRINT_AXI_RDATA_EN ?= 
 PRINT_APB_TRANS_EN ?= 
 # =============================================================
 # Directory Variables 
@@ -95,7 +96,13 @@ DO_PRINT_BRSP = +define+PRINT_BRESP_CHANNEL
 else 
 DO_PRINT_BRSP = 
 endif
-#--2.4
+#--2.5
+ifeq ($(PRINT_AXI_RDATA_EN), 1)
+DO_PRINT_RDATA = +define+PRINT_AXI_RDATA
+else 
+DO_PRINT_RDATA = 
+endif
+#--2.6
 ifeq ($(PRINT_APB_TRANS_EN),1)
 DO_PRINT_APB = +define+PRINT_APB_TRANS
 else 
@@ -112,6 +119,7 @@ VLOG = vlog \
        $(DO_PRINT_RREQ) \
        $(DO_PRINT_WDATA) \
        $(DO_PRINT_BRSP) \
+       $(DO_PRINT_RDATA) \
        $(DO_PRINT_APB) \
        -mfcu \
        -suppress 2181,2186\

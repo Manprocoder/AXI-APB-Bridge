@@ -6,10 +6,11 @@
 //======================================================
 //--Description: AXI4 virtual interface
 //======================================================
-interface axi_intf(input logic aclk);
+interface axi_intf();
   parameter AXI_DW = 32;
   parameter AXI_AW = 32;
   //axi address channel
+  logic aclk;
   logic aresetn;
   logic awvalid;
   logic [AXI_DW-1:0] awid;
@@ -65,6 +66,12 @@ clocking m_mon_cb @(posedge aclk);
         awvalid, awid, awlen, awburst, awsize, awaddr, wdata, wvalid, wstrb, wlast,bready, 
         arvalid, arid, arlen, arburst, arsize, araddr, rready;
 endclocking
+//
+modport DUT ( 
+  output awready, wready, bid, bresp, bvalid, arready, rdata, rid, rvalid, rlast, rresp,
+  input aclk, aresetn, awvalid, awid, awlen, awburst, awsize, awaddr, awprot, wdata, wstrb, wvalid, wlast, bready, 
+          arvalid, arid, arlen, arburst, arsize, araddr, arprot, rready
+);
   //
   //
   //

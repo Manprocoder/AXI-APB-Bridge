@@ -75,7 +75,10 @@ virtual function void do_print(uvm_printer printer);
 	//
 	printer.print_field("WSTRB", wstrb, $bits(wstrb), UVM_HEX);
 	printer.print_field("DATA", data, $bits(data), UVM_HEX);
-	printer.print_generic("RESP", "RESP_NAME", $bits(resp), resp.name()); 
+    if(write == 1'b0) begin
+        printer.print_generic("RRESP", "", $bits(resp), resp.name()); 
+        printer.print_generic("RID", "", $bits(id), $sformatf("%0d", id)); 
+    end
 	printer.print_field("LAST", last, $bits(last), UVM_BIN);
 endfunction
 //

@@ -8,8 +8,10 @@ class apb_agent_config extends uvm_object;
 //register factory to use type_id::create() method
     `uvm_object_utils(apb_agent_config)
     //
-	virtual interface apb_intf #(DW2,AW2) vif;
-	uvm_active_passive_enum active = UVM_PASSIVE;
+	virtual interface apb_intf #(DW2, AW2, `SLAVE_CNT) vif;
+	uvm_active_passive_enum active = UVM_ACTIVE;
+    bit mst_role;
+    int slv_order; //APB slaves could be multiple ones in environment
 	bit scoreboard;
 	bit functional_coverage;
 	//

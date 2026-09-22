@@ -8,7 +8,7 @@
 //========================================================
 module counter(
 	pclk,
-	preset_n,
+	presetn,
 	len_of_burst_i,
 	set_up_phase_i,
 	beat_cnt_incr_i,
@@ -21,7 +21,7 @@ module counter(
 //ports
 //************************************************
 input logic pclk;
-input logic preset_n;
+input logic presetn;
 input logic [7:0] len_of_burst_i;
 input logic set_up_phase_i;
 input logic beat_cnt_incr_i;
@@ -38,8 +38,8 @@ assign burst_done_o = beat_cnt_incr_i ? ((transfer_cnt == len_of_burst_i) ? 1'b1
 //
 //
 //
-always_ff @(posedge pclk, negedge preset_n) begin
-if(~preset_n)
+always_ff @(posedge pclk, negedge presetn) begin
+if(~presetn)
   transfer_cnt[7:0] <= 8'd0;
 else begin
 	if(burst_done_o) transfer_cnt <= 8'd0;

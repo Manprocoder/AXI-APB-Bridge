@@ -65,19 +65,19 @@ endtask
 //
 task apb_driver::reset_all();
   wait(drv_cfg.vif.presetn == 1'b0); 
-  //begin
-      if(drv_cfg.active == UVM_PASSIVE) begin
-        drv_cfg.vif.s_drv_cb.pready <= 1'b0; //{`SLAVE_CNT{1'b0}};
-        drv_cfg.vif.s_drv_cb.pslverr <= 1'b0; //{`SLAVE_CNT{1'b0}};
-      end
-  //end
-
+  if(drv_cfg.mst_role == 1'b0 && drv_cfg.active == UVM_ACTIVE) begin
+    drv_cfg.vif.s_drv_cb.pready[drv_cfg.slv_order] <= 1'b0; //{`SLAVE_CNT{1'b0}};
+    drv_cfg.vif.s_drv_cb.pslverr[drv_cfg.slv_order] <= 1'b0; //{`SLAVE_CNT{1'b0}};
+  end
+//
+//
+//
   while (1) begin
     @(negedge drv_cfg.vif.presetn);
 	@(drv_cfg.vif.s_drv_cb iff ~drv_cfg.vif.presetn); //Reset of DUT is synchronize reset
-      if(drv_cfg.active == UVM_PASSIVE) begin
-        drv_cfg.vif.s_drv_cb.pready <= 1'b0; //{`SLAVE_CNT{1'b0}};
-        drv_cfg.vif.s_drv_cb.pslverr <= 1'b0; //{`SLAVE_CNT{1'b0}};
+      if(drv_cfg.mst_role == 1'b0 && drv_cfg.active == UVM_ACTIVE) begin
+        drv_cfg.vif.s_drv_cb.pready[drv_cfg.slv_order] <= 1'b0; //{`SLAVE_CNT{1'b0}};
+        drv_cfg.vif.s_drv_cb.pslverr[drv_cfg.slv_order] <= 1'b0; //{`SLAVE_CNT{1'b0}};
       end
   end
 
@@ -86,11 +86,10 @@ endtask: reset_all
 //definition of drive task
 //
 task apb_driver::drive();
-    if(drv_cfg.active == UVM_ACTIVE) begin
-
+    if(drv_cfg.mst_role == 1'b0 && drv_cfg.active == UVM_ACTIVE) begin
+        slave_task();
     end
     else begin
-        slave_task();
     end
 endtask
 //
@@ -108,9 +107,9 @@ end: DETECT_PRESETN
 begin: DRIVE_RESPONSE
     fork
     begin: DRIVE_RDATA 
-        @(drv_cfg.vif.s_drv_cb iff drv_cfg.vif.s_drv_cb.psel);
+        @(drv_cfg.vif.s_drv_cb iff drv_cfg.vif.s_drv_cb.psel[drv_cfg.slv_order]);
         if(~drv_cfg.vif.s_drv_cb.pwrite && ~drv_cfg.vif.s_drv_cb.penable) begin
-            drv_cfg.vif.s_drv_cb.prdata <= $urandom;
+            drv_cfg.vif.s_drv_cb.prdata[drv_cfg.slv_order] <= item.prdata;
             `uvm_info(get_type_name(), $sformatf("[APB READ_TRANSFER]: paddr=0x%0h",
             drv_cfg.vif.s_drv_cb.paddr), UVM_HIGH);
         end
@@ -121,7 +120,7 @@ begin: DRIVE_RESPONSE
         //item.print();
         `uvm_info(get_type_name(), $sformatf("counter = %0d", counter), UVM_HIGH);
         `uvm_info(get_type_name(), $sformatf("preadyDelay = %0d", item.preadyDelay), UVM_HIGH);
-        if(drv_cfg.vif.s_drv_cb.psel == 1'b1) begin //PSEL
+        if(drv_cfg.vif.s_drv_cb.psel[drv_cfg.slv_order] == 1'b1) begin //PSEL
             if(item.pready == 1'b1) begin
                 actual_pready = item.pready;
                 done = 1'b1;
@@ -135,9 +134,9 @@ begin: DRIVE_RESPONSE
                 done = 1'b0;
             end
             //
-            drv_cfg.vif.s_drv_cb.pready <= actual_pready;
+            drv_cfg.vif.s_drv_cb.pready[drv_cfg.slv_order] <= actual_pready;
             // usually 1 (ready)
-            drv_cfg.vif.s_drv_cb.pslverr <= item.pslverr; // usually 0 (no error)
+            drv_cfg.vif.s_drv_cb.pslverr[drv_cfg.slv_order] <= item.pslverr; // usually 0 (no error)
             //
             if((item.pready == 1'b0) && (drv_cfg.vif.s_drv_cb.penable == 1'b1)) begin
                 counter++;

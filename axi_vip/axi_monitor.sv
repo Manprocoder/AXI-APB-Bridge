@@ -6,6 +6,7 @@
 //===========================================================================
 class AxiMasterMonitor extends uvm_monitor;
   `uvm_component_utils(AxiMasterMonitor)
+  typedef axi_req_item AXI_REQ;
   //--------------------------------------------------
   //Data members
   //--------------------------------------------------
@@ -32,6 +33,10 @@ class AxiMasterMonitor extends uvm_monitor;
   uvm_analysis_port #(axi_data_item) AxiWData_toScoreBoard;
   uvm_analysis_port #(axi_brsp_item) AxiBresp_toScoreBoard;
   //
+  //--only for test seq_item_port and export in scoreboard
+  //
+  uvm_seq_item_pull_port#(AXI_REQ, AXI_REQ) mon_seq_item_port;
+  //
   function new(string name = "AxiMasterMonitor", uvm_component parent);
     super.new(name, parent);
   endfunction
@@ -45,10 +50,20 @@ class AxiMasterMonitor extends uvm_monitor;
   extern task collect_WriteData();
   extern task collect_WriteResp();
   extern task Reset_All_Queue();
+  extern task Test_Mon_Scb_with_seq_item_tlm();
   //
   //
 endclass
-
+//=================================================================
+//-------------------
+//=================================================================
+task AxiMasterMonitor::Test_Mon_Scb_with_seq_item_tlm();
+   axi_req_item axi_r_h = axi_req_item::type_id::create("axi_r_h", this);
+   mon_seq_item_port.put(axi_r_h);
+   `uvm_info("MON_SCB_SEQ_ITEM_TLM", "Call put method", UVM_LOW);
+endtask
+//
+//
 function void AxiMasterMonitor::build_phase(uvm_phase phase);
     super.build_phase(phase);
     AxiResetn_toScoreBoard = new("AxiResetn_toScoreBoard", this);
@@ -64,6 +79,8 @@ function void AxiMasterMonitor::build_phase(uvm_phase phase);
     WrDataCovMbox = new();
     RdDataCovMbox = new();
     BChannelCovMbox = new();
+    //
+    mon_seq_item_port = new("mon_seq_item_port", this);
 endfunction
 
 task AxiMasterMonitor::run_phase(uvm_phase phase);
@@ -77,6 +94,7 @@ task AxiMasterMonitor::run_phase(uvm_phase phase);
       collect_WriteData();
       collect_WriteResp();
       Reset_All_Queue();
+//      Test_Mon_Scb_with_seq_item_tlm();
   join_none
 endtask
 //
@@ -150,6 +168,10 @@ task AxiMasterMonitor::collect_ReadData();
     rdata_h.id = mon_cfg.vif.m_mon_cb.rid;
     //write item on scoreboard
     AxiRData_toScoreBoard.write(rdata_h);
+      `ifdef PRINT_AXI_RDATA
+      `uvm_info(get_name(), "Send AXI RDATA to scb", UVM_LOW)
+      rdata_h.print();
+      `endif
   end
 endtask
 //

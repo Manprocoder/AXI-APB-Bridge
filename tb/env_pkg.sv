@@ -11,5 +11,6 @@ package env_pkg;
 	`include "env_cfg.sv"
 	`include "shared_item.sv"
 	`include "axi_apb_scoreboard.sv"
+    `include "virtual_sequencer.sv"
 	`include "env.sv"
 endpackage

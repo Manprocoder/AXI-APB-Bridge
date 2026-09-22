@@ -50,6 +50,11 @@ virtual class axi_scoreboard extends uvm_scoreboard;
     //store result of simulation comparison and print all in report_phase function
     //
     protected result_q sim_result_arr [id_of_burst];
+    //
+    //store removed transaction before valid transaction 
+    //
+    protected int no_trans_before_valid_exist;
+    protected removed_trans_info rmv_q[$];
 
     function new(string name ="axi_scoreboard", uvm_component parent);
         super.new(name, parent);
@@ -81,6 +86,12 @@ extern virtual function void store_simulation_result(input resp_name status);
 extern virtual function void display_sim_res();
 extern virtual function void Store_Expected_Bresp(input brsp_info rsp);
 extern virtual function void display_rsp_report();
+//
+//----------------three functions for debugging
+//
+extern virtual function void display_no_invalid_trans();
+extern function void push_rmv_trans_into_q(input axi_req_item tmp);
+extern virtual function void display_invalid_trans_in_depth();
 //===========================================================================
 //--------------------------------END of METHODs
 //===========================================================================
@@ -161,11 +172,13 @@ endfunction
 //
 //
 function void axi_scoreboard::display_type_of_trans_checker();
+    int no_trans_in_total = rd_missing_trans + wr_missing_trans + valid_trans + slv_err_trans + dec_err_trans;
 	`uvm_info(get_name(), $sformatf("RD_MISSING_TRANS: %0d", rd_missing_trans), UVM_LOW)
 	`uvm_info(get_name(), $sformatf("WR_MISSING_TRANS: %0d", wr_missing_trans), UVM_LOW)
 	`uvm_info(get_name(), $sformatf("_____VALID_TRANS: %0d", valid_trans), UVM_LOW)
 	`uvm_info(get_name(), $sformatf("___SLV_ERR_TRANS: %0d", slv_err_trans), UVM_LOW)
 	`uvm_info(get_name(), $sformatf("___DEC_ERR_TRANS: %0d", dec_err_trans), UVM_LOW)
+	`uvm_info(get_name(), $sformatf("________NO_TRANS: %0d", no_trans_in_total), UVM_LOW)
 endfunction
 //
 function void axi_scoreboard::display_slv_index();
@@ -182,13 +195,62 @@ function void axi_scoreboard::display_total_checker();
 	`uvm_info(get_type_name, $sformatf("TOTAL PASS: %0d___TOTAL FAIL: %0d", total_pass, total_fail), UVM_LOW)
 endfunction
 //
+//--------------------------DEBUGGING
+//
+function void axi_scoreboard::display_no_invalid_trans();
+	`uvm_info(get_type_name, $sformatf("N.o invalid transactions before valid exists: %0d", no_trans_before_valid_exist), UVM_LOW)
+endfunction
+//
+function void axi_scoreboard::push_rmv_trans_into_q(input axi_req_item tmp);
+    removed_trans_info rmv_struct;
+    //
+    rmv_struct.write = tmp.wr_or_rd;
+    rmv_struct.id   = tmp.id;
+    rmv_struct.addr = tmp.addr;
+    rmv_struct.len  = tmp.len;
+    rmv_struct.size = tmp.size;
+    rmv_struct.burst = tmp.burst;
+    //
+    rmv_q.push_back(rmv_struct);
+	`uvm_info(get_name, $sformatf("UNVALID_TRANS[%0d]: add to rmv queue", no_trans_before_valid_exist), UVM_LOW)
+endfunction
+//
+function void axi_scoreboard::display_invalid_trans_in_depth();
+    string rw_type;
+    string burst_str;
+    //
+    if(rmv_q.size() > 0) begin: CHECK_SIZE
+	`uvm_info(get_name, $sformatf("UNVALID TRANSACTION IN DEPTH BEFORE VALID ONE EXIST:"), UVM_LOW)
+    foreach (rmv_q[i]) begin
+		    rw_type   = (rmv_q[i].write == 1'b1) ? "WRITE" : "READ_";
+		    burst_str = rmv_q[i].burst.name(); 
+		    // print transaction detail
+            $display("%0s_TRANS[%0d]:Addr=0x%04h_%04h Len_1=%0d Size=%0d(bytes_in_beat) Burst=%s",
+                rw_type,
+                rmv_q[i].id[7:0],
+                rmv_q[i].addr[31:16],
+                rmv_q[i].addr[15:0],
+                rmv_q[i].len + 1,
+                2**rmv_q[i].size,
+                burst_str
+            //
+            );
+    end//end of foreach
+    end:CHECK_SIZE
+    //
+    no_trans_before_valid_exist = 0;
+    rmv_q.delete();
+endfunction
+//
+//--------------------------END OF DEBUGGING
+//
 //---------------------------------AXI_ADDR_CALCULATION FUNCTION---------------------
 //
 function void axi_scoreboard::calculate_and_store_addr();
 logic [31:0] addr_of_beat;
 //
 begin
-            parse_request();
+        parse_request();
 	    //
 	    axi_addr_q = {};
 	    for(int i = 0; i < (raw_req.len + 1'b1); i++) begin
@@ -308,7 +370,7 @@ function void axi_scoreboard::display_sim_res();
 		   sim_result_q = {};
 		   //
 		   sim_result_q = sim_result_arr[arr_idx];
-		   `uvm_info(get_type_name(), $sformatf("SIM RESULT of %0d(ID):", arr_idx), UVM_LOW);
+		   `uvm_info(get_type_name(), $sformatf("[RPT]SIM RESULT of %0d(ID):", arr_idx), UVM_LOW);
 		   //
 		   if(sim_result_q.size() == 0) begin
 			   `uvm_error(get_type_name(), $sformatf("Sim result of %0d(ID) is EMPTY!!!", arr_idx))

@@ -9,4 +9,7 @@ package test_pkg;
 	`include "uvm_macros.svh"
 	`include "base_test.sv"
 	`include "random_test.sv"
+    `include "addr_first_wdata_then_test.sv"
+    `include "addr_wdata_parallel_test.sv"
+    `include "wdata_first_addr_then_test.sv"
 endpackage

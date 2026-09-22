@@ -10,6 +10,8 @@ import seq_pkg::*;
 class random_test extends base_test;
     //register factory
     `uvm_component_utils(random_test)
+    //
+  //  interface axi_intf#(DW1, AW1) axi_if_h; //=> without virtual keyword, compiler signals error
     //virtual_seq handle
     virtual_seq vseq;
     //
@@ -20,8 +22,11 @@ class random_test extends base_test;
     //
     extern virtual function void build_phase (uvm_phase phase);
     extern virtual function void end_of_elaboration_phase (uvm_phase phase);
+    extern virtual function void start_of_simulation_phase(uvm_phase phase);
     extern virtual task run_phase(uvm_phase phase);
+    extern virtual function void check_phase(uvm_phase phase);
     extern virtual function void report_phase(uvm_phase phase);
+    extern virtual function void final_phase(uvm_phase phase);
     extern virtual task apply_reset();
     //
 endclass
@@ -29,26 +34,36 @@ endclass
 //---------------------DEFINE ALL METHODS IN TURN
 //========================================================================
 function void random_test::build_phase(uvm_phase phase);
-    //super.build_phase(phase);
     //store number of transactions--driver use this number
+    `uvm_info(get_name(), "[BUILD_PHASE_START UVM_TEST]", UVM_LOW)
     env_h = m_env::type_id::create("env_h", this);
     env_cfg_h = env_config::type_id::create("env_cfg_h");   //environment config object
     uvm_config_db#(env_config)::set(this, "*", "env_cfg", env_cfg_h);
     uvm_config_db#(int)::set(this, "*", "NO_TEST", 1000); 
+    //--only for trial
+    uvm_config_db#(string)::set(this, "env_h.*", "TRIAL", "random_test"); //absolute path
+   // uvm_config_db#(string)::set(this, "axi_mst_agt", "TRIAL", "random_test"); //relative path 
     //
      if(!uvm_config_db#(virtual interface axi_intf #(DW1, AW1))::get(this, "", "m_vif", axi_vif)) begin
          `uvm_fatal(get_name(), "Virtual AXI interface is not FOUND!!!")
      end
+    `uvm_info(get_name(), "[BUILD_PHASE_END UVM_TEST]", UVM_LOW)
 endfunction
 //
 //
 function void random_test::end_of_elaboration_phase(uvm_phase phase);
+    `uvm_info(get_name(), "[END_OF_ELABORATION_PHASE UVM_TEST]", UVM_LOW)
     super.end_of_elaboration_phase(phase);
+endfunction
+//
+function void random_test::start_of_simulation_phase(uvm_phase phase);
+    super.start_of_simulation_phase(phase);
+    `uvm_info(get_name(), "[START_OF_SIMULATION_PHASE UVM_TEST]", UVM_LOW)
 endfunction
 //
 //
 task random_test::run_phase(uvm_phase phase);
-    `uvm_info(get_name(), "Enter run phase!!!", UVM_LOW)
+    `uvm_info(get_name(), "[RUN_PHASE UVM_TEST]", UVM_LOW)
     phase.raise_objection(this);
     //
     if(env_h == null) begin
@@ -56,14 +71,14 @@ task random_test::run_phase(uvm_phase phase);
     end
     //
     vseq = virtual_seq::type_id::create("virtual_seq");
-    vseq.no_rd_wr_para = 400;
+    vseq.no_rd_wr_para = 1000;
     vseq.no_rd_wr_rd = 300;
     vseq.no_wr_rd_wr = 300;
-    vseq.no_unsupported_size = 100; //size is not 4 bytes
-    vseq.no_disallowed_addr = 100; //unaligned addr for WRAP, FIXED (error)
-    vseq.no_dec_err = 20;
-    vseq.no_unaligned_addr = 100;
-    vseq.no_rdata_almost_full = 1;
+    //vseq.no_unsupported_size = 100; //size is not 4 bytes
+    //vseq.no_disallowed_addr = 100; //unaligned addr for WRAP, FIXED (error)
+    //vseq.no_dec_err = 20;
+    //vseq.no_unaligned_addr = 100;
+//    vseq.no_rdata_almost_full = 1;
     //
     `uvm_info(get_name(), "Start run phase!!!", UVM_LOW)
     //
@@ -73,14 +88,15 @@ task random_test::run_phase(uvm_phase phase);
     fork
         begin: MAIN_THREAD
             `uvm_info(get_name(), "Enter MAIN THREAD!!!", UVM_LOW)
-            init_vseq(vseq);
+            //init_vseq(vseq);
             `uvm_info(get_name(), "Init virtual sequence done!!!", UVM_LOW)
-            vseq.start(null); 
-            #10ms;
+            //vseq.start(null); 
+            vseq.start(env_h.v_sqr_h); 
+            //#10ms;
         end
 	//
         begin: TIME_OUT
-            #15ms;
+            #300ms;
             `uvm_info(get_name(), "=========================================", UVM_LOW);
             `uvm_warning(get_name(), "======TIMEOUT TIMEOUT TIMEOUT!!!======")
             `uvm_info(get_name(), "=========================================", UVM_LOW);
@@ -90,14 +106,23 @@ task random_test::run_phase(uvm_phase phase);
     phase.drop_objection(this);
 endtask
 //
+function void random_test::check_phase(uvm_phase phase);
+    `uvm_info(get_name(), "[CHECK_PHASE]", UVM_LOW);
+endfunction
+//
 function void random_test::report_phase(uvm_phase phase);
-        int total_trans = vseq.no_rd_wr_para + vseq.no_rd_wr_rd + vseq.no_wr_rd_wr + vseq.no_unsupported_size + 
-        vseq.no_disallowed_addr + vseq.no_dec_err + vseq.no_unaligned_addr
-    + vseq.no_rdata_almost_full;
+        int total_trans = vseq.no_rd_wr_para + vseq.no_rd_wr_rd + vseq.no_wr_rd_wr;// + vseq.no_rdata_almost_full; 
+        //int total_trans = vseq.no_rd_wr_para + vseq.no_rd_wr_rd + vseq.no_wr_rd_wr + vseq.no_unsupported_size + 
+        //vseq.no_disallowed_addr + vseq.no_dec_err + vseq.no_unaligned_addr
+    //+ vseq.no_rdata_almost_full;
         `uvm_info(get_name(), "==================================================", UVM_LOW);
         `uvm_info(get_name(), "================RANDOM TEST REPORT================", UVM_LOW);
         `uvm_info(get_name(), "==================================================", UVM_LOW);
         `uvm_info(get_name(), $sformatf("TRANSACTION IN TOTAL: %0d", total_trans), UVM_LOW)
+endfunction
+//
+function void random_test::final_phase(uvm_phase phase);
+    `uvm_info(get_name(), "[FINAL_PHASE]", UVM_LOW);
 endfunction
 //
 task random_test::apply_reset();

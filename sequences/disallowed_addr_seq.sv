@@ -1,40 +1,39 @@
-//==========================================================
-//--Project: Design and Verify AXI_APB bridge
-//==========================================================
-//--file: rdata_almost_full_seq.sv
+//************************************************************
+//--Project: AXI APB IP 
+//************************************************************
+//--file: disallowed_addr_seq.sv
 //--Author: Nguyen Ngoc Man
-//==========================================================
-//--Description: 
-//==========================================================
-class rdata_almost_full_seq extends stimulus_generator;
-	`uvm_object_utils(rdata_almost_full_seq)
-	//members
-	function new(string name = "rdata_almost_full_seq");
+//*****************************************************************************
+//--Description: master must not issue unaligned address for WRAP, FIXED burst  
+//--test error response of these transactions
+//*****************************************************************************
+import axi_pkg::*;
+class disallowed_addr_seq extends stimulus_generator;
+	`uvm_object_utils(disallowed_addr_seq)
+	//
+	function new (string name = "disallowed_addr_seq");
 		super.new(name);
 	endfunction
 	//
-	function void gen_item();
-		mb = new(no_test);
-		//
+ 	function void gen_item();
+		mb = new();
+		//disallowed size
+        //
+		//unaligned addr for WRAP, FIXED 
 		repeat(no_test) begin
 			trans_h = axi_item::type_id::create("axi_item");
-            //---disable constraint of wdata and wstrb
-            trans_h.data_arr_c.constraint_mode(0);
-            trans_h.wstrb_arr_c.constraint_mode(0);
-            //
 			assert(trans_h.randomize() with {
 				trans_h.size == 3'b010;
 				trans_h.is_valid == 1'b1;
-                trans_h.long_low_rready == 1'b1;
+				trans_h.burst != INCR;
+				trans_h.addr[1:0] != 2'b00;
 				})
 			else `uvm_error(get_type_name(), "randomize axi_item FAILED")
+			//mb.put(trans_h);
 			if(!mb.try_put(trans_h)) `uvm_error(get_type_name, "try_put item into mb FAIL!!!");
-            //
-            `uvm_info(get_name(), "PRINT RDATA_ALMOST_FULL transaction", UVM_LOW)
-            trans_h.print();
 		end
-	endfunction
-	//
+    endfunction
+    //
 	task body();
 		repeat(no_test) begin
 		      trans_h = axi_item::type_id::create("axi_trans");
@@ -42,6 +41,7 @@ class rdata_almost_full_seq extends stimulus_generator;
 			      //send item to sequencer
 				`uvm_info(get_type_name(), $sformatf("[START]trans_h!!!"), UVM_HIGH);
 			      start_item(trans_h);
+			      trans_h.set_aligned_addr();
 			      //item sent to driver done
 			      finish_item(trans_h);
 				`uvm_info(get_type_name(), $sformatf("[DONE]trans_h!!!"), UVM_HIGH);
@@ -52,6 +52,3 @@ class rdata_almost_full_seq extends stimulus_generator;
       		end
 	endtask
 endclass
-//
-//
-

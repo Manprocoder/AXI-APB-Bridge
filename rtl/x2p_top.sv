@@ -6,107 +6,110 @@
 //========================================================================
 //Description: AXI-APB Bridge Design complied to AXI4 and APB4 protocol
 //========================================================================
-module x2p_top(aclk,
-	       aresetn,
-	   awvalid,
-	   awaddr,
-	   awsize,
-	   awlen,
-	   awburst,
-	   awid,
-	   awprot,
-	   awready,
-	   arvalid,
-	   araddr,
-	   arsize,
-	   arlen,
-	   arburst,
-	   arid,
-	   arprot,
-	   arready,
-	   wvalid,
-	   wdata,
-	   wstrb,
-	   wlast,
-	   wready,
-	   rready,
-	   rvalid,
-	   rresp,
-	   rlast,
-	   rid,
-	   rdata,
-	   bready,
-	   bvalid,
-	   bresp,
-	   bid,
-	   pclk,
-	   preset_n,
-	   pready,
-	   prdata,
-	   pslverr,
-	   paddr,
-	   pwdata,
-	   psel,
-	   penable,
-	   pprot,
-	   pstrb,
-	   pwrite
+module x2p_top(
+       axi_intf axi_if,
+       apb_intf apb_if
+       //aclk,
+	   //aresetn,
+	   //awvalid,
+	   //awaddr,
+	   //awsize,
+	   //awlen,
+	   //awburst,
+	   //awid,
+	   //awprot,
+	   //awready,
+	   //arvalid,
+	   //araddr,
+	   //arsize,
+	   //arlen,
+	   //arburst,
+	   //arid,
+	   //arprot,
+	   //arready,
+	   //wvalid,
+	   //wdata,
+	   //wstrb,
+	   //wlast,
+	   //wready,
+	   //rready,
+	   //rvalid,
+	   //rresp,
+	   //rlast,
+	   //rid,
+	   //rdata,
+	   //bready,
+	   //bvalid,
+	   //bresp,
+	   //bid,
+	   //pclk,
+	   //presetn,
+	   //pready,
+	   //prdata,
+	   //pslverr,
+	   //paddr,
+	   //pwdata,
+	   //psel,
+	   //penable,
+	   //pprot,
+	   //pstrb,
+	   //pwrite
 );
   //***************************************************************
   //declare ports 
   //***************************************************************
-  input logic aclk;
-  input logic aresetn;
-  //ports declaration
-  // Address write chanel
-  input logic                    awvalid;
-  input logic [31:0]             awaddr;
-  input logic [2:0]              awsize;
-  input logic [7:0]              awlen;
-  input logic [1:0]              awburst;
-  input logic [7:0]              awid;
-  input logic [2:0]              awprot;
-  output logic                   awready;
-  // address read chanel
-  input logic                    arvalid;
-  input logic [31:0]             araddr;
-  input logic [2:0]              arsize;
-  input logic [7:0]              arlen;
-  input logic [1:0]              arburst;
-  input logic [7:0]              arid;
-  input logic [2:0]              arprot;
-  output logic                   arready;
-  //write data chanel
-  input logic                    wvalid;
-  input logic [31:0]             wdata;
-  input logic [3:0]              wstrb;
-  input logic                    wlast;
-  output logic                   wready;
-  //read data chanel
-  input logic                     rready;
-  output logic                    rvalid;
-  output logic [1:0]              rresp;
-  output logic                    rlast;
-  output logic [7:0]              rid;
-  output logic [31:0]             rdata;
-  //write data chanel
-  input logic                     bready;
-  output logic                    bvalid;
-  output logic [1:0]              bresp;
-  output logic [7:0]              bid;
-  //APB interface 
-  input logic pclk;
-  input logic preset_n;
-  input logic [`SLAVE_CNT-1:0]       pready;
-  input logic [`SLAVE_CNT-1:0][31:0] prdata;
-  input logic [`SLAVE_CNT-1:0]       pslverr;
-  output logic [31:0]               paddr;
-  output logic [31:0]               pwdata;
-  output logic [`SLAVE_CNT-1:0]      psel;
-  output logic                      penable;
-  output logic [2:0]                pprot;
-  output logic [3:0]                pstrb;
-  output logic                      pwrite;
+  //input logic aclk;
+  //input logic aresetn;
+  ////ports declaration
+  //// Address write chanel
+  //input logic                    awvalid;
+  //input logic [31:0]             awaddr;
+  //input logic [2:0]              awsize;
+  //input logic [7:0]              awlen;
+  //input logic [1:0]              awburst;
+  //input logic [7:0]              awid;
+  //input logic [2:0]              awprot;
+  //output logic                   awready;
+  //// address read chanel
+  //input logic                    arvalid;
+  //input logic [31:0]             araddr;
+  //input logic [2:0]              arsize;
+  //input logic [7:0]              arlen;
+  //input logic [1:0]              arburst;
+  //input logic [7:0]              arid;
+  //input logic [2:0]              arprot;
+  //output logic                   arready;
+  ////write data chanel
+  //input logic                    wvalid;
+  //input logic [31:0]             wdata;
+  //input logic [3:0]              wstrb;
+  //input logic                    wlast;
+  //output logic                   wready;
+  ////read data chanel
+  //input logic                     rready;
+  //output logic                    rvalid;
+  //output logic [1:0]              rresp;
+  //output logic                    rlast;
+  //output logic [7:0]              rid;
+  //output logic [31:0]             rdata;
+  ////write data chanel
+  //input logic                     bready;
+  //output logic                    bvalid;
+  //output logic [1:0]              bresp;
+  //output logic [7:0]              bid;
+  ////APB interface 
+  //input logic pclk;
+  //input logic presetn;
+  //input logic [`SLAVE_CNT-1:0]       pready;
+  //input logic [`SLAVE_CNT-1:0][31:0] prdata;
+  //input logic [`SLAVE_CNT-1:0]       pslverr;
+  //output logic [31:0]               paddr;
+  //output logic [31:0]               pwdata;
+  //output logic [`SLAVE_CNT-1:0]      psel;
+  //output logic                      penable;
+  //output logic [2:0]                pprot;
+  //output logic [3:0]                pstrb;
+  //output logic                      pwrite;
 //***************************************************************
 //WIRE VARIABLES
 //***************************************************************
@@ -156,45 +159,46 @@ logic [4:0] master_ctrl;
   //SUB_MODULES
   //***************************************************************
   axi_transaction_controller axi_slv_inst (
+    .axi_if(axi_if),
 	//global signals
-	.aclk(aclk),
-	.aresetn(aresetn),
-	//addres write channel
-   .awvalid(awvalid),
-   .awaddr(awaddr),
-   .awsize(awsize),
-   .awlen(awlen),
-   .awburst(awburst),
-   .awid(awid),
-   .awprot(awprot),
-   .awready(awready),
-   //address read chanel
-   .arvalid(arvalid),
-   .araddr(araddr),
-   .arsize(arsize),
-   .arlen(arlen),
-   .arburst(arburst),
-   .arid(arid),
-   .arprot(arprot),
-   .arready(arready),
-   //write data chanel
-   .wvalid(wvalid),
-   .wdata(wdata),
-   .wstrb(wstrb),
-   .wlast(wlast),
-   .wready(wready),
-   //read data chanel
-   .rready(rready),
-   .rvalid(rvalid),
-   .rresp(rresp),
-   .rlast(rlast),
-   .rid(rid),
-   .rdata(rdata),
-   //write response chanel
-   .bready(bready),
-   .bvalid(bvalid),
-   .bresp(bresp),
-   .bid(bid),
+	//.aclk(aclk),
+	//.aresetn(aresetn),
+	////addres write channel
+   //.awvalid(awvalid),
+   //.awaddr(awaddr),
+   //.awsize(awsize),
+   //.awlen(awlen),
+   //.awburst(awburst),
+   //.awid(awid),
+   //.awprot(awprot),
+   //.awready(awready),
+   ////address read chanel
+   //.arvalid(arvalid),
+   //.araddr(araddr),
+   //.arsize(arsize),
+   //.arlen(arlen),
+   //.arburst(arburst),
+   //.arid(arid),
+   //.arprot(arprot),
+   //.arready(arready),
+   ////write data chanel
+   //.wvalid(wvalid),
+   //.wdata(wdata),
+   //.wstrb(wstrb),
+   //.wlast(wlast),
+   //.wready(wready),
+   ////read data chanel
+   //.rready(rready),
+   //.rvalid(rvalid),
+   //.rresp(rresp),
+   //.rlast(rlast),
+   //.rid(rid),
+   //.rdata(rdata),
+   ////write response chanel
+   //.bready(bready),
+   //.bvalid(bvalid),
+   //.bresp(bresp),
+   //.bid(bid),
 	//arbiter input
 	.rd_trans_done_i(rd_trans_done),
 	.wr_trans_done_i(wr_trans_done),
@@ -237,10 +241,14 @@ logic [4:0] master_ctrl;
 //ARBITER 
 //
 arbiter arbiter_inst(
-	.aclk(aclk),
-	.aresetn(aresetn),
-	.pclk(pclk),
-	.preset_n(preset_n),
+	//.aclk(aclk),
+	//.aresetn(aresetn),
+	//.pclk(pclk),
+	//.presetn(presetn),
+	.aclk(axi_if.aclk),
+	.aresetn(axi_if.aresetn),
+	.pclk(apb_if.pclk),
+	.presetn(apb_if.presetn),
 	//available status of axi request
 	.sfifo_ar_empty_i(sfifo_ar_empty),
 	.sfifo_aw_empty_i(sfifo_aw_empty),
@@ -285,8 +293,8 @@ arbiter arbiter_inst(
 //COUNTER
 //
 counter cnt_inst(
-	.pclk(pclk),
-	.preset_n(preset_n),
+	.pclk(apb_if.pclk),
+	.presetn(apb_if.presetn),
 	.len_of_burst_i(selected_len),
 	.set_up_phase_i(master_ctrl[1]),
 	.beat_cnt_incr_i(master_ctrl[0]),
@@ -309,8 +317,9 @@ decoder decoder_inst(
 //APB MASTER 
 //
 apb_master apb_mst_inst(
-	.pclk(pclk),
-	.preset_n(preset_n),
+    .apb_if(apb_if),
+	//.pclk(pclk),
+	//.presetn(presetn),
 	//
 	//control signal
 	//
@@ -323,16 +332,16 @@ apb_master apb_mst_inst(
 	.wstrb_to_apb_i(wstrb_to_apb),	
 	.wdata_to_apb_i(wdata_to_apb),	
 	//APB interface
-	.paddr(paddr),
-	.pprot(pprot),
-	.psel(psel),
-	.penable(penable),
-	.pwrite(pwrite),
-	.pwdata(pwdata),
-	.pstrb(pstrb),
-	.pready(pready),
-	.prdata(prdata),
-	.pslverr(pslverr),
+	//.paddr(paddr),
+	//.pprot(pprot),
+	//.psel(psel),
+	//.penable(penable),
+	//.pwrite(pwrite),
+	//.pwdata(pwdata),
+	//.pstrb(pstrb),
+	//.pready(pready),
+	//.prdata(prdata),
+	//.pslverr(pslverr),
 //send to AXI transaction controller
 	.prdataX_o(prdataX),
 	.pslverrX_o(pslverrX),

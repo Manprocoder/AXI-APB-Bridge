@@ -64,8 +64,14 @@ class axi_data_item extends axi_brsp_item;
     endfunction
         //
 virtual function void do_print(uvm_printer printer);
-	super.do_print(printer);
+//	super.do_print(printer);
+    
 	printer.print_field("WR(1)_RD(0)", wr_or_rd, $bits(wr_or_rd), UVM_BIN);
+    if(wr_or_rd == 1'b0) begin
+        //printer.print_generic("RID", "", $bits(id), $sformatf("'d%0d", id));
+        printer.print_field("RID", id, $bits(id), UVM_UNSIGNED);
+        printer.print_generic("RRESP", "", $bits(resp), resp.name()); 
+    end
 	//
 	printer.print_field("DATA", data, $bits(data), UVM_HEX);
 	printer.print_field("BYTE_EN", be, $bits(be), UVM_HEX);

@@ -1,7 +1,13 @@
-
+//===========================================================
+//--Project: AXI_APB bridge
+//===========================================================
+//--File name: axi_checker_top.sv
+//===========================================================
+//--Description:
+//===========================================================
 module axi_checker_top;
   //Define the interface hierarchy
-  `define axi_if dut_top
+  `define axi_if dut_top.axi_if
   //Checker connection
   axi_checker axi_checker();
     assign axi_checker.aclk    = `axi_if.aclk;

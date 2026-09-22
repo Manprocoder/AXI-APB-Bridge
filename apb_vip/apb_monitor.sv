@@ -17,7 +17,7 @@ class apb_monitor extends uvm_monitor;
   //data members
   //------------------------------------------
   logic preset_n;
-  //logic [`SLAVE_CNT-1:0] psel_tb;
+  logic [`SLAVE_CNT-1:0] psel_tb;
   //
   function new(string name="APB Monitor", uvm_component parent);
     super.new(name, parent);
@@ -57,7 +57,7 @@ endtask
 task apb_monitor::collect_data();
   forever begin
     @(mon_cfg.vif.s_mon_cb);// begin: CAPTURE_ENABLE// iff mon_cfg.vif.s_mon_cb.psel) begin: CAPTURE_ENABLE
-        if(mon_cfg.vif.s_mon_cb.psel && mon_cfg.vif.s_mon_cb.penable && mon_cfg.vif.s_mon_cb.pready) begin: START_CAPTURE
+if(mon_cfg.vif.s_mon_cb.psel[mon_cfg.slv_order] && mon_cfg.vif.s_mon_cb.penable && mon_cfg.vif.s_mon_cb.pready[mon_cfg.slv_order]) begin: START_CAPTURE
             // `uvm_info(get_type_name(), $sformatf("PENABLE: %0b -- PREADY: %0b",
             // mon_cfg.vif.s_mon_cb.penable, mon_cfg.vif.s_mon_cb.pready[i]), UVM_LOW);
             //
@@ -69,8 +69,8 @@ task apb_monitor::collect_data();
             apb_trans_h.pstrb[3:0] = mon_cfg.vif.s_mon_cb.pstrb[3:0];
             apb_trans_h.pwrite = mon_cfg.vif.s_mon_cb.pwrite;
             apb_trans_h.pwdata = mon_cfg.vif.s_mon_cb.pwdata;
-            apb_trans_h.prdata = mon_cfg.vif.s_mon_cb.prdata;
-            apb_trans_h.pslverr = mon_cfg.vif.s_mon_cb.pslverr; 
+            apb_trans_h.prdata = mon_cfg.vif.s_mon_cb.prdata[mon_cfg.slv_order];
+            apb_trans_h.pslverr = mon_cfg.vif.s_mon_cb.pslverr[mon_cfg.slv_order]; 
             //Send the transaction to analysis port which is connected to Scoreboard
             ApbContent_toScoreboard.write(apb_trans_h);
             `ifdef PRINT_APB_TRANS

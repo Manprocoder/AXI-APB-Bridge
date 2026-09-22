@@ -99,6 +99,11 @@ parameter SLAVE_NUM = 1;
   clocking s_mon_cb @(posedge pclk);
       input psel, penable, pwrite, paddr, pwdata, pstrb, prdata, pready, pslverr, pprot;
   endclocking
+  //
+  modport DUT(
+      input pclk, presetn, prdata, pready, pslverr,
+      output psel, penable, pwrite, pstrb, paddr, pwdata, pprot
+  );
 endinterface
 
 

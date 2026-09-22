@@ -15,9 +15,11 @@
 `uvm_analysis_imp_decl(_AxiBresp) 
 //
 typedef apb_seq_item#(DW2, AW2) apb_item;
+typedef axi_req_item AXI_REQ;
 //
 class axi_apb_scoreboard extends axi_scoreboard;
     //register UVM factory
+    typedef axi_apb_scoreboard this_type;
     `uvm_component_utils(axi_apb_scoreboard)
 
     //AXI Monitor imp ports
@@ -27,6 +29,8 @@ class axi_apb_scoreboard extends axi_scoreboard;
     uvm_analysis_imp_AxiWrRequest #(axi_req_item, axi_apb_scoreboard) aimp_AxiWrRequest;
     uvm_analysis_imp_AxiWData #(axi_data_item, axi_apb_scoreboard) aimp_AxiWData;
     uvm_analysis_imp_AxiBresp #(axi_brsp_item, axi_apb_scoreboard) aimp_AxiBresp;
+    //
+    uvm_seq_item_pull_imp#(AXI_REQ, AXI_REQ, this_type) scb_seq_item_export;
     //--------------------------------------
     //data members
     //---------------------------------------
@@ -61,6 +65,7 @@ class axi_apb_scoreboard extends axi_scoreboard;
     //---------------------------------------------------
     function void build_phase(uvm_phase phase);
        // super.build_phase(phase); 
+          `uvm_info(get_name(), "Hello AXI_APB_SCOREBOARD", UVM_LOW)
         //
         if (!uvm_config_db#(env_config)::get(this, "", "env_cfg", env_cfg_h)) begin
           `uvm_fatal(get_name(), "Didn't get ENV config handle!!!")
@@ -82,6 +87,8 @@ class axi_apb_scoreboard extends axi_scoreboard;
         aimp_AxiWrRequest = new ("aimp_AxiWrRequest", this);
         aimp_AxiWData = new ("aimp_AxiWData", this);
         aimp_AxiBresp = new ("aimp_AxiBresp", this);
+        //
+        scb_seq_item_export = new ("scb_seq_item_export", this);
         //APB
         //
         apb_tmp_h = apb_item::type_id::create("apb_scb_tmp");
@@ -91,6 +98,7 @@ class axi_apb_scoreboard extends axi_scoreboard;
     endfunction
 //
 virtual task run_phase(uvm_phase phase);
+    `uvm_info(get_name(), "[RUN_PHASE_SCB]", UVM_LOW)
 	//
 	init_total_checker();
     init_type_of_trans_checker();
@@ -116,6 +124,10 @@ virtual task run_phase(uvm_phase phase);
 	    end
 	end
 endtask
+//
+virtual function void check_phase(uvm_phase phase);
+    `uvm_info(get_name(), "[CHECK_PHASE_SCB]", UVM_LOW)
+endfunction
 //******************************************************************************************************************
 //------------------------- report_phase() and final_phase() function
 //******************************************************************************************************************
@@ -130,10 +142,12 @@ endfunction
 //-- final_phase() function
 //---------------------------------------------------
 virtual function void final_phase(uvm_phase phase);
+    `uvm_info(get_name(), "[FINAL_PHASE_SCB]", UVM_LOW)
     flush_slave_addr();
     flush_sim_result();
     flush_resp();
 endfunction
+//
 //=========================================================================
 //-----------------------------OTHER METHODs
 //=========================================================================
@@ -158,8 +172,102 @@ extern virtual task Do_Comparison(input bit wr_en);
 extern virtual task compare_transfer(input int i);
 extern virtual task handle_wait_data(input bit write_enable, input bit axi_or_apb, output bit break_enable);
 extern virtual function void check_missing_transaction;
+//-----------------------------------------------------------------------------------------
+//---------------------ONLY FOR TESTING Sequence Item pull ports in mon-scb connection 
+//-----------------------------------------------------------------------------------------
+extern virtual task          get_next_item (output AXI_REQ t);
+
+// Task: try_next_item
+// Retrieves the next available item from a sequence if one is available.
+//
+extern virtual task          try_next_item (output AXI_REQ t);
+
+// Function: item_done
+// Indicates that the request is completed.
+//
+extern virtual function void item_done     (AXI_REQ item = null);
+
+// Task: put
+// Sends a response back to the sequence that issued the request.
+//
+extern virtual task          put           (AXI_REQ t);
+
+// Task: get
+// Retrieves the next available item from a sequence.
+//
+extern task                  get           (output AXI_REQ t);
+
+// Task: peek
+// Returns the current request item if one is in the FIFO.
+//
+extern task                  peek          (output AXI_REQ t);
+/* local */ extern function void put_response (AXI_REQ t);
+extern virtual function bit has_do_available();
+// Task: wait_for_sequences
+  //
+  // Waits for a sequence to have a new item available. Uses
+  // <uvm_wait_for_nba_region> to give a sequence as much time as
+  // possible to deliver an item before advancing time.
+
+extern virtual task wait_for_sequences();
+
+virtual function void disable_auto_item_recording();
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "disable_auto_item_recording method is called", UVM_LOW)
+    //m_auto_item_recording = 0;
+endfunction
+
+  virtual function bit is_auto_item_recording_enabled();
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "is_auto_item_recording_enabled method is called", UVM_LOW)
+    return 1'b1;
+  endfunction
+
 //
 endclass
+//
+//=========================================================================
+//-----------------ONLY FOR TRIAL
+//=========================================================================
+
+task axi_apb_scoreboard::get_next_item (output AXI_REQ t);
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "get_next_item method is called", UVM_LOW)
+endtask
+// Task: try_next_item
+// Retrieves the next available item from a sequence if one is available.
+//
+task axi_apb_scoreboard::try_next_item (output AXI_REQ t);
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "try_next_item method is called", UVM_LOW)
+endtask
+// Function: item_done
+// Indicates that the request is completed.
+//
+function void axi_apb_scoreboard::item_done (AXI_REQ item = null);
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "item_done method is called", UVM_LOW)
+endfunction
+//
+task axi_apb_scoreboard::put (AXI_REQ t);
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "put method is called", UVM_LOW)
+endtask
+//
+task axi_apb_scoreboard::get(output AXI_REQ t);
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "get method is called", UVM_LOW)
+endtask
+//
+task axi_apb_scoreboard::peek(output AXI_REQ t);
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "peek method is called", UVM_LOW)
+endtask
+//
+function void axi_apb_scoreboard::put_response (AXI_REQ t);
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "put_response method is called", UVM_LOW)
+endfunction
+//
+function bit axi_apb_scoreboard:: has_do_available();
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "has_do_available method is called", UVM_LOW)
+    return 1'b1;
+endfunction
+//
+task axi_apb_scoreboard::wait_for_sequences();
+    `uvm_info("SCB_MON_SEQ_ITEM_TLM", "wait_for_sequences method is called", UVM_LOW)
+endtask
 //=========================================================================
 //-----------------IMPLEMENTATION of OTHER METHODs
 //=========================================================================
@@ -404,12 +512,18 @@ task axi_apb_scoreboard:: Fetch_Valid_Req(input bit wr_en);
                     end
                     cur_rsp = DECERR;//used as a store_simulation_result argument
                     Pop_unvalid_data();
+                    //
+                    //--store unvalid transaction info for debugging
+                    //
+                    raw_req.wr_or_rd = wr_en;
+                    no_trans_before_valid_exist++;
+                    push_rmv_trans_into_q(raw_req);
                 end
                 else if(error_case == 1'b1) begin
                     slv_err_trans++;
                     `uvm_error(get_name(),
-                     $sformatf("[%s][%0d]: unsupported transaction: addr: 0x%08h",
-                     (wr_en == 1'b1) ? "WRITE" : "READ_", raw_req.id[7:0], raw_req.addr))
+                     $sformatf("[%s][%0d]: unsupported transaction: addr: 0x%08h---burst: %0s",
+                     (wr_en == 1'b1) ? "WRITE" : "READ_", raw_req.id[7:0], raw_req.addr, raw_req.burst.name()))
                     //`uvm_info(get_type_name(), "Unvalid request (size is not 4 bytes)", UVM_LOW)
                     if(wr_en == 1'b1) begin
                         brsp_h.brsp = PSLVERR;
@@ -418,6 +532,13 @@ task axi_apb_scoreboard:: Fetch_Valid_Req(input bit wr_en);
                     end
                     cur_rsp = PSLVERR;//used as a store_simulation_result argument
                     Pop_unvalid_data();
+                    //
+                    //--store unvalid transaction info for debugging
+                    //
+                    raw_req.wr_or_rd = wr_en;
+                    no_trans_before_valid_exist++;
+                    push_rmv_trans_into_q(raw_req);
+                    //
                 end
                 else begin
                     valid_trans++;
@@ -437,7 +558,7 @@ task axi_apb_scoreboard:: Fetch_Valid_Req(input bit wr_en);
 endtask
     //
     function bit axi_apb_scoreboard::Check_Valid_Addr(input logic [31:0] start_address);
-         `uvm_info(get_name(), $sformatf("start_address: 0x%8h", start_address), UVM_LOW)
+         `uvm_info(get_name(), $sformatf("[CHK_VLD_ADDR]start_addr: 0x%8h", start_address), UVM_LOW)
          if(start_address <= apb_base_end_addr_q[`SLAVE_CNT*2-1]) return 1'b1;
          else return 1'b0;
     endfunction
@@ -448,6 +569,7 @@ endtask
         bit data_rdy = 0;
         bit exit_data_while_loop = 0;
         data_q axi_rdata_tmp_q = {};
+        int pop_idx = 0;
         //
         begin: POP_UNVALID_DAT_BLOCK
             wr_en = raw_req.wr_or_rd;
@@ -456,28 +578,48 @@ endtask
             data_rdy = (wr_en == 1'b1) ? (axi_wdata_q.size() > 0) : (axi_rdata_arr.exists(raw_req.id) && axi_rdata_arr[raw_req.id].size() > 0);
             if (data_rdy == 1'b1) begin: DAT_RDY_BLOCK
                axi_content = axi_data_item::type_id::create("axi_content");
+                pop_idx++;
+                //
                if(wr_en == 1'b1) begin
                     axi_content = axi_wdata_q.pop_front();
-                    `uvm_info(get_type_name(), "[INVALID_WDATA]: REMOVED FROM QUEUE!!!", UVM_MEDIUM)
+                    `uvm_info(get_type_name(),
+                     $sformatf("INVALID WDATA[%0d][%0d]: REMOVED FROM QUEUE!!!", raw_req.id, pop_idx), UVM_MEDIUM)
                 end
                 else begin
                     axi_rdata_tmp_q = axi_rdata_arr[raw_req.id];
                     axi_content = axi_rdata_tmp_q.pop_front();
                     axi_rdata_arr[raw_req.id] = axi_rdata_tmp_q;
-                    `uvm_info(get_type_name(), "[INVALID_RDATA]: REMOVED FROM QUEUE!!!", UVM_MEDIUM)
+                    //
+                    `uvm_info(get_type_name(),
+                     $sformatf("INVALID RDATA[%0d][%0d]: REMOVED FROM QUEUE!!!", raw_req.id, pop_idx), UVM_MEDIUM)
                 end
                     //axi_content.print();
                 last_beat = axi_content.last;
                 axi_data_wait_cnt = 0;
                 //
                 if(last_beat == 1'b1) begin
-                    `uvm_info(get_type_name(), "[INVALID LAST_DATA]: REMOVED FROM QUEUE!!!", UVM_MEDIUM)
+                    if(wr_en == 1'b1) begin
+                        `uvm_info(get_type_name(),
+                         $sformatf("INVALID LAST_WDATA[%0d][%0d]: REMOVED FROM QUEUE!!!", raw_req.id, pop_idx), UVM_MEDIUM)
+                    end
+                    else begin
+                        `uvm_info(get_type_name(),
+                         $sformatf("INVALID LAST_RDATA[%0d][%0d]: REMOVED FROM QUEUE!!!", raw_req.id, pop_idx), UVM_MEDIUM)
+                    end
                     //if(~wr_en) begin
                         //cur_rsp = axi_content.resp;
                     //end
+                    if(pop_idx != (raw_req.len + 1)) begin
+                        `uvm_error(get_name(), $sformatf("POP_UNVALID_END: no_act = %0d --- no_exp = %0d", pop_idx, raw_req.len + 1))
+                    end 
+                    //
                     store_simulation_result(cur_rsp); 
                     break; //exit while(1) 
                 end
+                //
+                `uvm_info(get_type_name(),
+                 $sformatf("SUPPORTIVE INFO[BURST: %s][DATA: 0x%8h]",
+                 raw_req.burst.name(), axi_content.data), UVM_MEDIUM)
             end: DAT_RDY_BLOCK
 	       	else begin
                 axi_data_wait_cnt++;
@@ -488,12 +630,14 @@ endtask
                 handle_wait_data(wr_en, 1'b1, exit_data_while_loop);
                 if(exit_data_while_loop==1) begin
                     #(`CLK_CYCLE);
+                    `uvm_warning(get_name(), $sformatf("TIMEOUT after removing DATA[%0d]", pop_idx)) 
                     break;//exit while(1) 
                 end
             end
 	end //end of while(1)
-            `uvm_info(get_name(), "REMOVING DATA of unvalid transaction DONE", UVM_LOW) 
-            raw_req.print();
+        `uvm_info(get_name(), "REMOVING DATA of unvalid transaction DONE", UVM_LOW) 
+        `uvm_info(get_name(), "REMOVED TRANSACTION INFO in DEPTH: ", UVM_LOW) 
+        raw_req.print();
 	end: POP_UNVALID_DAT_BLOCK 
 endtask
 //
@@ -516,6 +660,9 @@ task axi_apb_scoreboard::Do_Comparison(input bit wr_en);
         if(!$cast(fifo_idx, apb_slv_idx)) begin
             `uvm_error(get_name(), "Casting APB FIFO index is FAILED")
         end
+        //
+        display_no_invalid_trans();
+        display_invalid_trans_in_depth();
         //**************************************************************
         //--------------------AXI - APB
         //**************************************************************
@@ -524,12 +671,12 @@ task axi_apb_scoreboard::Do_Comparison(input bit wr_en);
 		    //wait(apb_trans_fifo[fifo_idx].is_empty() == 0);
 		    //wait(apb_trans_fifo[apb_slv_idx].used() > 0);
 		    if(wr_en == 1'b1) begin
-                `uvm_info(get_type_name(), "[DO_COMPARE]: WR_AXI TRANSFER WAIT!!!", UVM_LOW)
+                `uvm_info(get_type_name(), "[DO_COMPARE]: WDATA_AXI TRANSFER WAIT!!!", UVM_LOW)
 			    wait(axi_wdata_q.size() > 0);
 		    end
 		    else begin
-                `uvm_info(get_type_name(), "[DO_COMPARE]: RD_AXI TRANSFER WAIT!!!", UVM_LOW)
-			    wait(axi_rdata_arr.exists(raw_req.id) && axi_rdata_arr[raw_req.id].size() > 0);
+                `uvm_info(get_type_name(), "[DO_COMPARE]: RDATA_AXI TRANSFER WAIT!!!", UVM_LOW)
+			    wait(axi_rdata_arr.exists(raw_req.id[7:0]) && axi_rdata_arr[raw_req.id[7:0]].size() > 0);
 		    end
 		    `uvm_info(get_type_name(), "[DO_COMPARE]: TRANSFER START!!!", UVM_LOW)
 		//----APB
@@ -546,6 +693,9 @@ task axi_apb_scoreboard::Do_Comparison(input bit wr_en);
                 axi_content = axi_rdata_tmp_q.pop_front();
                 axi_rdata_arr[raw_req.id[7:0]] = axi_rdata_tmp_q;
                 `uvm_info(get_type_name(), $sformatf("[DO_COMPARE]: READY FOR RD_TRANSFER COMPARE!!!"), UVM_MEDIUM)
+                `ifdef PRINT_AXI_RDATA
+                    axi_content.print();
+                `endif 
 		    end
 		//----COMPARE
             convert_axi_to_compare(axi_content);
@@ -601,8 +751,8 @@ task axi_apb_scoreboard::compare_transfer(input int i);
                         //header, raw_req.id, (i+1), $time, axi_transfer.convert2string(), apb_transfer.convert2string()));
                 //`else
                 `uvm_info("COMPARE_TRANSFER", 
-                        $sformatf("%s[%0d][%0d] PASS:\nAXI_TRANSFER: %sAPB_TRANSFER: %s",
-                        header, raw_req.id, (i+1), axi_transfer.convert2string(), apb_transfer.convert2string()), UVM_LOW)
+                        $sformatf("[BURST: %s]%s[%0d][%0d] PASS:\nAXI_TRANSFER: %sAPB_TRANSFER: %s",
+                        raw_req.burst.name(), header, raw_req.id, (i+1), axi_transfer.convert2string(), apb_transfer.convert2string()), UVM_LOW)
                 //`endif
                 pass_of_each_id++;
                 total_pass++;
@@ -614,8 +764,8 @@ task axi_apb_scoreboard::compare_transfer(input int i);
                         //header, raw_req.id, (i+1), $time,axi_transfer.convert2string(), apb_transfer.convert2string()));
                 //`else
                 `uvm_info("COMPARE_TRANSFER", 
-                        $sformatf("%s[%0d][%0d] FAILED:\nAXI_TRANSFER: %sAPB_TRANSFER: %s",
-                        header, raw_req.id, (i+1), axi_transfer.convert2string(), apb_transfer.convert2string()), UVM_LOW)
+                        $sformatf("[BURST: %s]%s[%0d][%0d] FAILED:\nAXI_TRANSFER: %sAPB_TRANSFER: %s",
+                        raw_req.burst.name(), header, raw_req.id, (i+1), axi_transfer.convert2string(), apb_transfer.convert2string()), UVM_LOW)
                 //`endif
                 fail_of_each_id++;
                 total_fail++;
@@ -640,18 +790,18 @@ task axi_apb_scoreboard::handle_wait_data(input bit write_enable, input bit axi_
     begin
         $cast(fifo_idx, apb_slv_idx);
         //
-        if (axi_data_wait_cnt > TIME_OUT_BOUNDARY) begin
+        if (axi_data_wait_cnt > TIME_OUT_BOUNDARY) begin //TIME_OUT_BOUNDARY = 100 
             wait_resp = NO_USE;
             store_simulation_result(wait_resp);
             if(axi_or_apb == 1) begin
                 if((write_enable==1'b0) && (axi_rdata_arr.size() == 0)) begin
                     `uvm_info(get_type_name(),
-                    $sformatf("TRANS[READ][%0d]:Timeout Timeout Timeout--axi_rdata_arr is EMPTY", raw_req.id[7:0]), UVM_MEDIUM);
+                    $sformatf("TIMEOUT[READ_][%0d][BURST: %0s]:axi_rdata_arr is EMPTY", raw_req.id[7:0], raw_req.burst.name()), UVM_MEDIUM);
                 end
                 //
                 if((write_enable==1'b1) && (axi_wdata_q.size() == 0)) begin
                     `uvm_info(get_type_name(), 
-                    $sformatf("TRANS[WRITE][%0d]:Timeout Timeout Timeout--axi_wdata_q is EMPTY", raw_req.id[7:0]), UVM_MEDIUM);
+                    $sformatf("TIMEOUT[WRITE][%0d][BURST: %0s]axi_wdata_q is EMPTY", raw_req.id[7:0], raw_req.burst.name()), UVM_MEDIUM);
                 end
             end
             else begin

@@ -8,7 +8,7 @@
 //===========================================================================
 module axi_cov_top;
   //Define the interface hierarchy
-  `define axi_if dut_top
+  `define axi_if dut_top.axi_if
   //Checker connection
   axi_cov axi_cov();
     // defparam axi_cov.INST_NAME = "AXI_FUNCTIONAL_COVERAGE";

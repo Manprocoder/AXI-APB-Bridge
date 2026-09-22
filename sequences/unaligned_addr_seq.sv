@@ -1,15 +1,16 @@
-//==========================================================
-//--Project: Design and Verify AXI_APB bridge
-//==========================================================
-//--file: rdata_almost_full_seq.sv
+//************************************************************
+//--Project: AXI APB IP 
+//************************************************************
+//--file: unaligned_addr_seq.sv
 //--Author: Nguyen Ngoc Man
-//==========================================================
-//--Description: 
-//==========================================================
-class rdata_almost_full_seq extends stimulus_generator;
-	`uvm_object_utils(rdata_almost_full_seq)
+//************************************************************
+//--Description: test unaligned address of AXI4  
+//***********************************************************
+import axi_pkg::*;
+class unaligned_addr_seq extends stimulus_generator;
+	`uvm_object_utils(unaligned_addr_seq)
 	//members
-	function new(string name = "rdata_almost_full_seq");
+	function new(string name = "unaligned addr");
 		super.new(name);
 	endfunction
 	//
@@ -18,20 +19,14 @@ class rdata_almost_full_seq extends stimulus_generator;
 		//
 		repeat(no_test) begin
 			trans_h = axi_item::type_id::create("axi_item");
-            //---disable constraint of wdata and wstrb
-            trans_h.data_arr_c.constraint_mode(0);
-            trans_h.wstrb_arr_c.constraint_mode(0);
-            //
 			assert(trans_h.randomize() with {
 				trans_h.size == 3'b010;
 				trans_h.is_valid == 1'b1;
-                trans_h.long_low_rready == 1'b1;
+				trans_h.burst == INCR;
+				trans_h.addr[1:0] != 2'b00;
 				})
 			else `uvm_error(get_type_name(), "randomize axi_item FAILED")
 			if(!mb.try_put(trans_h)) `uvm_error(get_type_name, "try_put item into mb FAIL!!!");
-            //
-            `uvm_info(get_name(), "PRINT RDATA_ALMOST_FULL transaction", UVM_LOW)
-            trans_h.print();
 		end
 	endfunction
 	//
@@ -52,6 +47,3 @@ class rdata_almost_full_seq extends stimulus_generator;
       		end
 	endtask
 endclass
-//
-//
-

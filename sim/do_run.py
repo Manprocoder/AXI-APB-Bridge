@@ -21,6 +21,7 @@ class Print_info_for_debug:
     PRINT_AXI_RREQ_EN = 0
     PRINT_AXI_WDATA_EN = 0
     PRINT_AXI_BRSP_EN = 0
+    PRINT_AXI_RDATA_EN = 0
     PRINT_APB_TRANS_EN = 0
 #
 #--------------------PRINT INFO FOR DEBUG-----------------------
@@ -53,6 +54,9 @@ class Print_info_for_debug:
         self.PRINT_AXI_BRSP_EN = self._ask_yes_no(
             "Print AXI Write Response? [1/0]: ", self.PRINT_AXI_BRSP_EN
         )
+        self.PRINT_AXI_RDATA_EN = self._ask_yes_no(
+            "Print AXI Read Data? [1/0]: ", self.PRINT_AXI_RDATA_EN
+        )
         self.PRINT_APB_TRANS_EN = self._ask_yes_no(
             "Print APB Transaction? [1/0]: ", self.PRINT_APB_TRANS_EN
         )
@@ -61,6 +65,7 @@ class Print_info_for_debug:
         print(f"PRINT_AXI_RREQ_EN  = {self.PRINT_AXI_RREQ_EN}")
         print(f"PRINT_AXI_WDATA_EN = {self.PRINT_AXI_WDATA_EN}")
         print(f"PRINT_AXI_BRSP_EN = {self.PRINT_AXI_BRSP_EN}")
+        print(f"PRINT_AXI_RDATA_EN = {self.PRINT_AXI_RDATA_EN}")
         print(f"PRINT_APB_TRANS_EN = {self.PRINT_APB_TRANS_EN}")
         print(f"=====================================================================================")
 #
@@ -95,6 +100,7 @@ class SimulationRunner(Print_info_for_debug):
             "PRINT_AXI_RREQ_EN": self.PRINT_AXI_RREQ_EN,
             "PRINT_AXI_WDATA_EN": self.PRINT_AXI_WDATA_EN,
             "PRINT_AXI_BRSP_EN": self.PRINT_AXI_BRSP_EN,
+            "PRINT_AXI_RDATA_EN": self.PRINT_AXI_RDATA_EN,
             "PRINT_APB_TRANS_EN": self.PRINT_APB_TRANS_EN,
         }
         cmd = ["make", target] + [f"{k}={v}" for k, v in make_vars.items()]
@@ -136,7 +142,7 @@ class SimulationRunner(Print_info_for_debug):
             print("0: UVM_LOW")
             print("1: UVM_MEDIUM")
             print("2: UVM_HIGH")
-            choice = input(f"\nSelect UVM_VERBOSITY (default={default_idx}): ").strip()
+            choice = input(f"\nSelect UVM_VERBOSITY (valid options are 0, 1, 2 [default={default_idx}]): ").strip()
 
             if choice == "":
                 return verbosity_levels[default_idx]

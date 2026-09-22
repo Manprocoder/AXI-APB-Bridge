@@ -9,6 +9,7 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
     `uvm_object_param_utils(this_item)
     //
     rand bit is_valid;
+//    rand bit write;
     //
     rand bit rst_run_time_enable;
     rand bit reset;
@@ -48,17 +49,22 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
         }
     }
     //
-    constraint data_arr_array {
+    constraint data_arr_c {
         //solve order constraints
         solve len before data_arr;
         //  rand variable constraints
-        data_arr.size() == len+1;
+        //if(write == 1'b1) {
+            data_arr.size() == len+1;
+        //}
+        //else {
+            //data_arr.size() == 0;
+        //}
         // unique{data_arr};  //be careful to use, specially len is large and DW = 32 bits 
         //---=> randomization fails because there are too much possibilities
         //
-    }
+    }//end of data_arr_c
     //
-    constraint wstrb_array {
+    constraint wstrb_arr_c {
         //solve order constraints
         //--size
         solve len before wstrb;
@@ -69,27 +75,39 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
         solve burst before wstrb;
 
         //rand variable constraints
+        //if(write == 1'b1) {
         wstrb.size() == len+1;
         //
-        foreach (wstrb[i]) {
-                if((burst == INCR) && (addr[1:0] != 2'b00)) {
-                    if(i==0)
-                        wstrb[i] inside {(4'hf << addr[1:0]) & 4'hf};
-                    else {
-                        wstrb[i] != 4'h0;
+            foreach (wstrb[i]) {
+                    if(is_valid == 1'b1) {
+                        if((burst == INCR) && (addr[1:0] != 2'b00)) {
+                            if(i==0)
+                                wstrb[i] inside {(4'hf << addr[1:0]) & 4'hf};
+                            else {
+                                wstrb[i] != 4'h0;
+                            }
+                        }
+                        else {
+                           wstrb[i] != 4'h0; 
+                        }
+                    } //is_valid
+                    else  {
+                           wstrb[i] == 4'h0; 
+                           //invalid address, wstrb should be low
                     }
-                }
-                else {
-                   wstrb[i] != 4'h0; 
-                }
-        }//end of foreach
-    }
+            }//end of foreach
+        //}
+    }//end of wstrb_arr_c
+        //else { wstrb.size() == 0;}
     //
     constraint len_c{
     //
         solve burst before len;
             //
-        if (burst == WRAP || burst == FIXED)
+        if (burst == FIXED) {
+            len inside {[0:15]};
+        }
+        else if (burst == WRAP)
             len inside {1,3,7,15};
         else { 
             if(long_low_rready == 1'b1) {
@@ -128,13 +146,6 @@ class axi_transaction #(DW = 32, AW= 32) extends axi_req_item;
         long_low_rready dist {1'b0:=8, 1'b1:=2};
     }
     //
-    //constraint slv_idx_c{
-        //solve addr before slv_idx;
-        ////
-        //slv_idx == {(addr>>12) & 32'h0000_000f};
-    //}
-    //
-
     //
     //Group(1)
     extern function void set_id(bit [7:0] actual_id);
@@ -174,19 +185,16 @@ endfunction
 //
 //Group(2)
 function void axi_transaction::do_print(uvm_printer printer);
-    //super.do_print(printer);
-//    printer.print_field("SLV_IDX", slv_idx, $bits(slv_idx), UVM_UNSIGNED);
+    //printer.print_field("WRITE", write, $bits(write), UVM_BIN);
     printer.print_field("ID", id, $bits(id), UVM_UNSIGNED);
     printer.print_field("Addr", addr, $bits(addr), UVM_HEX);
     //
     printer.print_generic("Burst Length", "BEATS IN TOTAL", $bits(len), $sformatf("%0d beat", len+1));
     printer.print_generic("Burst Size", "SIZE IN BEAT", $bits(size), $sformatf("%0d byte", 2**size));
     printer.print_field("LOW_RREADY_EN", long_low_rready, $bits(long_low_rready), UVM_BIN);    printer.print_generic("Burst Name", "BURST NAME", $bits(burst), burst.name()); 
-    for (int i = 0; i < len+1; i++) begin : DATA_PRINT
-        printer.print_generic("Data-Wstrb", "", "-1", $sformatf("Data[%0d] = %0h --- wstrb[%0d] = %0b", i, data_arr[i], i, wstrb[i]));
-    end
-
-  //
+        for (int i = 0; i < len+1; i++) begin : DATA_PRINT
+            printer.print_generic("Data-Wstrb", "", "-1", $sformatf("Data[%0d] = %0h --- wstrb[%0d] = %0b", i, data_arr[i], i, wstrb[i]));
+        end
 endfunction: do_print
 
 function string axi_transaction::convert2string();
